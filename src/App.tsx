@@ -1,17 +1,18 @@
-import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from 'react'
-import { albumCover, albumPhotos, albums, type Album } from './data/albums'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { albumCover, albumPhotos, albums, driveUrls, type Album } from './data/albums'
 import type { Photo } from './data/photos'
 import { site } from './config/site'
+import { albumDescriptions } from './config/album-descriptions'
 
 type Transition = 'opening' | 'open' | 'closing'
-type Rect = { top: number; left: number; width: number; height: number }
 
 function App() {
   const [activeAlbum, setActiveAlbum] = useState<Album | null>(null)
+  const [albumOrder] = useState(() => [...albums].sort(() => Math.random() - 0.5))
   const [transition, setTransition] = useState<Transition>('opening')
-  const [coverRect, setCoverRect] = useState<Rect | null>(null)
   const [lightbox, setLightbox] = useState<{ photos: Photo[]; index: number } | null>(null)
   const [isReducedMotion, setIsReducedMotion] = useState(false)
+  const [showIntro, setShowIntro] = useState(true)
   const scrollPosition = useRef(0)
 
   useEffect(() => {
@@ -21,6 +22,11 @@ function App() {
     media.addEventListener('change', update)
     return () => media.removeEventListener('change', update)
   }, [])
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => setShowIntro(false), isReducedMotion ? 120 : 1500)
+    return () => window.clearTimeout(timer)
+  }, [isReducedMotion])
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -52,14 +58,11 @@ function App() {
     scrollPosition.current = window.scrollY
     document.body.classList.add('album-is-open')
     document.body.style.top = `-${scrollPosition.current}px`
-    const timer = window.setTimeout(() => setTransition('open'), isReducedMotion ? 0 : 620)
+    const timer = window.setTimeout(() => setTransition('open'), isReducedMotion ? 0 : 140)
     return () => window.clearTimeout(timer)
   }, [activeAlbum, isReducedMotion])
 
   const openAlbum = (album: Album) => {
-    const element = document.querySelector<HTMLElement>(`[data-album-id="${album.id}"]`)
-    const rect = element?.getBoundingClientRect()
-    setCoverRect(rect ? { top: rect.top, left: rect.left, width: rect.width, height: rect.height } : null)
     setActiveAlbum(album)
     setTransition('opening')
     window.history.pushState({}, '', `/album/${album.id}`)
@@ -81,7 +84,7 @@ function App() {
       document.body.classList.remove('album-is-open')
       document.body.style.top = ''
       window.scrollTo(0, scrollPosition.current)
-    }, isReducedMotion ? 0 : 650)
+    }, isReducedMotion ? 0 : 320)
   }
 
   const moveLightbox = (direction: 1 | -1) => {
@@ -91,61 +94,61 @@ function App() {
   }
 
   return <>
-    <Home onOpenAlbum={openAlbum} />
-    {activeAlbum && <AlbumOverlay album={activeAlbum} transition={transition} coverRect={coverRect} onClose={closeAlbum} onOpenPhoto={(photos, index) => setLightbox({ photos, index })} />}
+    {showIntro && <IntroSplash />}
+    <Home albums={albumOrder} onOpenAlbum={openAlbum} />
+    {activeAlbum && <AlbumOverlay album={activeAlbum} transition={transition} onClose={closeAlbum} onOpenPhoto={(photos, index) => setLightbox({ photos, index })} />}
     {lightbox && <PhotoLightbox photo={lightbox.photos[lightbox.index]} index={lightbox.index} total={lightbox.photos.length} onClose={() => setLightbox(null)} onMove={moveLightbox} />}
   </>
 }
 
 function Logo() { return <a className="archive-logo" href="/" aria-label="Calderón, inicio"><img src="/logo/calderon_logo.svg" alt="Calderón" /></a> }
 
-function Home({ onOpenAlbum }: { onOpenAlbum: (album: Album) => void }) {
+function Home({ albums, onOpenAlbum }: { albums: Album[]; onOpenAlbum: (album: Album) => void }) {
   return <main className="archive-home">
-    <header className="archive-header"><span className="header-side">PHOTOGRAPHY / ARGENTINA</span><Logo /><span className="header-side header-side-right">2026 / ARCHIVE</span></header>
+    <header className="archive-header"><span className="header-side">FOTOGRAFÍA / ARGENTINA</span><Logo /><span className="header-side header-side-right">2026 / ARCHIVO</span></header>
     <section className="album-index" aria-labelledby="archive-title">
-      <div className="index-intro"><p id="archive-title">A COLLECTION OF ALBUMS</p><span>SCROLL TO EXPLORE</span></div>
+      <div className="index-intro"><p id="archive-title">COLECCIÓN DE ÁLBUMES</p><span>DESPLAZATE PARA EXPLORAR</span></div>
       <div className="album-wall">{albums.map((album, index) => <AlbumCard key={album.id} album={album} index={index} onOpen={() => onOpenAlbum(album)} />)}</div>
     </section>
-    <footer className="archive-footer"><span>© JOAQUÍN CALDERÓN</span><div><a href={site.instagramUrl || '#'} onClick={(event) => { if (!site.instagramUrl) event.preventDefault() }}>INSTAGRAM</a><a href={site.email ? `mailto:${site.email}` : '#'} onClick={(event) => { if (!site.email) event.preventDefault() }}>EMAIL</a></div><span>BUENOS AIRES</span></footer>
+    <footer className="archive-footer"><span>© JOAQUÍN CALDERÓN</span><div><a href={site.instagramUrl} target="_blank" rel="noreferrer">INSTAGRAM</a></div><span>ENTRE RÍOS</span></footer>
   </main>
 }
 
 function AlbumCard({ album, index, onOpen }: { album: Album; index: number; onOpen: () => void }) {
   const cover = albumCover(album)
   return <button className={`album-card album-card-${index + 1}`} data-album-id={album.id} onClick={onOpen} aria-label={`Abrir álbum ${album.title}`}>
-    <span className="album-card-image" style={{ aspectRatio: `${cover.width} / ${cover.height}` }}><img src={cover.src} alt={`Portada del álbum ${album.title}`} loading={index === 0 ? 'eager' : 'lazy'} /></span>
+    <span className="album-card-image" style={{ aspectRatio: `${cover.width} / ${cover.height}` }}><img src={cover.medium} srcSet={`${cover.medium} 960w, ${cover.large} 1600w`} sizes="(max-width: 760px) 94vw, 46vw" alt={`Portada del álbum ${album.title}`} loading={index === 0 ? 'eager' : 'lazy'} /></span>
     <span className="album-card-meta"><span>{album.title}</span><span>{album.year}</span></span>
+    <a className="album-drive-link" href={driveUrls[album.id]} target="_blank" rel="noreferrer" onClick={(event) => event.stopPropagation()}>ABRIR EN DRIVE ↗</a>
   </button>
 }
 
-function AlbumOverlay({ album, transition, coverRect, onClose, onOpenPhoto }: { album: Album; transition: Transition; coverRect: Rect | null; onClose: () => void; onOpenPhoto: (photos: Photo[], index: number) => void }) {
+function AlbumOverlay({ album, transition, onClose, onOpenPhoto }: { album: Album; transition: Transition; onClose: () => void; onOpenPhoto: (photos: Photo[], index: number) => void }) {
+  const [isScrolled, setIsScrolled] = useState(false)
   const photos = albumPhotos(album)
-  const cover = albumCover(album)
-  const from = coverRect ?? { top: window.innerHeight * .3, left: window.innerWidth * .25, width: window.innerWidth * .5, height: window.innerHeight * .4 }
-  const coverRatio = cover.width / cover.height
-  let targetWidth = Math.min(window.innerWidth * .72, 980)
-  let targetHeight = targetWidth / coverRatio
-  if (targetHeight > window.innerHeight * .7) {
-    targetHeight = window.innerHeight * .7
-    targetWidth = targetHeight * coverRatio
-  }
-  const target = { top: (window.innerHeight - targetHeight) / 2, left: (window.innerWidth - targetWidth) / 2, width: targetWidth, height: targetHeight }
-  const style = { '--from-top': `${from.top}px`, '--from-left': `${from.left}px`, '--from-width': `${from.width}px`, '--from-height': `${from.height}px`, '--to-top': `${target.top}px`, '--to-left': `${target.left}px`, '--to-width': `${target.width}px`, '--to-height': `${target.height}px` } as CSSProperties
-  return <section className={`album-overlay transition-${transition}`} aria-label={`Álbum ${album.title}`}>
+  return <section className={`album-overlay transition-${transition}${isScrolled ? ' is-scrolled' : ''}`} onScroll={(event) => setIsScrolled(event.currentTarget.scrollTop > 24)} aria-label={`Álbum ${album.title}`}>
     <div className="album-backdrop" />
-    <div className="album-overlay-bar"><button onClick={onClose} aria-label="Cerrar álbum">CLOSE ×</button><span>ALBUM / {String(photos.length).padStart(2, '0')} PHOTOGRAPHS</span><span>{album.year}</span></div>
-    <div className="album-opening-cover" style={style}><img src={cover.large} alt="" /></div>
+    <div className="album-overlay-bar"><button onClick={onClose} aria-label="Cerrar álbum">CERRAR ×</button><span>ÁLBUM / {String(photos.length).padStart(2, '0')} FOTOGRAFÍAS</span><span>{album.year}</span></div>
     <div className="album-content">
-      <div className="album-heading"><div><p className="micro-label">{album.association === 'confirmed' ? 'PHOTO ESSAY' : 'PHOTO ESSAY / SESSION'}</p><h1>{album.title}</h1></div><div className="album-heading-meta"><span>{album.year}</span><button onClick={onClose}>BACK ↑</button></div></div>
-      <div className="album-gallery">{photos.map((photo, index) => <button className={`album-photo album-photo-${index % 6}`} key={photo.id} onClick={() => onOpenPhoto(photos, index)}><img src={photo.large} style={{ aspectRatio: `${photo.width} / ${photo.height}` }} alt={`${album.title}, ${photo.tags.join(', ')}`} loading={index < 2 ? 'eager' : 'lazy'} /><span>VIEW / {String(index + 1).padStart(2, '0')}</span></button>)}</div>
-      <div className="album-end"><span>{album.title}</span><button onClick={onClose}>CLOSE ALBUM ↑</button></div>
+      <div className="album-heading"><div><p className="micro-label">{album.association === 'confirmed' ? 'ENSAYO FOTOGRÁFICO' : 'ENSAYO FOTOGRÁFICO / SESIÓN'}</p><h1>{album.title}</h1><p className="album-description">{albumDescriptions[album.id]}</p></div><div className="album-heading-meta"><span>{album.year}</span><a className="album-heading-drive" href={driveUrls[album.id]} target="_blank" rel="noreferrer">ABRIR EN DRIVE ↗</a></div></div>
+      <div className="album-gallery">{photos.map((photo, index) => <button className={`album-photo album-photo-${index % 6}`} key={photo.id} onClick={() => onOpenPhoto(photos, index)}><img src={photo.large} style={{ aspectRatio: `${photo.width} / ${photo.height}` }} alt={`${album.title}, ${photo.tags.join(', ')}`} decoding="async" loading={index === 0 ? 'eager' : 'lazy'} /><span>VER / {String(index + 1).padStart(2, '0')}</span></button>)}</div>
+      <div className="album-end"><span>{album.title}</span><button onClick={onClose}>CERRAR ÁLBUM ↑</button></div>
     </div>
   </section>
 }
 
-function PhotoLightbox({ photo, index, total, onClose, onMove }: { photo: Photo; index: number; total: number; onClose: () => void; onMove: (direction: 1 | -1) => void }) {
+function PhotoLightboxLegacy({ photo, index, total, onClose, onMove }: { photo: Photo; index: number; total: number; onClose: () => void; onMove: (direction: 1 | -1) => void }) {
   const touchStart = useRef(0)
   return <div className="photo-lightbox" role="dialog" aria-modal="true" aria-label="Fotografía ampliada" onTouchStart={(event) => { touchStart.current = event.changedTouches[0].clientX }} onTouchEnd={(event) => { const delta = event.changedTouches[0].clientX - touchStart.current; if (Math.abs(delta) > 45) onMove(delta < 0 ? 1 : -1) }}><div className="lightbox-bar"><span>{String(index + 1).padStart(2, '0')} / {String(total).padStart(2, '0')}</span><button onClick={onClose}>CLOSE ×</button></div><img src={photo.large} alt={`${photo.category}, ${photo.tags.join(', ')}`} /><div className="lightbox-controls"><button onClick={() => onMove(-1)} aria-label="Fotografía anterior">←</button><span>{photo.tags.join(' / ')}</span><button onClick={() => onMove(1)} aria-label="Fotografía siguiente">→</button></div></div>
+}
+
+function IntroSplash() {
+  return <div className="intro-splash" aria-hidden="true"><img className="intro-splash-logo" src="/logo/calderon_logo.svg" alt="" /></div>
+}
+
+function PhotoLightbox({ photo, index, total, onClose, onMove }: { photo: Photo; index: number; total: number; onClose: () => void; onMove: (direction: 1 | -1) => void }) {
+  const touchStart = useRef(0)
+  return <div className="photo-lightbox" role="dialog" aria-modal="true" aria-label="Fotografía ampliada" onTouchStart={(event) => { touchStart.current = event.changedTouches[0].clientX }} onTouchEnd={(event) => { const delta = event.changedTouches[0].clientX - touchStart.current; if (Math.abs(delta) > 45) onMove(delta < 0 ? 1 : -1) }}><div className="lightbox-bar"><span>{String(index + 1).padStart(2, '0')} / {String(total).padStart(2, '0')}</span><button onClick={onClose}>CERRAR ×</button></div><img src={photo.large} alt={`${photo.category}, ${photo.tags.join(', ')}`} /><div className="lightbox-controls"><button onClick={() => onMove(-1)} aria-label="Fotografía anterior">←</button><span>{photo.tags.join(' / ')}</span><button onClick={() => onMove(1)} aria-label="Fotografía siguiente">→</button></div></div>
 }
 
 export { App }

@@ -3,9 +3,16 @@ import path from 'node:path'
 import sharp from 'sharp'
 
 const root = process.cwd()
-const sourceRoot = path.join(root, 'photo-source', 'originals')
+const sourceRoots = [path.join(root, 'fotos')]
 const outputRoot = path.join(root, 'public', 'photos', 'web')
-const sizes = { thumb: 680, medium: 1280, large: 2000 }
+const sizes = { thumb: 520, medium: 960, large: 1600 }
+
+const slugify = (value) => value
+  .normalize('NFD')
+  .replace(/[\u0300-\u036f]/g, '')
+  .replace(/[^a-zA-Z0-9]+/g, '-')
+  .replace(/^-|-$/g, '')
+  .toLowerCase()
 
 async function walk(dir) {
   const entries = await fs.readdir(dir, { withFileTypes: true })
@@ -19,18 +26,23 @@ async function walk(dir) {
 }
 
 await fs.mkdir(outputRoot, { recursive: true })
-const files = await walk(sourceRoot)
-for (const file of files) {
+const files = []
+for (const sourceRoot of sourceRoots) files.push(...await walk(sourceRoot).then((items) => items.map((file) => ({ file, sourceRoot }))))
+for (const entry of files) {
+  const { file, sourceRoot } = entry
   const relative = path.relative(sourceRoot, file)
   const parsed = path.parse(relative)
-  const outputDir = path.join(outputRoot, parsed.dir)
+  const folder = parsed.dir.split(path.sep)[0] ?? ''
+  const outputFolder = slugify(folder)
+  const outputDir = path.join(outputRoot, outputFolder)
   await fs.mkdir(outputDir, { recursive: true })
+  const outputBase = [outputFolder, parsed.name].filter(Boolean).map(slugify).join('-')
   const image = sharp(file, { failOn: 'none' }).rotate()
   const metadata = await image.metadata()
   for (const [label, width] of Object.entries(sizes)) {
-    const target = path.join(outputDir, `${parsed.name}-${label}.webp`)
+    const target = path.join(outputDir, `${outputBase}-${label}.webp`)
     const resizeWidth = Math.min(width, metadata.width ?? width)
-    await image.clone().resize({ width: resizeWidth, withoutEnlargement: true }).webp({ quality: 88 }).toFile(target)
+    await image.clone().resize({ width: resizeWidth, withoutEnlargement: true }).webp({ quality: 78, effort: 5 }).toFile(target)
   }
 }
 console.log(`Optimized ${files.length} source photos.`)
