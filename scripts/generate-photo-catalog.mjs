@@ -36,7 +36,6 @@ const albumCategories = {
 }
 
 const driveUrls = {
-  campusparty: 'https://drive.google.com/drive/folders/1V56aB8jfkvvkJLJo8y1XT35Rolyw_rrO?usp=sharing',
   jornadauader: 'https://drive.google.com/drive/folders/1GmKaRL7Q5cAtRlXvuQU0T0QOEIFqBtvq?usp=sharing',
   tekomates: 'https://drive.google.com/drive/folders/14MNtGRw_4O1LFl9O_zwQi51kCwn0UVf1?usp=sharing',
   'desafio ciudadania': 'https://drive.google.com/drive/folders/1EGfYnA4cN1ykFvVD4pE7M4QuptNYBcjp?usp=sharing',
