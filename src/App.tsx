@@ -141,14 +141,14 @@ function HomeHub({ onOpenArea }: { onOpenArea: (area: 'systems' | 'dj' | 'photog
   return <main className={`home-hub${openingArea ? ' is-leaving-up' : ''}`}>
     <header className="archive-header"><span className="header-side">JOAQUÍN CALDERÓN</span><Logo /><span className="header-side header-side-right">PORTFOLIO / 2026</span></header>
     <section className="area-selector" aria-labelledby="area-selector-title">
-      <img className="board-logo" src="/logo/calderon_logo.svg" alt="Calderón" />
-      <div className="board-edition"><span>PORTAFOLIO PERSONAL · 2026</span><span>ENTRE RÍOS · ARGENTINA</span></div>
-      <div className="board-tags" aria-hidden="true"><span>SISTEMAS</span><span>DJ</span><span>FOTOGRAFÍA</span></div>
-      <p className="board-location">VIVO Y TRABAJO EN<br />ENTRE RÍOS</p>
-      <figure className="home-portrait"><img src="/areas/portrait-cutout.webp" alt="Retrato en blanco y negro de Joaquín Calderón, recortado sobre fondo transparente" /></figure>
-      <div className="area-selector-content"><div className="area-selector-intro"><p className="micro-label">HOLA, SOY...</p><h1 id="area-selector-title">Joaquín<br />Calderón</h1></div>
-        <div className="area-grid">{areas.map((area) => <button className={`area-card ${area.className}${openingArea === area.id ? ' is-opening' : ''}`} key={area.id} onPointerMove={moveCardWithPointer} onPointerLeave={resetCardPointer} onClick={() => enterArea(area.id)} disabled={Boolean(openingArea)}><span className="area-number">{area.number}</span><span className="area-card-copy"><span className="area-note">{area.note}</span><span className="area-title">{area.title}</span><span className="area-arrow" aria-hidden="true">✦</span></span><img className="area-card-thumbnail" src={area.image} alt="" loading="eager" /></button>)}</div>
+      <div className="board-topline">
+        <div className="board-brand"><img className="board-logo" src="/logo/calderon_logo.svg" alt="Calderón" /><div className="board-edition"><span>PORTAFOLIO PERSONAL · 2026</span><span>ENTRE RÍOS · ARGENTINA</span></div></div>
+        <div className="board-tags" aria-hidden="true"><span>SISTEMAS</span><span>DJ</span><span>FOTOGRAFÍA</span></div>
       </div>
+      <figure className="home-portrait"><img src="/areas/portrait-cutout.webp" alt="Retrato en blanco y negro de Joaquín Calderón, recortado sobre fondo transparente" /></figure>
+      <div className="board-identity"><p className="micro-label">HOLA, SOY...</p><h1 id="area-selector-title">Joaquín<br />Calderón</h1></div>
+      <p className="board-location">VIVO Y TRABAJO EN<br />ENTRE RÍOS</p>
+      <nav className="board-areas" aria-label="Elegí un área del portafolio">{areas.map((area) => <button className={`area-card ${area.className}${openingArea === area.id ? ' is-opening' : ''}`} key={area.id} onClick={() => enterArea(area.id)} disabled={Boolean(openingArea)}><span className="area-note">{area.note}</span><span className="area-title">{area.title}</span><span className="area-arrow" aria-hidden="true">✦</span></button>)}</nav>
     </section>
     <footer className="archive-footer"><span>© JOAQUÍN CALDERÓN</span><div><a href={site.instagramUrl} target="_blank" rel="noreferrer">INSTAGRAM</a></div><span>ENTRE RÍOS</span></footer>
   </main>

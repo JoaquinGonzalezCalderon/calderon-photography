@@ -518,3 +518,74 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--white); outline
 @media (prefers-reduced-motion: reduce) {
   .home-hub .area-card:hover, .home-hub .area-card:focus-visible { transform: none; }
 }
+
+/* Explicit board layers keep the portrait, annotations and links in their own coordinate space. */
+.home-hub .area-selector {
+  position: relative;
+  display: block;
+  width: min(1200px, calc(100% - 8vw));
+  height: clamp(490px, 58vh, 590px);
+  min-height: 0;
+  margin: clamp(38px, 6vh, 60px) auto 38px;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid #9d6d84;
+  background: #19191a;
+  box-shadow: 0 28px 100px #0008;
+}
+.home-hub .board-topline {
+  position: absolute;
+  z-index: 6;
+  inset: 17px 19px auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+.home-hub .board-brand { display: grid; justify-items: start; gap: 8px; }
+.home-hub .board-logo { position: static; display: block; width: 82px; height: auto; }
+.home-hub .board-edition { position: static; display: grid; gap: 4px; color: #d1ccc7; font-size: 7px; letter-spacing: .045em; }
+.home-hub .board-edition span + span { color: #89847f; font-size: 7px; }
+.home-hub .board-tags { position: static; display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+.home-hub .board-tags span { border: 0; border-radius: 3px; padding: 5px 9px 4px; color: #242123; font-size: 7px; font-weight: 700; letter-spacing: .045em; box-shadow: 0 2px 0 #0005; }
+.home-hub .board-tags span:nth-child(1) { background: #c9e1df; transform: rotate(-2deg); }
+.home-hub .board-tags span:nth-child(2) { background: #edcad8; transform: rotate(2deg); }
+.home-hub .board-tags span:nth-child(3) { background: #e8dc92; transform: rotate(-1deg); }
+.home-hub .home-portrait { position: absolute; z-index: 2; bottom: -1px; left: 50%; width: min(46%, 550px); height: 94%; margin: 0; overflow: visible; border: 0; background: transparent; box-shadow: none; transform: translateX(-50%); }
+.home-hub .home-portrait img { display: block; width: 100%; height: 100%; object-fit: contain; object-position: center bottom; filter: grayscale(1) contrast(1.04) brightness(.88); }
+.home-hub .board-identity { position: absolute; z-index: 4; top: 34%; left: 5%; width: 25%; }
+.home-hub .board-identity .micro-label { margin: 0 0 2px; color: #eee8e3; font-family: Caveat, cursive; font-size: clamp(23px, 2.8vw, 35px); font-weight: 500; letter-spacing: 0; transform: rotate(-4deg); }
+.home-hub .board-identity h1 { margin: 0; color: #ded9d4; font-family: Caveat, cursive; font-size: clamp(29px, 3.4vw, 43px); font-weight: 500; letter-spacing: -.035em; line-height: .82; }
+.home-hub .board-location { position: absolute; z-index: 4; top: 34%; right: 5%; margin: 0; color: #e3dcd7; font-family: Caveat, cursive; font-size: clamp(21px, 2.5vw, 31px); font-weight: 600; line-height: .88; text-align: center; transform: rotate(-3deg); }
+.home-hub .board-areas { position: absolute; z-index: 5; inset: 0; pointer-events: none; }
+.home-hub .board-areas .area-card { position: absolute; display: grid; width: max-content; max-width: 24%; min-height: 0; padding: 0; overflow: visible; border: 0; background: transparent; box-shadow: none; color: #e9e5e0; text-align: left; pointer-events: auto; transition: color 180ms ease, transform 220ms ease; }
+.home-hub .board-areas .area-card::after, .home-hub .board-areas .area-card-thumbnail { display: none; }
+.home-hub .board-areas .area-card-1 { top: 24%; left: 31%; }
+.home-hub .board-areas .area-card-2 { top: 63%; left: 12%; }
+.home-hub .board-areas .area-card-3 { top: 47%; right: 12%; }
+.home-hub .board-areas .area-note { color: #bbb3ad; font-size: 7px; letter-spacing: .09em; }
+.home-hub .board-areas .area-title { color: #f0ece8; font-family: Caveat, cursive; font-size: clamp(18px, 2vw, 27px); font-weight: 600; letter-spacing: 0; line-height: 1; }
+.home-hub .board-areas .area-arrow { color: #e5dcd5; font-size: 11px; }
+.home-hub .board-areas .area-card:hover, .home-hub .board-areas .area-card:focus-visible { color: #f1b4cf; transform: translateY(-3px) rotate(-1deg); }
+.home-hub .board-areas .area-card:hover .area-title, .home-hub .board-areas .area-card:focus-visible .area-title { color: #f1b4cf; }
+.home-hub .board-areas .area-card:focus-visible { outline: 1px solid #f1b4cf; outline-offset: 5px; }
+@media (max-width: 760px) {
+  .home-hub .area-selector { width: calc(100% - 28px); height: min(72svh, 660px); min-height: 570px; margin: 48px auto 34px; }
+  .home-hub .board-topline { inset: 14px 12px auto; gap: 8px; }
+  .home-hub .board-brand { gap: 7px; }
+  .home-hub .board-logo { width: 67px; }
+  .home-hub .board-edition, .home-hub .board-edition span + span { font-size: 7px; }
+  .home-hub .board-tags { gap: 4px; }
+  .home-hub .board-tags span { padding: 5px 6px 4px; font-size: 7px; }
+  .home-hub .home-portrait { width: min(88%, 420px); height: 69%; }
+  .home-hub .board-identity { top: 20%; left: 7%; width: 40%; }
+  .home-hub .board-identity .micro-label { font-size: 24px; }
+  .home-hub .board-identity h1 { font-size: clamp(30px, 8vw, 40px); }
+  .home-hub .board-location { top: 29%; right: 6%; font-size: 22px; }
+  .home-hub .board-areas .area-card { max-width: 35%; }
+  .home-hub .board-areas .area-card-1 { top: 40%; left: 5%; }
+  .home-hub .board-areas .area-card-2 { top: 59%; left: 7%; }
+  .home-hub .board-areas .area-card-3 { top: 47%; right: 4%; }
+  .home-hub .board-areas .area-note { font-size: 7px; }
+  .home-hub .board-areas .area-title { font-size: clamp(18px, 5vw, 24px); }
+}
