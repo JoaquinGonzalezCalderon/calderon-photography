@@ -275,3 +275,48 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--white); outline
 @media (prefers-reduced-motion: reduce) {
   .systems-project-image img, .systems-demo-image img, .systems-profile-links a, .systems-demo-card { transition: none; }
 }
+
+/* Readability pass: lift the small archival labels and body copy throughout the site. */
+.header-side, .index-intro, .archive-footer, .album-card-meta, .micro-label,
+.album-overlay-bar, .album-heading-meta, .album-end, .lightbox-bar, .lightbox-controls { font-size: 12px; }
+.album-drive-link, .album-overlay-bar button, .album-heading-drive, .album-photo-caption,
+.lightbox-controls button, .area-back, .placeholder-index { font-size: 12px; }
+.album-description { font-size: 16px; line-height: 1.6; }
+.home-hub .board-edition { font-size: 11px; }
+.home-hub .board-edition span + span { font-size: 10px; }
+.home-hub .home-portrait figcaption { font-size: 10px; }
+.home-hub .home-about h1 { font-size: 12px; }
+.home-hub .home-about p { font-size: 16px; line-height: 1.55; }
+.home-hub .board-areas .area-card-meta, .home-hub .board-areas .area-note { font-size: 12px; }
+.home-hub .archive-footer { font-size: 12px; }
+.systems-kicker, .systems-feature-index, .systems-feature-copy > span:first-child,
+.systems-feature-copy > span:last-child, .systems-link-top, .systems-profile-links a,
+.systems-section-heading p, .systems-section-heading > span,
+.systems-project-image > span, .systems-project-cta, .systems-project-status,
+.systems-demo-info b { font-size: 12px; }
+.systems-intro, .systems-link-copy > span, .systems-project-info p,
+.systems-demo-info > span { font-size: 16px; line-height: 1.55; }
+.systems-link-copy b { font-size: 12px; }
+.systems-demo-info strong { font-size: 22px; }
+.placeholder-content .micro-label, .placeholder-index, .area-back { font-size: 12px; }
+
+@media (max-width: 760px) {
+  .home-hub .board-edition { font-size: 10px; }
+  .home-hub .board-edition span + span { font-size: 9px; }
+  .home-hub .home-portrait figcaption { font-size: 9px; }
+  .home-hub .home-about h1 { font-size: 12px; }
+  .home-hub .home-about p { font-size: 15px; }
+  .home-hub .board-areas .area-card-meta, .home-hub .board-areas .area-note { font-size: 11px; }
+  .home-hub .board-areas .area-title { font-size: clamp(24px, 6.4vw, 31px); }
+  .systems-kicker { font-size: 12px; }
+  .systems-intro, .systems-link-copy > span, .systems-project-info p,
+  .systems-demo-info > span { font-size: 15px; }
+  .systems-feature-index, .systems-feature-copy > span:first-child,
+  .systems-feature-copy > span:last-child, .systems-link-top,
+  .systems-profile-links a, .systems-section-heading p,
+  .systems-section-heading > span, .systems-project-image > span,
+  .systems-project-cta, .systems-project-status, .systems-demo-info b { font-size: 11px; }
+  .systems-project-info h3 { font-size: 26px; }
+  .systems-demo-info strong { font-size: 21px; }
+  .systems-demo-info b { font-size: 11px; }
+}

@@ -5,16 +5,49 @@ import { site } from './config/site'
 import { albumDescriptions } from './config/album-descriptions'
 
 type Transition = 'opening' | 'open' | 'closing'
+type PortfolioArea = 'home' | 'systems' | 'dj' | 'photography'
+
+function areaFromPathname(pathname: string): PortfolioArea {
+  const path = pathname.replace(/\/+$/, '') || '/'
+  if (path === '/sistemas') return 'systems'
+  if (path === '/dj') return 'dj'
+  if (path === '/fotografia' || path.startsWith('/album/')) return 'photography'
+  return 'home'
+}
+
+function albumFromPathname(pathname: string): Album | null {
+  const match = pathname.match(/^\/album\/([^/]+)\/?$/)
+  if (!match) return null
+  let id = match[1]
+  try { id = decodeURIComponent(id) } catch { /* keep the encoded path segment */ }
+  return albums.find((album) => album.id === id) ?? null
+}
+
+function pathForArea(area: PortfolioArea) {
+  return { home: '/', systems: '/sistemas', dj: '/dj', photography: '/fotografia' }[area]
+}
 
 function App() {
-  const [activeAlbum, setActiveAlbum] = useState<Album | null>(null)
-  const [activeArea, setActiveArea] = useState<'home' | 'systems' | 'dj' | 'photography'>('home')
+  const [activeAlbum, setActiveAlbum] = useState<Album | null>(() => albumFromPathname(window.location.pathname))
+  const [activeArea, setActiveArea] = useState<PortfolioArea>(() => areaFromPathname(window.location.pathname))
   const [albumOrder] = useState(() => [...albums].sort(() => Math.random() - 0.5))
-  const [transition, setTransition] = useState<Transition>('opening')
+  const [transition, setTransition] = useState<Transition>(() => albumFromPathname(window.location.pathname) ? 'open' : 'opening')
   const [lightbox, setLightbox] = useState<{ photos: Photo[]; index: number } | null>(null)
   const [isReducedMotion, setIsReducedMotion] = useState(false)
   const [showIntro, setShowIntro] = useState(true)
   const scrollPosition = useRef(0)
+  const albumReturnPath = useRef(activeAlbum ? '/fotografia' : '/')
+
+  const navigateArea = (area: PortfolioArea) => {
+    setActiveArea(area)
+    const path = pathForArea(area)
+    if (window.location.pathname !== path) window.history.pushState({}, '', path)
+  }
+
+  const goHome = () => {
+    setActiveArea('home')
+    if (window.location.pathname !== '/') window.history.replaceState({}, '', '/')
+  }
 
   useEffect(() => {
     const media = window.matchMedia('(prefers-reduced-motion: reduce)')
@@ -28,6 +61,18 @@ function App() {
     const timer = window.setTimeout(() => setShowIntro(false), isReducedMotion ? 120 : 1500)
     return () => window.clearTimeout(timer)
   }, [isReducedMotion])
+
+  useEffect(() => {
+    const titles: Record<PortfolioArea, string> = {
+      home: 'Joaquín Calderón — Portfolio',
+      systems: 'Analista en Sistemas — Joaquín Calderón',
+      dj: 'DJ — Joaquín Calderón',
+      photography: 'Fotografía — Joaquín Calderón',
+    }
+    document.title = activeAlbum
+      ? `${activeAlbum.title} — Fotografía | Joaquín Calderón`
+      : titles[activeArea]
+  }, [activeAlbum, activeArea])
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -45,10 +90,18 @@ function App() {
 
   useEffect(() => {
     const handlePopState = () => {
-      const id = window.location.pathname.split('/').filter(Boolean).pop()
-      const album = id ? albums.find((item) => item.id === id) : undefined
-      if (album && !activeAlbum) openAlbum(album)
-      if (!id && activeAlbum) closeAlbum(false)
+      const album = albumFromPathname(window.location.pathname)
+      if (album) {
+        albumReturnPath.current = '/fotografia'
+        setActiveArea('photography')
+        if (activeAlbum?.id !== album.id) {
+          setActiveAlbum(album)
+          setTransition('open')
+        }
+        return
+      }
+      setActiveArea(areaFromPathname(window.location.pathname))
+      if (activeAlbum) closeAlbum(false)
     }
     window.addEventListener('popstate', handlePopState)
     return () => window.removeEventListener('popstate', handlePopState)
@@ -64,20 +117,15 @@ function App() {
   }, [activeAlbum, isReducedMotion])
 
   const openAlbum = (album: Album) => {
+    albumReturnPath.current = pathForArea(activeArea === 'photography' ? 'photography' : activeArea)
     setActiveAlbum(album)
     setTransition('opening')
     window.history.pushState({}, '', `/album/${album.id}`)
   }
 
-  useEffect(() => {
-    const id = window.location.pathname.split('/').filter(Boolean).pop()
-    const album = id ? albums.find((item) => item.id === id) : undefined
-    if (album) openAlbum(album)
-  }, [])
-
   const closeAlbum = (updateUrl = true) => {
     if (!activeAlbum) return
-    if (updateUrl) window.history.pushState({}, '', '/')
+    if (updateUrl) window.history.replaceState({}, '', albumReturnPath.current || '/fotografia')
     setTransition('closing')
     setLightbox(null)
     window.setTimeout(() => {
@@ -96,7 +144,7 @@ function App() {
 
   return <>
     {showIntro && <IntroSplash />}
-    {activeArea === 'home' ? <HomeHub onOpenArea={setActiveArea} /> : activeArea === 'systems' ? <SystemsPortfolio onBack={() => setActiveArea('home')} /> : activeArea === 'photography' ? <Home albums={albumOrder} onOpenAlbum={openAlbum} onBack={() => setActiveArea('home')} /> : <AreaPlaceholder onBack={() => setActiveArea('home')} />}
+    {activeArea === 'home' ? <HomeHub onOpenArea={navigateArea} /> : activeArea === 'systems' ? <SystemsPortfolio onBack={goHome} /> : activeArea === 'photography' ? <Home albums={albumOrder} onOpenAlbum={openAlbum} onBack={goHome} /> : <AreaPlaceholder onBack={goHome} />}
     {activeAlbum && <AlbumOverlay album={activeAlbum} transition={transition} onClose={closeAlbum} onOpenPhoto={(photos, index) => setLightbox({ photos, index })} />}
     {lightbox && <PhotoLightbox photo={lightbox.photos[lightbox.index]} index={lightbox.index} total={lightbox.photos.length} onClose={() => setLightbox(null)} onMove={moveLightbox} />}
   </>
