@@ -107,9 +107,9 @@ function Logo() { return <a className="archive-logo" href="/" aria-label="Calder
 function HomeHub({ onOpenArea }: { onOpenArea: (area: 'systems' | 'dj' | 'photography') => void }) {
   const [openingArea, setOpeningArea] = useState<'systems' | 'dj' | 'photography' | null>(null)
   const areas = [
-    { id: 'systems' as const, number: '01', title: 'Analista en Sistemas', note: 'TECNOLOGÍA / SOLUCIONES', className: 'area-systems', image: '' },
-    { id: 'dj' as const, number: '02', title: 'DJ', note: 'MÚSICA / EN VIVO', className: 'area-dj', image: '/areas/dj.jpeg' },
-    { id: 'photography' as const, number: '03', title: 'Fotografía', note: 'IMÁGENES / ARCHIVO', className: 'area-photography', image: '/areas/fotografo.jpeg' },
+    { id: 'systems' as const, number: '01', title: 'Analista en Sistemas', note: 'TECNOLOGÍA / SOLUCIONES', className: 'area-systems', image: '/areas/systems.webp' },
+    { id: 'dj' as const, number: '02', title: 'DJ', note: 'MÚSICA / EN VIVO', className: 'area-dj', image: '/areas/dj.webp' },
+    { id: 'photography' as const, number: '03', title: 'Fotografía', note: 'IMÁGENES / ARCHIVO', className: 'area-photography', image: '/areas/photography.webp' },
   ]
   const enterArea = (area: 'systems' | 'dj' | 'photography') => {
     if (openingArea) return
@@ -141,8 +141,10 @@ function HomeHub({ onOpenArea }: { onOpenArea: (area: 'systems' | 'dj' | 'photog
   return <main className={`home-hub${openingArea ? ' is-leaving-up' : ''}`}>
     <header className="archive-header"><span className="header-side">JOAQUÍN CALDERÓN</span><Logo /><span className="header-side header-side-right">PORTFOLIO / 2026</span></header>
     <section className="area-selector" aria-labelledby="area-selector-title">
-      <div className="area-selector-intro"><p className="micro-label">UN POCO DE TODO LO QUE HAGO</p><h1 id="area-selector-title">Elegí por dónde<br />querés entrar.</h1></div>
-      <div className="area-grid">{areas.map((area) => <button className={`area-card ${area.className}${openingArea === area.id ? ' is-opening' : ''}`} key={area.id} onPointerMove={moveCardWithPointer} onPointerLeave={resetCardPointer} onClick={() => enterArea(area.id)} disabled={Boolean(openingArea)}><span className="area-number">{area.number}</span><span className="area-card-bottom"><span><span className="area-note">{area.note}</span><span className="area-title">{area.title}</span></span><span className="area-arrow" aria-hidden="true">↗</span></span></button>)}</div>
+      <figure className="home-portrait"><img src="/areas/portrait.webp" alt="Retrato de Joaquín Calderón" /><figcaption>JOAQUÍN CALDERÓN <span>·</span> ENTRE RÍOS</figcaption></figure>
+      <div className="area-selector-content"><div className="area-selector-intro"><p className="micro-label">UN POCO DE TODO LO QUE HAGO</p><h1 id="area-selector-title">Elegí por dónde<br />querés entrar.</h1></div>
+        <div className="area-grid">{areas.map((area) => <button className={`area-card ${area.className}${openingArea === area.id ? ' is-opening' : ''}`} key={area.id} onPointerMove={moveCardWithPointer} onPointerLeave={resetCardPointer} onClick={() => enterArea(area.id)} disabled={Boolean(openingArea)}><span className="area-number">{area.number}</span><span className="area-card-copy"><span className="area-note">{area.note}</span><span className="area-title">{area.title}</span><span className="area-arrow" aria-hidden="true">↗</span></span><img className="area-card-thumbnail" src={area.image} alt="" loading="eager" /></button>)}</div>
+      </div>
     </section>
     <footer className="archive-footer"><span>© JOAQUÍN CALDERÓN</span><div><a href={site.instagramUrl} target="_blank" rel="noreferrer">INSTAGRAM</a></div><span>ENTRE RÍOS</span></footer>
   </main>
