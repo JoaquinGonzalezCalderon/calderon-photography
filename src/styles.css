@@ -79,6 +79,9 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--white); outline
 .home-hub .home-portrait figcaption { position: absolute; right: 9px; bottom: 7px; left: 9px; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 6px; color: #282727; font-family: 'DM Sans', sans-serif; font-size: 7px; font-weight: 700; letter-spacing: .08em; line-height: 1.15; }
 .home-hub .home-portrait figcaption span { min-width: 0; color: #282727; white-space: nowrap; }
 .home-hub .home-portrait figcaption span:last-child { text-align: right; }
+.home-hub .home-about { position: absolute; z-index: 4; top: 87%; left: 50%; width: min(42%, 480px); color: #d9d6d1; text-align: center; transform: translateX(-50%); }
+.home-hub .home-about h1 { margin: 0 0 5px; color: #aaa7a2; font-size: 8px; font-weight: 600; letter-spacing: .16em; line-height: 1.2; }
+.home-hub .home-about p { max-width: 38ch; margin: 0 auto; color: #d9d6d1; font-size: 11px; line-height: 1.4; text-wrap: balance; }
 .home-hub .board-areas { position: absolute; z-index: 2; inset: 0; pointer-events: none; }
 .home-hub .board-areas .area-card { position: absolute; display: flex; flex-direction: column; justify-content: space-between; width: 27%; min-height: 0; padding: clamp(14px, 1.8vw, 24px); overflow: hidden; border: 1px solid #7b7d7f; border-radius: 0; background: #242526; box-shadow: none; color: #f0eeeb; text-align: left; pointer-events: auto; transform-style: preserve-3d; transition: border-color 160ms ease, transform 180ms cubic-bezier(.2,.75,.25,1); }
 .home-hub .board-areas .area-card::before { position: absolute; z-index: 1; inset: 0; background: linear-gradient(180deg, #090a0bcc 0%, #090a0a20 42%, #090a0ae8 100%); content: ''; pointer-events: none; }
@@ -126,7 +129,10 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--white); outline
   .home-hub .home-portrait img { height: calc(100% - 12px); }
   .home-hub .home-portrait figcaption { right: 6px; bottom: 5px; left: 6px; grid-template-columns: 1fr; gap: 2px; font-size: 5px; letter-spacing: .07em; }
   .home-hub .home-portrait figcaption span:last-child { text-align: right; }
-  .home-hub .board-areas { position: relative; inset: auto; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: 150px 126px; gap: 9px; order: 2; }
+  .home-hub .home-about { position: relative; top: auto; left: auto; order: 2; width: min(100%, 310px); margin: -8px auto 16px; transform: none; }
+  .home-hub .home-about h1 { margin-bottom: 5px; font-size: 7px; }
+  .home-hub .home-about p { font-size: 10px; line-height: 1.4; }
+  .home-hub .board-areas { position: relative; inset: auto; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: 150px 126px; gap: 9px; order: 3; }
   .home-hub .board-areas .area-card { position: relative; inset: auto; width: 100%; min-width: 0; padding: 12px; }
   .home-hub .board-areas .area-systems { grid-column: 1 / -1; grid-row: 1; }
   .home-hub .board-areas .area-dj { grid-column: 1; grid-row: 2; height: auto; }

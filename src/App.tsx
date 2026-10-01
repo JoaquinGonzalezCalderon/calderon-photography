@@ -143,6 +143,7 @@ function HomeHub({ onOpenArea }: { onOpenArea: (area: 'systems' | 'dj' | 'photog
         <div className="board-edition board-edition-right"><span>ARCHIVO VISUAL / 01</span><span>RETRATOS · SONIDO · SISTEMAS</span></div>
       </div>
       <figure className="home-portrait"><img src="/areas/portrait-cutout.webp" alt="Retrato en blanco y negro de Joaquín Calderón" /><figcaption><span>JOAQUÍN CALDERÓN</span><span>AUTORRETRATO / 01</span></figcaption></figure>
+      <aside className="home-about"><h1>SOBRE MÍ</h1><p>Soy Joaquín Calderón, de Entre Ríos. Me muevo entre la tecnología, la música y la fotografía.</p></aside>
       <nav className="board-areas" aria-label="Elegí un área del portafolio">{areas.map((area) => <button className={`area-card ${area.className}${openingArea === area.id ? ' is-opening' : ''}`} key={area.id} onClick={() => enterArea(area.id)} onPointerMove={moveCardWeight} onPointerLeave={releaseCardWeight} disabled={Boolean(openingArea)}><img className="area-image" src={area.image} alt="" aria-hidden="true" /><span className="area-card-meta"><span>{area.number}</span><span className="area-note">{area.note}</span></span><span className="area-title">{area.title}</span><span className="area-arrow" aria-hidden="true">↗</span></button>)}</nav>
     </section>
     <footer className="archive-footer"><span>© JOAQUÍN CALDERÓN</span><div><a href={site.instagramUrl} target="_blank" rel="noreferrer">INSTAGRAM</a></div><span>ENTRE RÍOS</span></footer>
