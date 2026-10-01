@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { albumCover, albumPhotos, albums, driveUrls, type Album } from './data/albums'
 import type { Photo } from './data/photos'
 import { site } from './config/site'
@@ -117,35 +117,16 @@ function HomeHub({ onOpenArea }: { onOpenArea: (area: 'systems' | 'dj' | 'photog
     const delay = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 260
     window.setTimeout(() => onOpenArea(area), delay)
   }
-  const moveCardWithPointer = (event: ReactPointerEvent<HTMLButtonElement>) => {
-    if (event.pointerType !== 'mouse' || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
-    const bounds = event.currentTarget.getBoundingClientRect()
-    const x = (event.clientX - bounds.left) / bounds.width - 0.5
-    const y = (event.clientY - bounds.top) / bounds.height - 0.5
-    const pressure = Math.max(0.18, 1 - Math.hypot(x, y) * 0.9)
-    event.currentTarget.style.setProperty('--pointer-x', `${(x * 12).toFixed(1)}px`)
-    event.currentTarget.style.setProperty('--pointer-y', `${(y * 12).toFixed(1)}px`)
-    event.currentTarget.style.setProperty('--tilt-x', `${(x * -7).toFixed(2)}deg`)
-    event.currentTarget.style.setProperty('--tilt-y', `${(y * 7).toFixed(2)}deg`)
-    event.currentTarget.style.setProperty('--sink', `${(pressure * 9).toFixed(1)}px`)
-    event.currentTarget.style.setProperty('--card-scale', `${(1 - pressure * 0.022).toFixed(4)}`)
-  }
-  const resetCardPointer = (event: ReactPointerEvent<HTMLButtonElement>) => {
-    event.currentTarget.style.setProperty('--pointer-x', '0px')
-    event.currentTarget.style.setProperty('--pointer-y', '0px')
-    event.currentTarget.style.setProperty('--tilt-x', '0deg')
-    event.currentTarget.style.setProperty('--tilt-y', '0deg')
-    event.currentTarget.style.setProperty('--sink', '0px')
-    event.currentTarget.style.setProperty('--card-scale', '1')
-  }
   return <main className={`home-hub${openingArea ? ' is-leaving-up' : ''}`}>
     <header className="archive-header"><span className="header-side">JOAQUÍN CALDERÓN</span><Logo /><span className="header-side header-side-right">PORTFOLIO / 2026</span></header>
     <section className="area-selector" aria-labelledby="area-selector-title">
       <div className="board-topline">
         <div className="board-brand"><img className="board-logo" src="/logo/calderon_logo.svg" alt="Calderón" /><div className="board-edition"><span>PORTAFOLIO PERSONAL · 2026</span><span>ENTRE RÍOS · ARGENTINA</span></div></div>
-        <div className="board-tags" aria-hidden="true"><span>SISTEMAS</span><span>DJ</span><span>FOTOGRAFÍA</span></div>
+        <div className="board-edition board-edition-right"><span>ARCHIVO VISUAL / 01</span><span>RETRATOS · SONIDO · SISTEMAS</span></div>
       </div>
-      <figure className="home-portrait"><img src="/areas/portrait-cutout.webp" alt="Retrato en blanco y negro de Joaquín Calderón, recortado sobre fondo transparente" /></figure>
+      <img className="board-side board-side-left" src="/areas/portrait-side-left.webp" alt="" aria-hidden="true" />
+      <img className="board-side board-side-right" src="/areas/portrait-cutout.webp" alt="" aria-hidden="true" />
+      <figure className="home-portrait"><img src="/areas/portrait-cutout.webp" alt="Retrato en blanco y negro de Joaquín Calderón" /><figcaption>JOAQUÍN CALDERÓN <span>·</span> AUTORRETRATO / 01</figcaption></figure>
       <div className="board-identity"><p className="micro-label">HOLA, SOY...</p><h1 id="area-selector-title">Joaquín<br />Calderón</h1></div>
       <p className="board-location">VIVO Y TRABAJO EN<br />ENTRE RÍOS</p>
       <nav className="board-areas" aria-label="Elegí un área del portafolio">{areas.map((area) => <button className={`area-card ${area.className}${openingArea === area.id ? ' is-opening' : ''}`} key={area.id} onClick={() => enterArea(area.id)} disabled={Boolean(openingArea)}><span className="area-note">{area.note}</span><span className="area-title">{area.title}</span><span className="area-arrow" aria-hidden="true">✦</span></button>)}</nav>
