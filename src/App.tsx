@@ -208,10 +208,10 @@ function SystemsPortfolio({ onBack }: { onBack: () => void }) {
       <section className="systems-projects" aria-labelledby="systems-projects-title">
         <div className="systems-section-heading"><div><p>PORTFOLIO / SELECCIÓN</p><h2 id="systems-projects-title">Proyectos</h2></div><span>01 — 04</span></div>
         <div className="systems-project-grid">
-          <ProjectCard number="01" title="Mate Único" description="E-commerce full-stack con restricciones en base de datos y lógica avanzada de validación de stock." image="/areas/jgc-mate.webp" alt="Vista de la tienda online Mate Único" href="https://mate-unico-deployed.vercel.app/" status="SITIO EN VIVO" />
-          <ProjectCard number="02" title="Inmobiliaria Andrea Duré" description="Sitio inmobiliario profesional y responsivo para el mercado local de Colón, Entre Ríos." image="/areas/jgc-inmobiliaria.webp" alt="Vista de la web inmobiliaria de Andrea Duré" href="https://andreadure.com/" status="SITIO EN VIVO" />
-          <ProjectCard number="03" title="Barbería Los Santos" description="Plataforma web para presentar servicios, catálogo de cortes y reserva de turnos online." image="/areas/jgc-barberia.webp" alt="Vista del proyecto web Barbería Los Santos" status="EN DESARROLLO ACTIVO" />
-          <ProjectCard number="04" title="TuStreak" description="Constancia, un día a la vez." image="https://tustreak.vercel.app/logo.png" alt="Logo de TuStreak" href="https://tustreak.vercel.app/app" status="SITIO EN VIVO" />
+          <ProjectCard number="01" title="TuStreak" description="Constancia, un día a la vez." image="/areas/tustreak-desktop.webp" alt="Pantalla de acceso de la aplicación TuStreak" mobileImage="/areas/tustreak-mobile.webp" avatarImage="/areas/tustreak-avatar.webp" href="https://tustreak.vercel.app/app" status="SITIO EN VIVO" />
+          <ProjectCard number="02" title="Mate Único" description="E-commerce full-stack con restricciones en base de datos y lógica avanzada de validación de stock." image="/areas/jgc-mate.webp" alt="Vista de la tienda online Mate Único" href="https://mate-unico-deployed.vercel.app/" status="SITIO EN VIVO" />
+          <ProjectCard number="03" title="Inmobiliaria Andrea Duré" description="Sitio inmobiliario profesional y responsivo para el mercado local de Colón, Entre Ríos." image="/areas/jgc-inmobiliaria.webp" alt="Vista de la web inmobiliaria de Andrea Duré" href="https://andreadure.com/" status="SITIO EN VIVO" />
+          <ProjectCard number="04" title="Barbería Los Santos" description="Plataforma web para presentar servicios, catálogo de cortes y reserva de turnos online." image="/areas/jgc-barberia.webp" alt="Vista del proyecto web Barbería Los Santos" status="EN DESARROLLO ACTIVO" />
         </div>
       </section>
       <section className="systems-demos" aria-labelledby="systems-demos-title">
@@ -227,9 +227,9 @@ function SystemsPortfolio({ onBack }: { onBack: () => void }) {
   </main>
 }
 
-function ProjectCard({ number, title, description, image, alt, href, status }: { number: string; title: string; description: string; image: string; alt: string; href?: string; status: string }) {
+function ProjectCard({ number, title, description, image, alt, href, status, mobileImage, avatarImage }: { number: string; title: string; description: string; image: string; alt: string; href?: string; status: string; mobileImage?: string; avatarImage?: string }) {
   return <article className="systems-project-card">
-    <div className="systems-project-image">{href ? <a href={href} target="_blank" rel="noreferrer" aria-label={`Abrir ${title} en una pestaña nueva`}><img src={image} alt={alt} loading="lazy" /></a> : <img src={image} alt={alt} loading="lazy" />}<span>{number} / {status}</span></div>
+    <div className={`systems-project-image${mobileImage ? ' systems-project-image--tustreak' : ''}`}>{href ? <a href={href} target="_blank" rel="noreferrer" aria-label={`Abrir ${title} en una pestaña nueva`}><img className="systems-project-image-main" src={image} alt={alt} loading="lazy" />{mobileImage && <span className="systems-project-phone"><img src={mobileImage} alt="Vista móvil de TuStreak" loading="lazy" /></span>}{avatarImage && <span className="systems-project-avatar"><img src={avatarImage} alt="Personaje de Joaquín para TuStreak" loading="lazy" /></span>}</a> : <img src={image} alt={alt} loading="lazy" />}<span>{number} / {status}</span></div>
     <div className="systems-project-info"><h3>{title}</h3><p>{description}</p>{href ? <a className="systems-project-cta" href={href} target="_blank" rel="noreferrer">VER SITIO ↗</a> : <span className="systems-project-status">{status}</span>}</div>
   </article>
 }

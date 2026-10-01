@@ -323,9 +323,9 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--white); outline
 
 /* Final layout corrections from desktop and mobile review. */
 .home-hub .area-selector { margin-top: clamp(88px, 10vh, 112px); }
-.home-hub .home-portrait { height: 60%; }
-.home-hub .home-about { top: auto; bottom: 12px; }
-.systems-project-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.home-hub .home-portrait { height: 58%; }
+.home-hub .home-about { top: 79%; bottom: auto; }
+.systems-project-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .systems-project-image { aspect-ratio: 1.95; background: #0e0f10; }
 .systems-project-image img, .systems-demo-image img { object-fit: contain; }
 .systems-project-card:hover .systems-project-image img,
@@ -342,3 +342,10 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--white); outline
   .home-hub .home-about { top: auto; bottom: auto; }
   .systems-project-grid { grid-template-columns: minmax(0, 1fr); }
 }
+
+.systems-project-image--tustreak > a { position: relative; isolation: isolate; overflow: hidden; background: radial-gradient(ellipse at 50% 48%, #1c2117 0%, #090a09 64%); }
+.systems-project-image--tustreak .systems-project-image-main { filter: none; object-fit: contain; }
+.systems-project-image--tustreak .systems-project-phone { position: absolute; z-index: 2; right: 4%; bottom: -5%; display: block; height: 88%; aspect-ratio: 390 / 844; overflow: hidden; border: 3px solid #414440; border-radius: 15px; background: #080908; box-shadow: 0 10px 28px #000b; }
+.systems-project-image--tustreak .systems-project-phone img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: left top; filter: none; }
+.systems-project-image--tustreak .systems-project-avatar { position: absolute; z-index: 3; bottom: 8%; left: 4%; display: block; width: clamp(58px, 10%, 82px); aspect-ratio: 1; overflow: hidden; border: 2px solid #baff34; border-radius: 50%; background: #080908; box-shadow: 0 8px 24px #000b; }
+.systems-project-image--tustreak .systems-project-avatar img { display: block; width: 100%; height: 100%; object-fit: contain; filter: none; }
