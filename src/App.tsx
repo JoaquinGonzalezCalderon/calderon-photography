@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react'
 import { albumCover, albumPhotos, albums, driveUrls, type Album } from './data/albums'
 import type { Photo } from './data/photos'
 import { site } from './config/site'
@@ -106,36 +106,16 @@ function Logo() { return <a className="archive-logo" href="/" aria-label="Calder
 
 function HomeHub({ onOpenArea }: { onOpenArea: (area: 'systems' | 'dj' | 'photography') => void }) {
   const [openingArea, setOpeningArea] = useState<'systems' | 'dj' | 'photography' | null>(null)
-  const [zoomFrame, setZoomFrame] = useState<CSSProperties | null>(null)
   const areas = [
     { id: 'systems' as const, number: '01', title: 'Analista en Sistemas', note: 'TECNOLOGÍA / SOLUCIONES', className: 'area-systems', image: '' },
     { id: 'dj' as const, number: '02', title: 'DJ', note: 'MÚSICA / EN VIVO', className: 'area-dj', image: '/areas/dj.jpeg' },
     { id: 'photography' as const, number: '03', title: 'Fotografía', note: 'IMÁGENES / ARCHIVO', className: 'area-photography', image: '/areas/fotografo.jpeg' },
   ]
-  const enterArea = (area: 'systems' | 'dj' | 'photography', card: HTMLButtonElement) => {
+  const enterArea = (area: 'systems' | 'dj' | 'photography') => {
     if (openingArea) return
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      onOpenArea(area)
-      return
-    }
-    const bounds = card.getBoundingClientRect()
-    const centerX = bounds.left + bounds.width / 2
-    const centerY = bounds.top + bounds.height / 2
-    const zoom = Math.max(window.innerWidth / bounds.width, window.innerHeight / bounds.height)
-    setZoomFrame({
-      '--zoom-x': `${centerX}px`,
-      '--zoom-y': `${centerY}px`,
-      '--zoom-width': `${bounds.width}px`,
-      '--zoom-height': `${bounds.height}px`,
-      '--zoom-move-x': `${window.innerWidth / 2 - centerX}px`,
-      '--zoom-move-y': `${window.innerHeight / 2 - centerY}px`,
-      '--zoom-mid-x': `${(window.innerWidth / 2 - centerX) * 0.64}px`,
-      '--zoom-mid-y': `${(window.innerHeight / 2 - centerY) * 0.64}px`,
-      '--zoom-mid-factor': 1 + (zoom - 1) * 0.64,
-      '--zoom-overshoot': zoom * 1.035,
-      '--zoom-factor': zoom,
-    } as CSSProperties)
     setOpeningArea(area)
+    const delay = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 260
+    window.setTimeout(() => onOpenArea(area), delay)
   }
   const moveCardWithPointer = (event: ReactPointerEvent<HTMLButtonElement>) => {
     if (event.pointerType !== 'mouse' || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
@@ -158,14 +138,13 @@ function HomeHub({ onOpenArea }: { onOpenArea: (area: 'systems' | 'dj' | 'photog
     event.currentTarget.style.setProperty('--sink', '0px')
     event.currentTarget.style.setProperty('--card-scale', '1')
   }
-  return <main className="home-hub">
+  return <main className={`home-hub${openingArea ? ' is-leaving-up' : ''}`}>
     <header className="archive-header"><span className="header-side">JOAQUÍN CALDERÓN</span><Logo /><span className="header-side header-side-right">PORTFOLIO / 2026</span></header>
     <section className="area-selector" aria-labelledby="area-selector-title">
       <div className="area-selector-intro"><p className="micro-label">UN POCO DE TODO LO QUE HAGO</p><h1 id="area-selector-title">Elegí por dónde<br />querés entrar.</h1></div>
-      <div className="area-grid">{areas.map((area) => <button className={`area-card ${area.className}${openingArea === area.id ? ' is-opening' : ''}`} key={area.id} onPointerMove={moveCardWithPointer} onPointerLeave={resetCardPointer} onClick={(event) => enterArea(area.id, event.currentTarget)} disabled={Boolean(openingArea)}><span className="area-number">{area.number}</span><span className="area-card-bottom"><span><span className="area-note">{area.note}</span><span className="area-title">{area.title}</span></span><span className="area-arrow" aria-hidden="true">↗</span></span></button>)}</div>
+      <div className="area-grid">{areas.map((area) => <button className={`area-card ${area.className}${openingArea === area.id ? ' is-opening' : ''}`} key={area.id} onPointerMove={moveCardWithPointer} onPointerLeave={resetCardPointer} onClick={() => enterArea(area.id)} disabled={Boolean(openingArea)}><span className="area-number">{area.number}</span><span className="area-card-bottom"><span><span className="area-note">{area.note}</span><span className="area-title">{area.title}</span></span><span className="area-arrow" aria-hidden="true">↗</span></span></button>)}</div>
     </section>
     <footer className="archive-footer"><span>© JOAQUÍN CALDERÓN</span><div><a href={site.instagramUrl} target="_blank" rel="noreferrer">INSTAGRAM</a></div><span>ENTRE RÍOS</span></footer>
-    {openingArea && <div className={`area-transition-layer ${openingArea === 'dj' ? 'transition-dj' : openingArea === 'photography' ? 'transition-photography' : 'transition-systems'}`} style={zoomFrame ?? undefined} onAnimationEnd={() => onOpenArea(openingArea)} aria-hidden="true" />}
   </main>
 }
 
