@@ -84,3 +84,20 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--white); outline
 .placeholder-content > p:not(.micro-label) { color: #c1bcb3; font-size: clamp(15px, 2vw, 21px); }
 .placeholder-index { display: inline-block; margin-top: 52px; color: #aaa49a; font-size: 9px; letter-spacing: .18em; }
 @media (max-width: 760px) { .area-selector, .placeholder-content { width: calc(100% - 36px); } .area-grid { grid-template-columns: 1fr; } .area-card { min-height: 280px; } .area-selector { padding-top: 58px; } }
+.area-card { isolation: isolate; }
+.area-card::before, .area-card::after { position: absolute; content: ''; inset: 0; pointer-events: none; }
+.area-card::before { z-index: -2; background-position: center 44%; background-size: cover; transition: transform .8s cubic-bezier(.2,.75,.25,1), filter .8s ease; }
+.area-card::after { z-index: -1; background: linear-gradient(180deg, #09090930 0%, #09090908 34%, #090909b8 100%); transition: background .5s ease; }
+.area-systems::before { background-image: radial-gradient(ellipse at 72% 25%, #485851 0, #24302c 32%, #171b19 72%); }
+.area-dj::before { background-image: url('/areas/dj.jpeg'); }
+.area-photography::before { background-image: url('/areas/fotografo.jpeg'); }
+.area-card:hover::before, .area-card:focus-visible::before { transform: scale(1.09); filter: brightness(1.13); }
+.area-card:hover::after, .area-card:focus-visible::after { background: linear-gradient(180deg, #0909091c 0%, #09090908 28%, #090909cf 100%); }
+.area-card > * { position: relative; z-index: 1; }
+.area-card.is-opening { transform: scale(1.025); }
+.area-transition-layer { position: fixed; z-index: 100; inset: 0; pointer-events: none; background-position: center 44%; background-size: cover; animation: area-zoom-in .65s cubic-bezier(.2,.72,.24,1) both; }
+.transition-dj { background-image: linear-gradient(180deg, #09090916, #09090980), url('/areas/dj.jpeg'); }
+.transition-photography { background-image: linear-gradient(180deg, #09090916, #09090980), url('/areas/fotografo.jpeg'); }
+.transition-systems { background-image: radial-gradient(ellipse at 72% 25%, #485851 0, #24302c 32%, #171b19 72%); }
+@keyframes area-zoom-in { 0% { opacity: 0; transform: scale(.94); } 14% { opacity: 1; } 100% { opacity: 1; transform: scale(1.18); } }
+@media (prefers-reduced-motion: reduce) { .area-card, .area-card::before, .area-card::after { transition-duration: .01ms; } .area-transition-layer { animation-duration: .01ms; } }
