@@ -155,29 +155,42 @@ function SystemsPortfolio({ onBack }: { onBack: () => void }) {
     <section className="systems-content" aria-labelledby="systems-title">
       <div className="systems-heading">
         <p className="systems-kicker"><span>01</span> TECNOLOGÍA / SOLUCIONES</p>
-        <h1 id="systems-title">Sistemas, proyectos<br /><span>y soluciones digitales.</span></h1>
-        <p className="systems-intro">Un recorrido por mis proyectos, mi código y mi perfil profesional.</p>
+        <h1 id="systems-title">Proyectos que<br /><span>resuelven cosas.</span></h1>
+        <div className="systems-heading-aside"><p className="systems-intro">Desarrollo web, comercio digital y soluciones para negocios.</p><nav className="systems-profile-links" aria-label="Perfiles profesionales"><a href="https://github.com/JoaquinGonzalezCalderon?tab=repositories" target="_blank" rel="noreferrer"><span>GH</span> GITHUB / REPOSITORIOS ↗</a><a href="https://www.linkedin.com/in/joaqu%C3%ADn-gonzalez-calder%C3%B3n-8b0b4837b/" target="_blank" rel="noreferrer"><span>in</span> LINKEDIN / PERFIL ↗</a></nav></div>
       </div>
-      <div className="systems-showcase">
-        <a className="systems-feature" href="https://jgcsoluciones.vercel.app/" target="_blank" rel="noreferrer" aria-label="Visitar JGC Soluciones, abre en una pestaña nueva">
-          <img src="/areas/systems.webp" alt="Espacio de trabajo con varias pantallas" />
-          <span className="systems-feature-index">PROYECTO / 01 <span>JGC SOLUCIONES</span></span>
-          <span className="systems-feature-copy"><span>PROYECTO DESTACADO</span><strong>JGC Soluciones</strong><span>Visitar sitio <b aria-hidden="true">↗</b></span></span>
-        </a>
-        <div className="systems-links" aria-label="Perfiles profesionales">
-          <a className="systems-link-card systems-github" href="https://github.com/JoaquinGonzalezCalderon?tab=repositories" target="_blank" rel="noreferrer">
-            <span className="systems-link-top"><span>02 / CÓDIGO</span><span className="systems-link-mark" aria-hidden="true">GH</span></span>
-            <span className="systems-link-copy"><strong>Repositorios</strong><span>Explorá mis proyectos públicos en GitHub.</span><b>VER EN GITHUB ↗</b></span>
-          </a>
-          <a className="systems-link-card systems-linkedin" href="https://www.linkedin.com/in/joaqu%C3%ADn-gonzalez-calder%C3%B3n-8b0b4837b/" target="_blank" rel="noreferrer">
-            <span className="systems-link-top"><span>03 / PERFIL</span><span className="systems-link-mark" aria-hidden="true">in</span></span>
-            <span className="systems-link-copy"><strong>LinkedIn</strong><span>Conectemos y conozcamos mi perfil profesional.</span><b>VER PERFIL ↗</b></span>
-          </a>
+      <section className="systems-projects" aria-labelledby="systems-projects-title">
+        <div className="systems-section-heading"><div><p>PORTFOLIO / SELECCIÓN</p><h2 id="systems-projects-title">Proyectos</h2></div><span>01 — 03</span></div>
+        <div className="systems-project-grid">
+          <ProjectCard number="01" title="Mate Único" description="E-commerce full-stack con restricciones en base de datos y lógica avanzada de validación de stock." image="/areas/jgc-mate.webp" alt="Vista de la tienda online Mate Único" href="https://mate-unico-deployed.vercel.app/" status="SITIO EN VIVO" />
+          <ProjectCard number="02" title="Inmobiliaria Andrea Duré" description="Sitio inmobiliario profesional y responsivo para el mercado local de Colón, Entre Ríos." image="/areas/jgc-inmobiliaria.webp" alt="Vista de la web inmobiliaria de Andrea Duré" href="https://andreadure.com/" status="SITIO EN VIVO" />
+          <ProjectCard number="03" title="Barbería Los Santos" description="Plataforma web para presentar servicios, catálogo de cortes y reserva de turnos online." image="/areas/jgc-barberia.webp" alt="Vista del proyecto web Barbería Los Santos" status="EN DESARROLLO ACTIVO" />
         </div>
-      </div>
+      </section>
+      <section className="systems-demos" aria-labelledby="systems-demos-title">
+        <div className="systems-section-heading"><div><p>EXPLORACIONES / 03</p><h2 id="systems-demos-title">Demos para comercios</h2></div><span>PLANTILLAS PREMIUM</span></div>
+        <div className="systems-demo-grid">
+          <DemoCard title="Cafetería" description="Diseño para cafeterías, pastelerías y locales gastronómicos." image="/areas/jgc-demo-cafeteria.webp" href="https://tu-cafeteria.vercel.app/" />
+          <DemoCard title="Bazar" description="Catálogo interactivo para artículos del hogar, decoración y regalos." image="/areas/jgc-demo-bazar.webp" href="https://tu-bazar.vercel.app/" />
+          <DemoCard title="Tienda" description="Estética visual para marcas de indumentaria y diseño de autor." image="/areas/jgc-demo-tienda.webp" href="https://tu-tienda-de-ropa.vercel.app/" />
+        </div>
+      </section>
     </section>
     <footer className="archive-footer"><span>© JOAQUÍN CALDERÓN</span><button onClick={onBack}>VOLVER AL INICIO ↑</button><span>ENTRE RÍOS</span></footer>
   </main>
+}
+
+function ProjectCard({ number, title, description, image, alt, href, status }: { number: string; title: string; description: string; image: string; alt: string; href?: string; status: string }) {
+  return <article className="systems-project-card">
+    <div className="systems-project-image">{href ? <a href={href} target="_blank" rel="noreferrer" aria-label={`Abrir ${title} en una pestaña nueva`}><img src={image} alt={alt} loading="lazy" /></a> : <img src={image} alt={alt} loading="lazy" />}<span>{number} / {status}</span></div>
+    <div className="systems-project-info"><h3>{title}</h3><p>{description}</p>{href ? <a className="systems-project-cta" href={href} target="_blank" rel="noreferrer">VER SITIO ↗</a> : <span className="systems-project-status">{status}</span>}</div>
+  </article>
+}
+
+function DemoCard({ title, description, image, href }: { title: string; description: string; image: string; href: string }) {
+  return <a className="systems-demo-card" href={href} target="_blank" rel="noreferrer">
+    <span className="systems-demo-image"><img src={image} alt={`Demo de ${title}`} loading="lazy" /></span>
+    <span className="systems-demo-info"><strong>{title}</strong><span>{description}</span><b>VER DEMO ↗</b></span>
+  </a>
 }
 
 function AreaPlaceholder({ onBack }: { onBack: () => void }) {
