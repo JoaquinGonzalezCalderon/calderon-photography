@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react'
 import { albumCover, albumPhotos, albums, driveUrls, type Album } from './data/albums'
 import type { Photo } from './data/photos'
 import { site } from './config/site'
@@ -117,6 +117,24 @@ function HomeHub({ onOpenArea }: { onOpenArea: (area: 'systems' | 'dj' | 'photog
     const delay = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 260
     window.setTimeout(() => onOpenArea(area), delay)
   }
+  const moveCardWeight = (event: ReactPointerEvent<HTMLButtonElement>) => {
+    if (event.pointerType !== 'mouse') return
+    const card = event.currentTarget
+    const bounds = card.getBoundingClientRect()
+    const x = (event.clientX - bounds.left) / bounds.width
+    const y = (event.clientY - bounds.top) / bounds.height
+    card.style.setProperty('--weight-x', `${(x * 100).toFixed(1)}%`)
+    card.style.setProperty('--weight-y', `${(y * 100).toFixed(1)}%`)
+    card.style.setProperty('--tilt-x', `${((0.5 - y) * 3).toFixed(2)}deg`)
+    card.style.setProperty('--tilt-y', `${((x - 0.5) * 3).toFixed(2)}deg`)
+  }
+  const releaseCardWeight = (event: ReactPointerEvent<HTMLButtonElement>) => {
+    const card = event.currentTarget
+    card.style.setProperty('--weight-x', '50%')
+    card.style.setProperty('--weight-y', '50%')
+    card.style.setProperty('--tilt-x', '0deg')
+    card.style.setProperty('--tilt-y', '0deg')
+  }
   return <main className={`home-hub${openingArea ? ' is-leaving-up' : ''}`}>
     <header className="archive-header"><span className="header-side">JOAQUÍN CALDERÓN</span><Logo /><span className="header-side header-side-right">PORTFOLIO / 2026</span></header>
     <section className="area-selector" aria-label="Áreas del portfolio">
@@ -125,7 +143,7 @@ function HomeHub({ onOpenArea }: { onOpenArea: (area: 'systems' | 'dj' | 'photog
         <div className="board-edition board-edition-right"><span>ARCHIVO VISUAL / 01</span><span>RETRATOS · SONIDO · SISTEMAS</span></div>
       </div>
       <figure className="home-portrait"><img src="/areas/portrait-cutout.webp" alt="Retrato en blanco y negro de Joaquín Calderón" /><figcaption>JOAQUÍN CALDERÓN <span>·</span> AUTORRETRATO / 01</figcaption></figure>
-      <nav className="board-areas" aria-label="Elegí un área del portafolio">{areas.map((area) => <button className={`area-card ${area.className}${openingArea === area.id ? ' is-opening' : ''}`} key={area.id} onClick={() => enterArea(area.id)} disabled={Boolean(openingArea)}><img className="area-image" src={area.image} alt="" aria-hidden="true" /><span className="area-card-meta"><span>{area.number}</span><span className="area-note">{area.note}</span></span><span className="area-title">{area.title}</span><span className="area-arrow" aria-hidden="true">↗</span></button>)}</nav>
+      <nav className="board-areas" aria-label="Elegí un área del portafolio">{areas.map((area) => <button className={`area-card ${area.className}${openingArea === area.id ? ' is-opening' : ''}`} key={area.id} onClick={() => enterArea(area.id)} onPointerMove={moveCardWeight} onPointerLeave={releaseCardWeight} disabled={Boolean(openingArea)}><img className="area-image" src={area.image} alt="" aria-hidden="true" /><span className="area-card-meta"><span>{area.number}</span><span className="area-note">{area.note}</span></span><span className="area-title">{area.title}</span><span className="area-arrow" aria-hidden="true">↗</span></button>)}</nav>
     </section>
     <footer className="archive-footer"><span>© JOAQUÍN CALDERÓN</span><div><a href={site.instagramUrl} target="_blank" rel="noreferrer">INSTAGRAM</a></div><span>ENTRE RÍOS</span></footer>
   </main>
