@@ -8,6 +8,7 @@ type Transition = 'opening' | 'open' | 'closing'
 
 function App() {
   const [activeAlbum, setActiveAlbum] = useState<Album | null>(null)
+  const [activeArea, setActiveArea] = useState<'home' | 'systems' | 'dj' | 'photography'>('home')
   const [albumOrder] = useState(() => [...albums].sort(() => Math.random() - 0.5))
   const [transition, setTransition] = useState<Transition>('opening')
   const [lightbox, setLightbox] = useState<{ photos: Photo[]; index: number } | null>(null)
@@ -95,7 +96,7 @@ function App() {
 
   return <>
     {showIntro && <IntroSplash />}
-    <Home albums={albumOrder} onOpenAlbum={openAlbum} />
+    {activeArea === 'home' ? <HomeHub onOpenArea={setActiveArea} /> : activeArea === 'photography' ? <Home albums={albumOrder} onOpenAlbum={openAlbum} onBack={() => setActiveArea('home')} /> : <AreaPlaceholder area={activeArea} onBack={() => setActiveArea('home')} />}
     {activeAlbum && <AlbumOverlay album={activeAlbum} transition={transition} onClose={closeAlbum} onOpenPhoto={(photos, index) => setLightbox({ photos, index })} />}
     {lightbox && <PhotoLightbox photo={lightbox.photos[lightbox.index]} index={lightbox.index} total={lightbox.photos.length} onClose={() => setLightbox(null)} onMove={moveLightbox} />}
   </>
@@ -103,9 +104,34 @@ function App() {
 
 function Logo() { return <a className="archive-logo" href="/" aria-label="Calderón, inicio"><img src="/logo/calderon_logo.svg" alt="Calderón" /></a> }
 
-function Home({ albums, onOpenAlbum }: { albums: Album[]; onOpenAlbum: (album: Album) => void }) {
+function HomeHub({ onOpenArea }: { onOpenArea: (area: 'systems' | 'dj' | 'photography') => void }) {
+  const areas = [
+    { id: 'systems' as const, number: '01', title: 'Analista en Sistemas', note: 'TECNOLOGÍA / SOLUCIONES', className: 'area-systems' },
+    { id: 'dj' as const, number: '02', title: 'DJ', note: 'MÚSICA / EN VIVO', className: 'area-dj' },
+    { id: 'photography' as const, number: '03', title: 'Fotografía', note: 'IMÁGENES / ARCHIVO', className: 'area-photography' },
+  ]
+  return <main className="home-hub">
+    <header className="archive-header"><span className="header-side">JOAQUÍN CALDERÓN</span><Logo /><span className="header-side header-side-right">PORTFOLIO / 2026</span></header>
+    <section className="area-selector" aria-labelledby="area-selector-title">
+      <div className="area-selector-intro"><p className="micro-label">UN POCO DE TODO LO QUE HAGO</p><h1 id="area-selector-title">Elegí por dónde<br />querés entrar.</h1></div>
+      <div className="area-grid">{areas.map((area) => <button className={`area-card ${area.className}`} key={area.id} onClick={() => onOpenArea(area.id)}><span className="area-number">{area.number}</span><span className="area-card-bottom"><span><span className="area-note">{area.note}</span><span className="area-title">{area.title}</span></span><span className="area-arrow" aria-hidden="true">↗</span></span></button>)}</div>
+    </section>
+    <footer className="archive-footer"><span>© JOAQUÍN CALDERÓN</span><div><a href={site.instagramUrl} target="_blank" rel="noreferrer">INSTAGRAM</a></div><span>ENTRE RÍOS</span></footer>
+  </main>
+}
+
+function AreaPlaceholder({ area, onBack }: { area: 'systems' | 'dj'; onBack: () => void }) {
+  const isDj = area === 'dj'
+  return <main className={`area-placeholder ${isDj ? 'area-placeholder-dj' : 'area-placeholder-systems'}`}>
+    <header className="archive-header"><button className="area-back" onClick={onBack}>← VOLVER</button><Logo /><span className="header-side header-side-right">{isDj ? 'MÚSICA / EN VIVO' : 'TECNOLOGÍA / SOLUCIONES'}</span></header>
+    <section className="placeholder-content"><p className="micro-label">{isDj ? '02 / DJ' : '01 / ANALISTA EN SISTEMAS'}</p><h1>{isDj ? 'DJ' : <>Analista en<br />Sistemas.</>}</h1><p>Esta parte está empezando a tomar forma.</p><span className="placeholder-index">{isDj ? 'MÚSICA · SETS · EVENTOS' : 'SISTEMAS · PROYECTOS · IDEAS'}</span></section>
+    <footer className="archive-footer"><span>© JOAQUÍN CALDERÓN</span><button onClick={onBack}>VOLVER AL INICIO ↑</button><span>ENTRE RÍOS</span></footer>
+  </main>
+}
+
+function Home({ albums, onOpenAlbum, onBack }: { albums: Album[]; onOpenAlbum: (album: Album) => void; onBack: () => void }) {
   return <main className="archive-home">
-    <header className="archive-header"><span className="header-side">FOTOGRAFÍA / ARGENTINA</span><Logo /><span className="header-side header-side-right">2026 / ARCHIVO</span></header>
+    <header className="archive-header"><button className="area-back" onClick={onBack}>← VOLVER</button><Logo /><span className="header-side header-side-right">2026 / ARCHIVO</span></header>
     <section className="album-index" aria-labelledby="archive-title">
       <div className="index-intro"><p id="archive-title">COLECCIÓN DE ÁLBUMES</p><span>DESPLAZATE PARA EXPLORAR</span></div>
       <div className="album-wall">{albums.map((album, index) => <AlbumCard key={album.id} album={album} index={index} onOpen={() => onOpenAlbum(album)} />)}</div>
