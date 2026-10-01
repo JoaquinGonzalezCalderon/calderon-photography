@@ -75,9 +75,10 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--white); outline
 .home-hub .board-edition-right { margin: 5px 2px 0 auto; text-align: right; }
 .home-hub .home-portrait { position: absolute; z-index: 3; top: 14%; bottom: auto; left: 50%; width: min(32%, 390px); height: 72%; margin: 0; overflow: visible; padding: 8px 8px 27px; border: 1px solid #dedbd5a1; background: #a9a49e; box-shadow: 9px 10px 0 #0007, 0 0 0 5px #d4ccc10c; cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='26' viewBox='0 0 26 26'%3E%3Cpath d='M4 2v19l5-5 4 8 3-1-4-8h8L4 2z' fill='%23000' stroke='%23f5f5f5' stroke-width='1.5' stroke-linejoin='round'/%3E%3C/svg%3E") 4 2, auto; transform: translateX(-50%) rotate(-1deg); }
 .home-hub .home-portrait::before { position: absolute; z-index: -1; inset: -11px -8px 14px; border: 1px solid #e7e2dc55; content: ''; transform: rotate(2deg); }
-.home-hub .home-portrait img { display: block; width: 100%; height: 100%; object-fit: contain; object-position: center bottom; filter: grayscale(1) contrast(1.04); }
-.home-hub .home-portrait figcaption { position: absolute; right: 9px; bottom: 7px; left: 9px; display: flex; justify-content: space-between; gap: 6px; color: #282727; font-family: 'DM Sans', sans-serif; font-size: 7px; font-weight: 700; letter-spacing: .08em; }
-.home-hub .home-portrait figcaption span { padding: 0 3px; color: #6a6460; }
+.home-hub .home-portrait img { display: block; width: 100%; height: calc(100% - 12px); object-fit: contain; object-position: center bottom; filter: grayscale(1) contrast(1.04); }
+.home-hub .home-portrait figcaption { position: absolute; right: 9px; bottom: 7px; left: 9px; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 6px; color: #282727; font-family: 'DM Sans', sans-serif; font-size: 7px; font-weight: 700; letter-spacing: .08em; line-height: 1.15; }
+.home-hub .home-portrait figcaption span { min-width: 0; color: #282727; white-space: nowrap; }
+.home-hub .home-portrait figcaption span:last-child { text-align: right; }
 .home-hub .board-areas { position: absolute; z-index: 2; inset: 0; pointer-events: none; }
 .home-hub .board-areas .area-card { position: absolute; display: flex; flex-direction: column; justify-content: space-between; width: 27%; min-height: 0; padding: clamp(14px, 1.8vw, 24px); overflow: hidden; border: 1px solid #7b7d7f; border-radius: 0; background: #242526; box-shadow: none; color: #f0eeeb; text-align: left; pointer-events: auto; transform-style: preserve-3d; transition: border-color 160ms ease, transform 180ms cubic-bezier(.2,.75,.25,1); }
 .home-hub .board-areas .area-card::before { position: absolute; z-index: 1; inset: 0; background: linear-gradient(180deg, #090a0bcc 0%, #090a0a20 42%, #090a0ae8 100%); content: ''; pointer-events: none; }
@@ -86,8 +87,8 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--white); outline
 .home-hub .board-areas .area-dj { top: 20%; right: 3.5%; height: 27%; }
 .home-hub .board-areas .area-photography { right: 3.5%; bottom: 20%; height: 27%; }
 .home-hub .board-areas .area-image { position: absolute; z-index: 0; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: grayscale(1) contrast(1.05); opacity: .72; transition: transform 450ms cubic-bezier(.2,.75,.25,1), opacity 240ms ease; }
-.home-hub .board-areas .area-card-meta { position: relative; z-index: 2; display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; color: #dedbd6; font-size: 8px; font-weight: 600; letter-spacing: .11em; }
-.home-hub .board-areas .area-note { color: #d0ccc5; font-size: 8px; letter-spacing: .1em; text-align: right; }
+.home-hub .board-areas .area-card-meta { position: relative; z-index: 2; display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: start; gap: 10px; min-width: 0; color: #dedbd6; font-size: 8px; font-variant-numeric: tabular-nums; font-weight: 600; letter-spacing: .11em; }
+.home-hub .board-areas .area-note { min-width: 0; color: #d0ccc5; font-size: 8px; letter-spacing: .1em; text-align: right; text-wrap: balance; }
 .home-hub .board-areas .area-title { position: relative; z-index: 2; max-width: 92%; color: #f3f0ec; font-family: 'DM Sans', sans-serif; font-size: clamp(24px, 3vw, 40px); font-weight: 500; letter-spacing: -.055em; line-height: .98; text-wrap: balance; }
 .home-hub .board-areas .area-arrow { position: absolute; z-index: 2; right: clamp(14px, 1.8vw, 24px); bottom: clamp(16px, 1.8vw, 24px); color: #d5d3cf; font-size: 17px; transition: transform 200ms ease; }
 .home-hub .board-areas .area-card:focus-visible { z-index: 3; border-color: #d0cfcc; outline: 2px solid #f0eeeb; outline-offset: 4px; }
@@ -121,13 +122,16 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--white); outline
   .home-hub .board-edition span + span { font-size: 6px; }
   .home-hub .board-edition-right { max-width: 42%; margin-top: 1px; font-size: 7px; }
   .home-hub .board-edition-right span + span { font-size: 6px; }
-  .home-hub .home-portrait { position: relative; top: auto; left: auto; order: 1; align-self: center; width: min(50%, 220px); height: 260px; margin: 0 0 18px; padding: 5px 5px 23px; transform: rotate(-1deg); }
+  .home-hub .home-portrait { position: relative; top: auto; left: auto; order: 1; align-self: center; width: min(50%, 220px); height: 260px; margin: 0 0 18px; padding: 5px 5px 29px; transform: rotate(-1deg); }
+  .home-hub .home-portrait img { height: calc(100% - 12px); }
+  .home-hub .home-portrait figcaption { right: 6px; bottom: 5px; left: 6px; grid-template-columns: 1fr; gap: 2px; font-size: 5px; letter-spacing: .07em; }
+  .home-hub .home-portrait figcaption span:last-child { text-align: right; }
   .home-hub .board-areas { position: relative; inset: auto; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: 150px 126px; gap: 9px; order: 2; }
   .home-hub .board-areas .area-card { position: relative; inset: auto; width: 100%; min-width: 0; padding: 12px; }
   .home-hub .board-areas .area-systems { grid-column: 1 / -1; grid-row: 1; }
   .home-hub .board-areas .area-dj { grid-column: 1; grid-row: 2; height: auto; }
   .home-hub .board-areas .area-photography { grid-column: 2; grid-row: 2; height: auto; }
-  .home-hub .board-areas .area-note { max-width: 70%; font-size: 6px; line-height: 1.2; }
+  .home-hub .board-areas .area-note { max-width: none; font-size: 6px; line-height: 1.2; }
   .home-hub .board-areas .area-title { max-width: 90%; font-size: clamp(19px, 5.5vw, 25px); }
   .home-hub .board-areas .area-arrow { right: 12px; bottom: 12px; font-size: 14px; }
   .home-hub .archive-footer { margin: 0 6vw 25px; }
