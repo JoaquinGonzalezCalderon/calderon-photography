@@ -96,7 +96,7 @@ function App() {
 
   return <>
     {showIntro && <IntroSplash />}
-    {activeArea === 'home' ? <HomeHub onOpenArea={setActiveArea} /> : activeArea === 'photography' ? <Home albums={albumOrder} onOpenAlbum={openAlbum} onBack={() => setActiveArea('home')} /> : <AreaPlaceholder area={activeArea} onBack={() => setActiveArea('home')} />}
+    {activeArea === 'home' ? <HomeHub onOpenArea={setActiveArea} /> : activeArea === 'systems' ? <SystemsPortfolio onBack={() => setActiveArea('home')} /> : activeArea === 'photography' ? <Home albums={albumOrder} onOpenAlbum={openAlbum} onBack={() => setActiveArea('home')} /> : <AreaPlaceholder onBack={() => setActiveArea('home')} />}
     {activeAlbum && <AlbumOverlay album={activeAlbum} transition={transition} onClose={closeAlbum} onOpenPhoto={(photos, index) => setLightbox({ photos, index })} />}
     {lightbox && <PhotoLightbox photo={lightbox.photos[lightbox.index]} index={lightbox.index} total={lightbox.photos.length} onClose={() => setLightbox(null)} onMove={moveLightbox} />}
   </>
@@ -149,11 +149,41 @@ function HomeHub({ onOpenArea }: { onOpenArea: (area: 'systems' | 'dj' | 'photog
   </main>
 }
 
-function AreaPlaceholder({ area, onBack }: { area: 'systems' | 'dj'; onBack: () => void }) {
-  const isDj = area === 'dj'
-  return <main className={`area-placeholder ${isDj ? 'area-placeholder-dj' : 'area-placeholder-systems'}`}>
-    <header className="archive-header"><button className="area-back" onClick={onBack}>← VOLVER</button><Logo /><span className="header-side header-side-right">{isDj ? 'MÚSICA / EN VIVO' : 'TECNOLOGÍA / SOLUCIONES'}</span></header>
-    <section className="placeholder-content"><p className="micro-label">{isDj ? '02 / DJ' : '01 / ANALISTA EN SISTEMAS'}</p><h1>{isDj ? 'DJ' : <>Analista en<br />Sistemas.</>}</h1><p>Esta parte está empezando a tomar forma.</p><span className="placeholder-index">{isDj ? 'MÚSICA · SETS · EVENTOS' : 'SISTEMAS · PROYECTOS · IDEAS'}</span></section>
+function SystemsPortfolio({ onBack }: { onBack: () => void }) {
+  return <main className="systems-page">
+    <header className="archive-header"><button className="area-back" onClick={onBack}>← VOLVER</button><Logo /><span className="header-side header-side-right">01 / SISTEMAS</span></header>
+    <section className="systems-content" aria-labelledby="systems-title">
+      <div className="systems-heading">
+        <p className="systems-kicker"><span>01</span> TECNOLOGÍA / SOLUCIONES</p>
+        <h1 id="systems-title">Sistemas, proyectos<br /><span>y soluciones digitales.</span></h1>
+        <p className="systems-intro">Un recorrido por mis proyectos, mi código y mi perfil profesional.</p>
+      </div>
+      <div className="systems-showcase">
+        <a className="systems-feature" href="https://jgcsoluciones.vercel.app/" target="_blank" rel="noreferrer" aria-label="Visitar JGC Soluciones, abre en una pestaña nueva">
+          <img src="/areas/systems.webp" alt="Espacio de trabajo con varias pantallas" />
+          <span className="systems-feature-index">PROYECTO / 01 <span>JGC SOLUCIONES</span></span>
+          <span className="systems-feature-copy"><span>PROYECTO DESTACADO</span><strong>JGC Soluciones</strong><span>Visitar sitio <b aria-hidden="true">↗</b></span></span>
+        </a>
+        <div className="systems-links" aria-label="Perfiles profesionales">
+          <a className="systems-link-card systems-github" href="https://github.com/JoaquinGonzalezCalderon?tab=repositories" target="_blank" rel="noreferrer">
+            <span className="systems-link-top"><span>02 / CÓDIGO</span><span className="systems-link-mark" aria-hidden="true">GH</span></span>
+            <span className="systems-link-copy"><strong>Repositorios</strong><span>Explorá mis proyectos públicos en GitHub.</span><b>VER EN GITHUB ↗</b></span>
+          </a>
+          <a className="systems-link-card systems-linkedin" href="https://www.linkedin.com/in/joaqu%C3%ADn-gonzalez-calder%C3%B3n-8b0b4837b/" target="_blank" rel="noreferrer">
+            <span className="systems-link-top"><span>03 / PERFIL</span><span className="systems-link-mark" aria-hidden="true">in</span></span>
+            <span className="systems-link-copy"><strong>LinkedIn</strong><span>Conectemos y conozcamos mi perfil profesional.</span><b>VER PERFIL ↗</b></span>
+          </a>
+        </div>
+      </div>
+    </section>
+    <footer className="archive-footer"><span>© JOAQUÍN CALDERÓN</span><button onClick={onBack}>VOLVER AL INICIO ↑</button><span>ENTRE RÍOS</span></footer>
+  </main>
+}
+
+function AreaPlaceholder({ onBack }: { onBack: () => void }) {
+  return <main className="area-placeholder area-placeholder-dj">
+    <header className="archive-header"><button className="area-back" onClick={onBack}>← VOLVER</button><Logo /><span className="header-side header-side-right">MÚSICA / EN VIVO</span></header>
+    <section className="placeholder-content"><p className="micro-label">02 / DJ</p><h1>DJ</h1><p>Esta parte está empezando a tomar forma.</p><span className="placeholder-index">MÚSICA · SETS · EVENTOS</span></section>
     <footer className="archive-footer"><span>© JOAQUÍN CALDERÓN</span><button onClick={onBack}>VOLVER AL INICIO ↑</button><span>ENTRE RÍOS</span></footer>
   </main>
 }
