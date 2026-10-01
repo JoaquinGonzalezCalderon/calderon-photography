@@ -141,8 +141,10 @@ function HomeHub({ onOpenArea }: { onOpenArea: (area: 'systems' | 'dj' | 'photog
   return <main className={`home-hub${openingArea ? ' is-leaving-up' : ''}`}>
     <header className="archive-header"><span className="header-side">JOAQUÍN CALDERÓN</span><Logo /><span className="header-side header-side-right">PORTFOLIO / 2026</span></header>
     <section className="area-selector" aria-labelledby="area-selector-title">
-      <figure className="home-portrait"><img src="/areas/portrait.webp" alt="Retrato de Joaquín Calderón" /><figcaption>JOAQUÍN CALDERÓN <span>·</span> ENTRE RÍOS</figcaption></figure>
-      <div className="area-selector-content"><div className="area-selector-intro"><p className="micro-label">UN POCO DE TODO LO QUE HAGO</p><h1 id="area-selector-title">Elegí por dónde<br />querés entrar.</h1></div>
+      <div className="board-edition"><span>J. CALDERÓN / PERFIL 01</span><span>ENTRE RÍOS · ARGENTINA</span></div>
+      <div className="board-tags" aria-hidden="true"><span>SISTEMAS</span><span>DJ</span><span>FOTOGRAFÍA</span></div>
+      <figure className="home-portrait"><img src="/areas/portrait-cutout.png" alt="Retrato en blanco y negro de Joaquín Calderón, recortado sobre fondo transparente" /></figure>
+      <div className="area-selector-content"><div className="area-selector-intro"><p className="micro-label">HOLA, SOY...</p><h1 id="area-selector-title">Joaquín<br />Calderón</h1></div>
         <div className="area-grid">{areas.map((area) => <button className={`area-card ${area.className}${openingArea === area.id ? ' is-opening' : ''}`} key={area.id} onPointerMove={moveCardWithPointer} onPointerLeave={resetCardPointer} onClick={() => enterArea(area.id)} disabled={Boolean(openingArea)}><span className="area-number">{area.number}</span><span className="area-card-copy"><span className="area-note">{area.note}</span><span className="area-title">{area.title}</span><span className="area-arrow" aria-hidden="true">↗</span></span><img className="area-card-thumbnail" src={area.image} alt="" loading="eager" /></button>)}</div>
       </div>
     </section>
