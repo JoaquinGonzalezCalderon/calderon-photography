@@ -403,7 +403,8 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--white); outline
   aspect-ratio: auto;
   margin: clamp(36px, 6vh, 62px) auto 38px;
   border-color: #9d6d84;
-  background: #19191a;
+  background-color: #19191a;
+  background-image: radial-gradient(ellipse at 50% 80%, #2d2b2c 0%, transparent 52%), repeating-linear-gradient(0deg, #ffffff03 0 1px, transparent 1px 4px), repeating-linear-gradient(90deg, #ffffff02 0 1px, transparent 1px 4px);
   box-shadow: 0 28px 100px #0008;
 }
 .home-hub .board-logo {
@@ -552,6 +553,7 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--white); outline
 .home-hub .board-tags span:nth-child(2) { background: #edcad8; transform: rotate(2deg); }
 .home-hub .board-tags span:nth-child(3) { background: #e8dc92; transform: rotate(-1deg); }
 .home-hub .home-portrait { position: absolute; z-index: 2; bottom: -1px; left: 50%; width: min(46%, 550px); height: 94%; margin: 0; overflow: visible; border: 0; background: transparent; box-shadow: none; transform: translateX(-50%); }
+.home-hub .home-portrait::before { position: absolute; z-index: -1; inset: 9% 7% 0; border: 1px solid #ded7d252; background: #d6d0c514; content: ''; transform: rotate(-1deg); }
 .home-hub .home-portrait img { display: block; width: 100%; height: 100%; object-fit: contain; object-position: center bottom; filter: grayscale(1) contrast(1.04) brightness(.88); }
 .home-hub .board-identity { position: absolute; z-index: 4; top: 34%; left: 5%; width: 25%; }
 .home-hub .board-identity .micro-label { margin: 0 0 2px; color: #eee8e3; font-family: Caveat, cursive; font-size: clamp(23px, 2.8vw, 35px); font-weight: 500; letter-spacing: 0; transform: rotate(-4deg); }
@@ -560,9 +562,9 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--white); outline
 .home-hub .board-areas { position: absolute; z-index: 5; inset: 0; pointer-events: none; }
 .home-hub .board-areas .area-card { position: absolute; display: grid; width: max-content; max-width: 24%; min-height: 0; padding: 0; overflow: visible; border: 0; background: transparent; box-shadow: none; color: #e9e5e0; text-align: left; pointer-events: auto; transition: color 180ms ease, transform 220ms ease; }
 .home-hub .board-areas .area-card::after, .home-hub .board-areas .area-card-thumbnail { display: none; }
-.home-hub .board-areas .area-card-1 { top: 24%; left: 31%; }
-.home-hub .board-areas .area-card-2 { top: 63%; left: 12%; }
-.home-hub .board-areas .area-card-3 { top: 47%; right: 12%; }
+.home-hub .board-areas .area-systems { top: 24%; left: 31%; }
+.home-hub .board-areas .area-dj { top: 63%; left: 12%; }
+.home-hub .board-areas .area-photography { top: 47%; right: 12%; }
 .home-hub .board-areas .area-note { color: #bbb3ad; font-size: 7px; letter-spacing: .09em; }
 .home-hub .board-areas .area-title { color: #f0ece8; font-family: Caveat, cursive; font-size: clamp(18px, 2vw, 27px); font-weight: 600; letter-spacing: 0; line-height: 1; }
 .home-hub .board-areas .area-arrow { color: #e5dcd5; font-size: 11px; }
@@ -583,9 +585,9 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--white); outline
   .home-hub .board-identity h1 { font-size: clamp(30px, 8vw, 40px); }
   .home-hub .board-location { top: 29%; right: 6%; font-size: 22px; }
   .home-hub .board-areas .area-card { max-width: 35%; }
-  .home-hub .board-areas .area-card-1 { top: 40%; left: 5%; }
-  .home-hub .board-areas .area-card-2 { top: 59%; left: 7%; }
-  .home-hub .board-areas .area-card-3 { top: 47%; right: 4%; }
+  .home-hub .board-areas .area-systems { top: 40%; left: 5%; }
+  .home-hub .board-areas .area-dj { top: 59%; left: 7%; }
+  .home-hub .board-areas .area-photography { top: 47%; right: 4%; }
   .home-hub .board-areas .area-note { font-size: 7px; }
   .home-hub .board-areas .area-title { font-size: clamp(18px, 5vw, 24px); }
 }
