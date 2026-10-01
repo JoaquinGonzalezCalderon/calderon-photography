@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react'
 import { albumCover, albumPhotos, albums, driveUrls, type Album } from './data/albums'
 import type { Photo } from './data/photos'
 import { site } from './config/site'
@@ -114,13 +114,30 @@ function HomeHub({ onOpenArea }: { onOpenArea: (area: 'systems' | 'dj' | 'photog
   const enterArea = (area: 'systems' | 'dj' | 'photography') => {
     if (openingArea) return
     setOpeningArea(area)
-    window.setTimeout(() => onOpenArea(area), 650)
+    const delay = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 650
+    window.setTimeout(() => onOpenArea(area), delay)
+  }
+  const moveCardWithPointer = (event: ReactPointerEvent<HTMLButtonElement>) => {
+    if (event.pointerType !== 'mouse' || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const bounds = event.currentTarget.getBoundingClientRect()
+    const x = (event.clientX - bounds.left) / bounds.width - 0.5
+    const y = (event.clientY - bounds.top) / bounds.height - 0.5
+    event.currentTarget.style.setProperty('--pointer-x', `${(x * 12).toFixed(1)}px`)
+    event.currentTarget.style.setProperty('--pointer-y', `${(y * 12).toFixed(1)}px`)
+    event.currentTarget.style.setProperty('--tilt-x', `${(x * -4).toFixed(2)}deg`)
+    event.currentTarget.style.setProperty('--tilt-y', `${(y * 4).toFixed(2)}deg`)
+  }
+  const resetCardPointer = (event: ReactPointerEvent<HTMLButtonElement>) => {
+    event.currentTarget.style.setProperty('--pointer-x', '0px')
+    event.currentTarget.style.setProperty('--pointer-y', '0px')
+    event.currentTarget.style.setProperty('--tilt-x', '0deg')
+    event.currentTarget.style.setProperty('--tilt-y', '0deg')
   }
   return <main className="home-hub">
     <header className="archive-header"><span className="header-side">JOAQUÍN CALDERÓN</span><Logo /><span className="header-side header-side-right">PORTFOLIO / 2026</span></header>
     <section className="area-selector" aria-labelledby="area-selector-title">
       <div className="area-selector-intro"><p className="micro-label">UN POCO DE TODO LO QUE HAGO</p><h1 id="area-selector-title">Elegí por dónde<br />querés entrar.</h1></div>
-      <div className="area-grid">{areas.map((area) => <button className={`area-card ${area.className}${openingArea === area.id ? ' is-opening' : ''}`} key={area.id} onClick={() => enterArea(area.id)} disabled={Boolean(openingArea)}><span className="area-number">{area.number}</span><span className="area-card-bottom"><span><span className="area-note">{area.note}</span><span className="area-title">{area.title}</span></span><span className="area-arrow" aria-hidden="true">↗</span></span></button>)}</div>
+      <div className="area-grid">{areas.map((area) => <button className={`area-card ${area.className}${openingArea === area.id ? ' is-opening' : ''}`} key={area.id} onPointerMove={moveCardWithPointer} onPointerLeave={resetCardPointer} onClick={() => enterArea(area.id)} disabled={Boolean(openingArea)}><span className="area-number">{area.number}</span><span className="area-card-bottom"><span><span className="area-note">{area.note}</span><span className="area-title">{area.title}</span></span><span className="area-arrow" aria-hidden="true">↗</span></span></button>)}</div>
     </section>
     <footer className="archive-footer"><span>© JOAQUÍN CALDERÓN</span><div><a href={site.instagramUrl} target="_blank" rel="noreferrer">INSTAGRAM</a></div><span>ENTRE RÍOS</span></footer>
     {openingArea && <div className={`area-transition-layer ${openingArea === 'dj' ? 'transition-dj' : openingArea === 'photography' ? 'transition-photography' : 'transition-systems'}`} aria-hidden="true" />}

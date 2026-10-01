@@ -67,7 +67,7 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--white); outline
 .area-selector-intro h1 { font-size: clamp(42px, 7vw, 92px); font-weight: 400; letter-spacing: -.055em; line-height: .98; margin: 24px 0 0; }
 .area-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
 .area-card { position: relative; display: flex; min-height: clamp(300px, 43vw, 540px); flex-direction: column; justify-content: space-between; overflow: hidden; padding: clamp(20px, 3vw, 38px); border: 1px solid #ffffff30; color: #f7f4ed; text-align: left; cursor: pointer; transition: transform .35s ease, border-color .35s ease; }
-.area-card:hover, .area-card:focus-visible { transform: translateY(-5px); border-color: #ffffffaa; outline: none; }
+.area-card:focus-visible { border-color: #ffffffaa; outline: 2px solid #ffffffaa; outline-offset: 3px; }
 .area-systems { background: radial-gradient(ellipse at 72% 25%, #485851 0, #24302c 32%, #171b19 72%); }
 .area-dj { background: radial-gradient(ellipse at 54% 38%, #713b34 0, #402522 38%, #1b1716 78%); }
 .area-photography { background: radial-gradient(ellipse at 76% 26%, #74674f 0, #3d382e 38%, #1b1a17 78%); }
@@ -86,18 +86,28 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--white); outline
 @media (max-width: 760px) { .area-selector, .placeholder-content { width: calc(100% - 36px); } .area-grid { grid-template-columns: 1fr; } .area-card { min-height: 280px; } .area-selector { padding-top: 58px; } }
 .area-card { isolation: isolate; }
 .area-card::before, .area-card::after { position: absolute; content: ''; inset: 0; pointer-events: none; }
-.area-card::before { z-index: -2; background-position: center 44%; background-size: cover; transition: transform .8s cubic-bezier(.2,.75,.25,1), filter .8s ease; }
+.area-card::before { z-index: -2; background-position: center 44%; background-size: cover; transform: translate3d(var(--pointer-x, 0px), var(--pointer-y, 0px), 0) scale(1); transition: transform 260ms cubic-bezier(.215,.61,.355,1), filter 300ms ease; }
 .area-card::after { z-index: -1; background: linear-gradient(180deg, #09090930 0%, #09090908 34%, #090909b8 100%); transition: background .5s ease; }
 .area-systems::before { background-image: radial-gradient(ellipse at 72% 25%, #485851 0, #24302c 32%, #171b19 72%); }
 .area-dj::before { background-image: url('/areas/dj.jpeg'); }
 .area-photography::before { background-image: url('/areas/fotografo.jpeg'); }
-.area-card:hover::before, .area-card:focus-visible::before { transform: scale(1.09); filter: brightness(1.13); }
-.area-card:hover::after, .area-card:focus-visible::after { background: linear-gradient(180deg, #0909091c 0%, #09090908 28%, #090909cf 100%); }
+@media (hover: hover) and (pointer: fine) {
+  .area-card:hover { transform: perspective(1100px) rotateX(var(--tilt-y, 0deg)) rotateY(var(--tilt-x, 0deg)) translateY(-5px); }
+  .area-card:hover::before { transform: translate3d(var(--pointer-x, 0px), var(--pointer-y, 0px), 0) scale(1.09); filter: brightness(1.13); }
+  .area-card:hover::after { background: linear-gradient(180deg, #0909091c 0%, #09090908 28%, #090909cf 100%); }
+}
 .area-card > * { position: relative; z-index: 1; }
 .area-card.is-opening { transform: scale(1.025); }
-.area-transition-layer { position: fixed; z-index: 100; inset: 0; pointer-events: none; background-position: center 44%; background-size: cover; animation: area-zoom-in .65s cubic-bezier(.2,.72,.24,1) both; }
+.area-transition-layer { position: fixed; z-index: 100; inset: 0; pointer-events: none; background-position: center 44%; background-size: cover; animation: area-zoom-in .65s cubic-bezier(.215,.61,.355,1) both; will-change: transform, opacity, filter; }
 .transition-dj { background-image: linear-gradient(180deg, #09090916, #09090980), url('/areas/dj.jpeg'); }
 .transition-photography { background-image: linear-gradient(180deg, #09090916, #09090980), url('/areas/fotografo.jpeg'); }
 .transition-systems { background-image: radial-gradient(ellipse at 72% 25%, #485851 0, #24302c 32%, #171b19 72%); }
-@keyframes area-zoom-in { 0% { opacity: 0; transform: scale(.94); } 14% { opacity: 1; } 100% { opacity: 1; transform: scale(1.18); } }
-@media (prefers-reduced-motion: reduce) { .area-card, .area-card::before, .area-card::after { transition-duration: .01ms; } .area-transition-layer { animation-duration: .01ms; } }
+@keyframes area-zoom-in { 0% { opacity: 0; transform: scale(.96); filter: blur(0); } 16% { opacity: 1; } 100% { opacity: 1; transform: scale(1.24); filter: blur(8px); } }
+.archive-home { animation: area-content-in .42s cubic-bezier(.215,.61,.355,1) both; }
+.area-placeholder .placeholder-content { animation: area-content-in .42s cubic-bezier(.215,.61,.355,1) both; }
+@keyframes area-content-in { from { opacity: 0; filter: blur(6px); transform: scale(.985); } to { opacity: 1; filter: blur(0); transform: scale(1); } }
+@media (prefers-reduced-motion: reduce) {
+  .area-card, .area-card::before, .area-card::after, .archive-home, .area-placeholder .placeholder-content { transition: none; animation: none; }
+  .area-card:hover, .area-card:hover::before { transform: none; filter: none; }
+  .area-transition-layer { display: none; }
+}
