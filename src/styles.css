@@ -323,7 +323,8 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--white); outline
 
 /* Final layout corrections from desktop and mobile review. */
 .home-hub .area-selector { margin-top: clamp(88px, 10vh, 112px); }
-.home-hub .home-about { top: auto; bottom: 30px; }
+.home-hub .home-portrait { height: 60%; }
+.home-hub .home-about { top: auto; bottom: 12px; }
 .systems-project-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 .systems-project-image { aspect-ratio: 1.95; background: #0e0f10; }
 .systems-project-image img, .systems-demo-image img { object-fit: contain; }
