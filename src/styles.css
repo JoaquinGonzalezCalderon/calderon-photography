@@ -350,6 +350,13 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--white); outline
 }
 
 @media (max-width: 760px) {
+  .home-hub .board-topline { justify-content: center; }
+  .home-hub .board-brand { width: 100%; justify-items: center; gap: 10px; text-align: center; }
+  .home-hub .board-logo { width: 94px; }
+  .home-hub .board-edition { justify-items: center; font-size: 10px; line-height: 1.35; }
+  .home-hub .board-edition span + span { font-size: 9px; }
+  .home-hub .home-portrait { margin-bottom: 30px; }
+  .home-hub .home-about { margin: 0 auto 22px; }
   .home-hub .area-selector { height: auto; margin: 68px auto 26px; }
   .home-hub .home-about { top: auto; bottom: auto; }
   .home-contact { width: 100%; margin: 0 auto 20px; }
@@ -550,6 +557,7 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--white); outline
 .dj-page-footer { display: flex; justify-content: center; gap: 14px; border-top: 1px solid #ffffff1f; margin: 0 4.2vw; padding: 15px 0 19px; color: #88847e; font-size: 9px; font-weight: 600; letter-spacing: .13em; }
 .dj-page-footer span + span::before { padding-right: 14px; color: #4f4d49; content: '·'; }
 @media (max-width: 760px) {
+  .dj-player-page { overflow-x: clip; }
   .dj-player-page .archive-header { padding: 25px 6vw 0; }
   .dj-player-page > .archive-header { min-height: 142px; }
   .dj-player-content { width: calc(100% - 36px); justify-content: center; margin: 26px auto 0; }
