@@ -144,7 +144,7 @@ function App() {
 
   return <>
     {showIntro && <IntroSplash />}
-    {activeArea === 'home' ? <HomeHub onOpenArea={navigateArea} /> : activeArea === 'systems' ? <SystemsPortfolio onBack={goHome} /> : activeArea === 'photography' ? <Home albums={albumOrder} onOpenAlbum={openAlbum} onBack={goHome} /> : <AreaPlaceholder onBack={goHome} />}
+    {activeArea === 'home' ? <HomeHub onOpenArea={navigateArea} /> : activeArea === 'systems' ? <SystemsPortfolio onBack={goHome} /> : activeArea === 'photography' ? <Home albums={albumOrder} onOpenAlbum={openAlbum} onBack={goHome} /> : <DJPortfolio onBack={goHome} />}
     {activeAlbum && <AlbumOverlay album={activeAlbum} transition={transition} onClose={closeAlbum} onOpenPhoto={(photos, index) => setLightbox({ photos, index })} />}
     {lightbox && <PhotoLightbox photo={lightbox.photos[lightbox.index]} index={lightbox.index} total={lightbox.photos.length} onClose={() => setLightbox(null)} onMove={moveLightbox} />}
   </>
@@ -306,12 +306,69 @@ function DemoCard({ title, description, image, href }: { title: string; descript
   </a>
 }
 
-function AreaPlaceholder({ onBack }: { onBack: () => void }) {
-  return <main className="area-placeholder area-placeholder-dj">
-    <header className="archive-header"><button className="area-back" onClick={onBack}>← VOLVER</button><Logo /><span className="header-side header-side-right">MÚSICA / EN VIVO</span></header>
-    <section className="placeholder-content"><p className="micro-label">02 / DJ</p><h1>DJ</h1><p>Esta parte está empezando a tomar forma.</p><span className="placeholder-index">MÚSICA · SETS · EVENTOS</span></section>
+function DJPortfolio({ onBack }: { onBack: () => void }) {
+  const tracks = [
+    { number: '01', title: 'Lanzamiento 01', description: 'Tema original · Escuchá el track completo.', src: '/areas/dj-track-01.mpeg', dancers: true },
+    { number: '02', title: 'Lanzamiento 02', description: 'Tema original · Escuchá el track completo.', src: '/areas/dj-track-02.mpeg', dancers: false },
+  ]
+  return <main className="dj-page">
+    <header className="archive-header"><button className="area-back" onClick={onBack}>← VOLVER</button><Logo /><span className="header-side header-side-right">02 / DJ · PRODUCCIÓN</span></header>
+    <section className="dj-content" aria-labelledby="dj-title">
+      <div className="dj-heading">
+        <p className="dj-kicker"><span>02</span> MÚSICA / EN VIVO</p>
+        <h1 id="dj-title">Ritmo propio<span>.</span></h1>
+        <p className="dj-intro">Dos temas originales y una foto desde la cabina. Dale play y escuchalos acá.</p>
+      </div>
+      <div className="dj-feature">
+        <figure className="dj-portrait">
+          <img src="/areas/dj-portrait.webp" alt="Joaquín Calderón mezclando música en una cabina de DJ" />
+          <figcaption><span>JOAQUÍN CALDERÓN</span><span>EN CABINA / 01</span></figcaption>
+        </figure>
+        <section className="dj-releases" aria-label="Temas originales">
+          <div className="dj-release-heading"><h2>Escuchá mis temas</h2><span>02 TRACKS</span></div>
+          <div className="dj-track-list">
+            {tracks.map((track) => <DJTrack key={track.number} {...track} />)}
+          </div>
+        </section>
+      </div>
+    </section>
     <footer className="archive-footer"><span>© JOAQUÍN CALDERÓN</span><button onClick={onBack}>VOLVER AL INICIO ↑</button><span>ENTRE RÍOS</span></footer>
   </main>
+}
+
+function DJTrack({ number, title, description, src, dancers }: { number: string; title: string; description: string; src: string; dancers: boolean }) {
+  const audioRef = useRef<HTMLAudioElement>(null)
+  const [playing, setPlaying] = useState(false)
+  const [currentTime, setCurrentTime] = useState(0)
+  const [duration, setDuration] = useState(0)
+  const [audioError, setAudioError] = useState(false)
+
+  const togglePlayback = () => {
+    const audio = audioRef.current
+    if (!audio) return
+    if (audio.paused) void audio.play().catch(() => setAudioError(true))
+    else audio.pause()
+  }
+  const formatTime = (seconds: number) => `${Math.floor(seconds / 60)}:${String(Math.floor(seconds % 60)).padStart(2, '0')}`
+
+  return <article className={`dj-track${dancers ? ' dj-track-with-dancers' : ''}`}>
+    <audio ref={audioRef} src={src} preload="metadata" onLoadedMetadata={(event) => setDuration(Number.isFinite(event.currentTarget.duration) ? event.currentTarget.duration : 0)} onTimeUpdate={(event) => setCurrentTime(event.currentTarget.currentTime)} onPlay={() => { setPlaying(true); setAudioError(false) }} onPause={() => setPlaying(false)} onEnded={() => { setPlaying(false); setCurrentTime(0) }} onError={() => setAudioError(true)} />
+    <div className="dj-track-art" aria-hidden="true">
+      {dancers ? <div className="dj-dancers"><img className="dj-dancer dj-dancer-one" src="/areas/dj-dancer-one.webp" alt="" /><img className="dj-dancer dj-dancer-two" src="/areas/dj-dancer-two.webp" alt="" /><img className="dj-dancer dj-dancer-three" src="/areas/dj-dancer-three.webp" alt="" /></div> : <span className="dj-art-monogram">JC<span> / {number}</span></span>}
+      <span className="dj-art-index">ORIGINAL / {number}</span>
+    </div>
+    <div className="dj-track-body">
+      <div className="dj-track-meta"><span>{number}</span><span>JOAQUÍN CALDERÓN · ORIGINAL</span></div>
+      <h3>{title}</h3>
+      <p>{description}</p>
+      <div className="dj-player">
+        <button type="button" className="dj-play-button" onClick={togglePlayback} aria-label={`${playing ? 'Pausar' : 'Reproducir'} ${title}`}>{playing ? 'Ⅱ' : '▶'}</button>
+        <input type="range" min="0" max={duration || 1} step="0.1" value={Math.min(currentTime, duration || 1)} onChange={(event) => { if (audioRef.current) audioRef.current.currentTime = Number(event.target.value) }} aria-label={`Posición de reproducción de ${title}`} />
+        <span className="dj-player-time">{formatTime(currentTime)} <i>/</i> {formatTime(duration)}</span>
+      </div>
+      {audioError && <p className="dj-audio-error" role="status">No se pudo cargar el tema. Intentá reproducirlo otra vez.</p>}
+    </div>
+  </article>
 }
 
 function Home({ albums, onOpenAlbum, onBack }: { albums: Album[]; onOpenAlbum: (album: Album) => void; onBack: () => void }) {
