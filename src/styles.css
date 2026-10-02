@@ -68,9 +68,10 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--white); outline
 .home-hub .archive-header .header-side { color: #e0dcd7; font-size: 10px; letter-spacing: .14em; }
 .home-hub .area-selector { position: relative; isolation: isolate; display: block; width: min(1240px, calc(100% - 8vw)); height: clamp(560px, 72vh, 730px); min-height: 0; margin: clamp(34px, 5vh, 54px) auto 38px; padding: 0; overflow: hidden; border: 1px solid #77787a; background-color: var(--board); background-image: radial-gradient(ellipse at 50% 75%, #343536 0%, transparent 52%), repeating-linear-gradient(0deg, #ffffff06 0 1px, transparent 1px 4px), repeating-linear-gradient(90deg, #ffffff05 0 1px, transparent 1px 4px); background-blend-mode: normal, soft-light, soft-light; box-shadow: 0 28px 100px #0008; }
 .home-hub .area-selector::before { position: absolute; z-index: 6; inset: 10px; border: 1px solid #eee9e51c; content: ''; pointer-events: none; }
-.home-hub .board-topline { position: absolute; z-index: 7; inset: 22px 25px auto; display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; }
-.home-hub .board-brand { display: grid; justify-items: start; gap: 9px; }
-.home-hub .board-logo { position: static; display: block; width: 88px; height: auto; }
+.home-board-frame { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; width: 100%; margin: 18px auto 26px; }
+.home-hub .board-topline { position: static; z-index: 7; display: flex; align-items: center; justify-content: center; margin: 0 auto 18px; }
+.home-hub .board-brand { display: grid; justify-items: center; gap: 10px; text-align: center; }
+.home-hub .board-logo { position: static; display: block; width: 120px; height: auto; }
 .home-hub .board-edition { position: static; display: grid; gap: 4px; color: #d1ccc7; font-size: 10px; letter-spacing: .06em; }
 .home-hub .board-edition span + span { color: #958c86; font-size: 9px; }
 .home-hub .home-portrait { position: absolute; z-index: 3; top: 14%; bottom: auto; left: 50%; width: min(32%, 390px); height: 64%; margin: 0; overflow: visible; padding: 8px 8px 27px; border: 1px solid #dedbd5a1; background: #a9a49e; box-shadow: 9px 10px 0 #0007, 0 0 0 5px #d4ccc10c; cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='26' viewBox='0 0 26 26'%3E%3Cpath d='M4 2v19l5-5 4 8 3-1-4-8h8L4 2z' fill='%23000' stroke='%23f5f5f5' stroke-width='1.5' stroke-linejoin='round'/%3E%3C/svg%3E") 4 2, auto; transform: translateX(-50%) rotate(-1deg); }
@@ -325,7 +326,7 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--white); outline
 }
 
 /* Final layout corrections from desktop and mobile review. */
-.home-hub .area-selector { z-index: 1; height: clamp(520px, 68vh, 700px); margin: clamp(30px, 5vh, 46px) auto 26px; }
+.home-hub .area-selector { z-index: 1; height: clamp(520px, 68vh, 700px); margin: 0 auto; }
 .home-hub .home-portrait { height: 58%; }
 .home-hub .home-about { top: 78%; bottom: auto; }
 .home-contact { position: relative; z-index: 1; display: grid; justify-items: center; gap: 13px; margin: 0 auto 26px; padding: 0 20px; text-align: center; }
@@ -350,8 +351,9 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--white); outline
 }
 
 @media (max-width: 760px) {
+  .home-board-frame { margin: 68px auto 26px; }
   .home-hub .area-selector { padding: 128px 24px 20px; }
-  .home-hub .board-topline { inset: 24px 14px auto; justify-content: center; }
+  .home-hub .board-topline { position: absolute; inset: 24px 14px auto; justify-content: center; margin: 0; }
   .home-hub .board-brand { width: 100%; justify-items: center; gap: 9px; text-align: center; }
   .home-hub .board-logo { width: 94px; }
   .home-hub .board-edition { justify-items: center; font-size: 10px; line-height: 1.35; }
@@ -359,7 +361,7 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--white); outline
   .home-hub .home-portrait { margin-bottom: 30px; }
   .home-hub .home-portrait figcaption { font-size: clamp(6px, 1.7vw, 8px); letter-spacing: .03em; }
   .home-hub .home-about { margin: 0 auto 22px; }
-  .home-hub .area-selector { height: auto; margin: 68px auto 26px; }
+  .home-hub .area-selector { height: auto; margin: 0 auto; }
   .home-hub .home-about { top: auto; bottom: auto; }
   .home-contact { width: 100%; margin: 0 auto 20px; }
   .home-contact-links { width: min(100%, 360px); flex-direction: column; gap: 8px; }

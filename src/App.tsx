@@ -189,14 +189,16 @@ function HomeHub({ onOpenArea }: { onOpenArea: (area: 'systems' | 'dj' | 'photog
     card.style.setProperty('--tilt-y', '0deg')
   }
   return <main className={`home-hub${openingArea ? ' is-leaving-up' : ''}`}>
-    <section className="area-selector" aria-label="Áreas del portfolio">
+    <div className="home-board-frame">
       <div className="board-topline">
         <div className="board-brand"><img className="board-logo" src="/logo/calderon_logo.svg" alt="Calderón" /><div className="board-edition"><span>PORTAFOLIO PERSONAL · 2026</span><span>ENTRE RÍOS · ARGENTINA</span></div></div>
       </div>
-      <figure className="home-portrait"><img src="/areas/portrait-cutout.webp" alt="Retrato en blanco y negro de Joaquín González Calderón" /><figcaption><span>JOAQUÍN GONZÁLEZ CALDERÓN</span><span>AUTORRETRATO / 01</span></figcaption></figure>
-      <aside className="home-about"><h1>SOBRE MÍ</h1><p>Joaquín González Calderón. 23 años.<br />Analista en Sistemas. DJ. Intento de fotógrafo.<br />¡Te invito a ver mis trabajos!</p></aside>
-      <nav className="board-areas" aria-label="Elegí un área del portafolio">{areas.map((area) => <button className={`area-card ${area.className}${openingArea === area.id ? ' is-opening' : ''}`} key={area.id} onClick={() => enterArea(area.id)} onPointerMove={moveCardWeight} onPointerLeave={releaseCardWeight} disabled={Boolean(openingArea)}><img className="area-image" src={area.image} alt="" aria-hidden="true" /><span className="area-card-meta"><span>{area.number}</span><span className="area-note">{area.note}</span></span><span className="area-title">{area.title}</span><span className="area-arrow" aria-hidden="true">↗</span></button>)}</nav>
-    </section>
+      <section className="area-selector" aria-label="Áreas del portfolio">
+        <figure className="home-portrait"><img src="/areas/portrait-cutout.webp" alt="Retrato en blanco y negro de Joaquín González Calderón" /><figcaption><span>JOAQUÍN GONZÁLEZ CALDERÓN</span><span>AUTORRETRATO / 01</span></figcaption></figure>
+        <aside className="home-about"><h1>SOBRE MÍ</h1><p>Joaquín González Calderón. 23 años.<br />Analista en Sistemas. DJ. Intento de fotógrafo.<br />¡Te invito a ver mis trabajos!</p></aside>
+        <nav className="board-areas" aria-label="Elegí un área del portafolio">{areas.map((area) => <button className={`area-card ${area.className}${openingArea === area.id ? ' is-opening' : ''}`} key={area.id} onClick={() => enterArea(area.id)} onPointerMove={moveCardWeight} onPointerLeave={releaseCardWeight} disabled={Boolean(openingArea)}><img className="area-image" src={area.image} alt="" aria-hidden="true" /><span className="area-card-meta"><span>{area.number}</span><span className="area-note">{area.note}</span></span><span className="area-title">{area.title}</span><span className="area-arrow" aria-hidden="true">↗</span></button>)}</nav>
+      </section>
+    </div>
     <ContactSection />
   </main>
 }
