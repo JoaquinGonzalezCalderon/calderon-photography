@@ -501,6 +501,7 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--white); outline
 
 /* DJ listening room: layered mashup sleeves and a single shared player. */
 .dj-player-page { background: radial-gradient(ellipse at 70% 36%, #222324 0%, #111213 48%, #0b0b0c 100%); }
+.dj-player-page > .archive-header { min-height: 152px; }
 .dj-player-content { display: flex; width: min(1280px, calc(100% - 10vw)); min-height: 0; flex: 1; flex-direction: column; align-items: center; justify-content: flex-start; margin: 24px auto 0; }
 .dj-player-heading { max-width: 620px; margin: 0 auto 48px; text-align: center; }
 .dj-player-heading .dj-kicker { justify-content: center; margin-bottom: 13px; font-size: 10px; }
@@ -515,6 +516,7 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--white); outline
 .dj-release-card.is-next { left: 68%; z-index: 2; opacity: .72; filter: brightness(.58); transform: translate(-50%, -50%) rotate(8deg) scale(.82); }
 .dj-release-card.is-previous { left: 32%; z-index: 2; opacity: .72; filter: brightness(.58); transform: translate(-50%, -50%) rotate(-8deg) scale(.82); }
 .dj-release-card:not(.is-selected) { cursor: pointer; }
+.dj-release-card:not(.is-selected) .dj-release-card-label { visibility: hidden; }
 .dj-release-card:focus-visible { outline: 2px solid #e5e1da; outline-offset: 7px; }
 .dj-release-card-art { position: absolute; inset: 0; display: block; overflow: hidden; background: #171819; }
 .dj-release-card-art::after { position: absolute; inset: 0; background: linear-gradient(180deg, #08090905 38%, #08090925 53%, #080909e8 100%); content: ''; }
@@ -551,6 +553,7 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--white); outline
 .dj-page-footer span + span::before { padding-right: 14px; color: #4f4d49; content: '·'; }
 @media (max-width: 760px) {
   .dj-player-page .archive-header { padding: 25px 6vw 0; }
+  .dj-player-page > .archive-header { min-height: 142px; }
   .dj-player-content { width: calc(100% - 36px); justify-content: center; margin: 26px auto 0; }
   .dj-player-heading { margin-bottom: 36px; }
   .dj-player-heading .dj-kicker { font-size: 9px; }

@@ -447,7 +447,7 @@ function DJPortfolio({ onBack }: { onBack: () => void }) {
       </section>
       {audioError && <p className="dj-player-error" role="status">No se pudo cargar el mashup. Intentá reproducirlo otra vez.</p>}
     </section>
-    <footer className="dj-page-footer"><span>CALDERÓN / MASHUPS</span><span>PRÓXIMAMENTE MÁS</span></footer>
+    <footer className="dj-page-footer"><span>CALDERÓN / MASHUPS</span></footer>
   </main>
 }
 
