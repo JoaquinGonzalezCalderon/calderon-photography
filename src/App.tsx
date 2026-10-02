@@ -37,6 +37,7 @@ function App() {
   const [showIntro, setShowIntro] = useState(true)
   const scrollPosition = useRef(0)
   const albumReturnPath = useRef(activeAlbum ? '/fotografia' : '/')
+  const navigationTimer = useRef<number | null>(null)
 
   const navigateArea = (area: PortfolioArea) => {
     setActiveArea(area)
@@ -45,9 +46,31 @@ function App() {
   }
 
   const goHome = () => {
-    setActiveArea('home')
-    if (window.location.pathname !== '/') window.history.replaceState({}, '', '/')
+    const showHome = () => {
+      setActiveArea('home')
+      if (window.location.pathname !== '/') window.history.replaceState({}, '', '/')
+      document.body.classList.remove('is-navigating-back')
+      document.body.classList.add('is-arriving-back')
+      navigationTimer.current = window.setTimeout(() => {
+        document.body.classList.remove('is-arriving-back')
+        navigationTimer.current = null
+      }, 420)
+    }
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (navigationTimer.current !== null) window.clearTimeout(navigationTimer.current)
+    document.body.classList.remove('is-arriving-back')
+    if (reduceMotion) {
+      showHome()
+      return
+    }
+    document.body.classList.add('is-navigating-back')
+    navigationTimer.current = window.setTimeout(showHome, 180)
   }
+
+  useEffect(() => () => {
+    if (navigationTimer.current !== null) window.clearTimeout(navigationTimer.current)
+    document.body.classList.remove('is-navigating-back', 'is-arriving-back')
+  }, [])
 
   useEffect(() => {
     const media = window.matchMedia('(prefers-reduced-motion: reduce)')
@@ -427,7 +450,7 @@ function DJPortfolio({ onBack }: { onBack: () => void }) {
   const stepTrack = (direction: -1 | 1) => selectTrack((activeIndex + direction + tracks.length) % tracks.length)
 
   return <main className="dj-page dj-player-page">
-    <header className="archive-header"><button className="area-back" onClick={onBack}>← VOLVER</button><Logo /><span className="header-side header-side-right">02 / DJ · PRODUCCIÓN</span></header>
+    <header className="archive-header"><button className="area-back" onClick={onBack}>← VOLVER</button><span className="header-side header-side-right">02 / DJ · PRODUCCIÓN</span></header>
     <section className="dj-content dj-player-content" aria-labelledby="dj-title">
       <audio ref={audioRef} src={activeTrack.src} preload="auto" onLoadedMetadata={(event) => setDuration(Number.isFinite(event.currentTarget.duration) ? event.currentTarget.duration : 0)} onTimeUpdate={(event) => setCurrentTime(event.currentTarget.currentTime)} onPlay={() => { setPlaying(true); setAudioError(false) }} onPause={() => setPlaying(false)} onEnded={() => { setPlaying(false); setCurrentTime(0) }} onError={() => setAudioError(true)} />
       <div className="dj-heading dj-player-heading">

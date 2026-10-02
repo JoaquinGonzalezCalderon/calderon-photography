@@ -592,3 +592,12 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--white); outline
 @media (prefers-reduced-motion: reduce) {
   .area-back, .dj-release-card, .dj-release-card.is-playing .dj-release-card-dancer img { transition: none; animation: none; }
 }
+
+/* A short exit/arrival cue makes the back action feel like one connected navigation. */
+body.is-navigating-back .systems-page,
+body.is-navigating-back .dj-page,
+body.is-navigating-back .archive-home,
+body.is-navigating-back .area-placeholder { animation: back-page-exit 180ms cubic-bezier(.19, 1, .22, 1) both; }
+body.is-arriving-back .home-hub { animation: back-home-enter 420ms cubic-bezier(.16, 1, .3, 1) both; }
+@keyframes back-page-exit { to { opacity: 0; transform: translateY(9px) scale(.992); } }
+@keyframes back-home-enter { from { opacity: 0; transform: translateY(-12px) scale(.992); } to { opacity: 1; transform: translateY(0) scale(1); } }
