@@ -108,6 +108,11 @@ function App() {
   }, [activeAlbum])
 
   useLayoutEffect(() => {
+    window.history.scrollRestoration = 'manual'
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+  }, [activeArea])
+
+  useLayoutEffect(() => {
     if (!activeAlbum) return
     scrollPosition.current = window.scrollY
     document.body.classList.add('album-is-open')
