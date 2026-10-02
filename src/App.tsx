@@ -392,7 +392,9 @@ function DJPortfolio({ onBack }: { onBack: () => void }) {
   const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(0)
   const [audioError, setAudioError] = useState(false)
+  const [volume, setVolume] = useState(0.75)
   const activeTrack = tracks[activeIndex]
+  useEffect(() => { if (audioRef.current) audioRef.current.volume = volume }, [volume])
   const formatTime = (seconds: number) => `${Math.floor(seconds / 60)}:${String(Math.floor(seconds % 60)).padStart(2, '0')}`
   const togglePlayback = () => {
     const audio = audioRef.current
@@ -426,9 +428,8 @@ function DJPortfolio({ onBack }: { onBack: () => void }) {
           {tracks.map((track, index) => {
             const position = index === activeIndex ? 'active' : index < activeIndex ? 'previous' : 'next'
             const selected = index === activeIndex
-            return <button type="button" key={track.number} className={`dj-release-card is-${position}${selected ? ' is-selected' : ''}${selected && playing ? ' is-playing' : ''}`} onClick={() => selectTrack(index)} aria-label={`${selected ? 'Seleccionado' : 'Seleccionar'}: ${track.title}`} aria-pressed={selected}>
+            return <button type="button" key={track.number} className={`dj-release-card is-${position}${selected ? ' is-selected' : ''}`} onClick={() => selectTrack(index)} aria-label={`${selected ? 'Seleccionado' : 'Seleccionar'}: ${track.title}`} aria-pressed={selected}>
               <span className="dj-release-card-art"><img src={track.cover} alt="" /><span className="dj-card-grain" /></span>
-              <span className="dj-release-card-dancer"><img src={selected && playing && !window.matchMedia('(prefers-reduced-motion: reduce)').matches ? track.dancer : track.dancerStill} alt="" /></span>
               <span className="dj-release-card-label"><span>MASHUP / {track.number}</span><strong>{track.title}</strong></span>
             </button>
           })}
@@ -436,12 +437,14 @@ function DJPortfolio({ onBack }: { onBack: () => void }) {
         <div className="dj-carousel-count"><span>0{activeIndex + 1}</span><i />0{tracks.length}</div>
       </div>
       <section className="dj-bottom-player" aria-label={`Reproductor: ${activeTrack.title}`}>
-        <div className="dj-player-current"><span className="dj-player-current-number">{activeTrack.number}</span><div><strong>{activeTrack.title}</strong><span>Joaquín Calderón · Mashup</span></div></div>
         <div className="dj-player-controls">
           <div className="dj-player-buttons"><button type="button" onClick={() => stepTrack(-1)} aria-label="Mashup anterior">‹</button><button type="button" className="dj-play-button" onClick={togglePlayback} aria-label={playing ? 'Pausar mashup' : 'Reproducir mashup'}>{playing ? 'Ⅱ' : '▶'}</button><button type="button" onClick={() => stepTrack(1)} aria-label="Siguiente mashup">›</button></div>
           <div className="dj-player-timeline"><span>{formatTime(currentTime)}</span><input type="range" min="0" max={duration || 1} step="0.1" value={Math.min(currentTime, duration || 1)} onChange={(event) => { if (audioRef.current) audioRef.current.currentTime = Number(event.target.value) }} aria-label="Posición de reproducción" /><span>{formatTime(duration)}</span></div>
         </div>
-        <span className="dj-player-queue">PRÓXIMAMENTE MÁS MASHUPS</span>
+        <label className="dj-player-volume" aria-label="Volumen">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4Z" /><path d="M16 9a5 5 0 0 1 0 6M18.5 6.5a8.5 8.5 0 0 1 0 11" /></svg>
+          <input type="range" min="0" max="1" step="0.01" value={volume} onChange={(event) => setVolume(Number(event.target.value))} />
+        </label>
       </section>
       {audioError && <p className="dj-player-error" role="status">No se pudo cargar el mashup. Intentá reproducirlo otra vez.</p>}
     </section>
