@@ -206,12 +206,13 @@ function SystemsPortfolio({ onBack }: { onBack: () => void }) {
         <div className="systems-heading-aside"><p className="systems-intro">Desarrollo web, comercio digital y soluciones para negocios.</p><nav className="systems-profile-links" aria-label="Perfiles profesionales"><a href="https://github.com/JoaquinGonzalezCalderon?tab=repositories" target="_blank" rel="noreferrer"><span>GH</span> GITHUB / REPOSITORIOS ↗</a><a href="https://www.linkedin.com/in/joaqu%C3%ADn-gonzalez-calder%C3%B3n-8b0b4837b/" target="_blank" rel="noreferrer"><span>in</span> LINKEDIN / PERFIL ↗</a></nav></div>
       </div>
       <section className="systems-projects" aria-labelledby="systems-projects-title">
-        <div className="systems-section-heading"><div><p>PORTFOLIO / SELECCIÓN</p><h2 id="systems-projects-title">Proyectos</h2></div><span>01 — 04</span></div>
+        <div className="systems-section-heading"><div><p>PORTFOLIO / SELECCIÓN</p><h2 id="systems-projects-title">Proyectos</h2></div><span>01 — 05</span></div>
         <FeaturedStreak />
+        <FeaturedStugo />
         <div className="systems-project-grid">
-          <ProjectCard number="02" title="Mate Único" description="E-commerce full-stack con restricciones en base de datos y lógica avanzada de validación de stock." image="/areas/jgc-mate.webp" alt="Vista de la tienda online Mate Único" href="https://mate-unico-deployed.vercel.app/" status="SITIO EN VIVO" />
-          <ProjectCard number="03" title="Inmobiliaria Andrea Duré" description="Sitio inmobiliario profesional y responsivo para el mercado local de Colón, Entre Ríos." image="/areas/jgc-inmobiliaria.webp" alt="Vista de la web inmobiliaria de Andrea Duré" href="https://andreadure.com/" status="SITIO EN VIVO" />
-          <ProjectCard number="04" title="Barbería Los Santos" description="Plataforma web para presentar servicios, catálogo de cortes y reserva de turnos online." image="/areas/jgc-barberia.webp" alt="Vista del proyecto web Barbería Los Santos" status="EN DESARROLLO ACTIVO" />
+          <ProjectCard number="03" title="Mate Único" description="E-commerce full-stack con restricciones en base de datos y lógica avanzada de validación de stock." image="/areas/jgc-mate.webp" alt="Vista de la tienda online Mate Único" href="https://mate-unico-deployed.vercel.app/" status="SITIO EN VIVO" />
+          <ProjectCard number="04" title="Inmobiliaria Andrea Duré" description="Sitio inmobiliario profesional y responsivo para el mercado local de Colón, Entre Ríos." image="/areas/jgc-inmobiliaria.webp" alt="Vista de la web inmobiliaria de Andrea Duré" href="https://andreadure.com/" status="SITIO EN VIVO" />
+          <ProjectCard number="05" title="Barbería Los Santos" description="Plataforma web para presentar servicios, catálogo de cortes y reserva de turnos online." image="/areas/jgc-barberia.webp" alt="Vista del proyecto web Barbería Los Santos" status="EN DESARROLLO ACTIVO" />
         </div>
       </section>
       <section className="systems-demos" aria-labelledby="systems-demos-title">
@@ -229,23 +230,51 @@ function SystemsPortfolio({ onBack }: { onBack: () => void }) {
 
 function FeaturedStreak() {
   const screens = [
-    { src: '/areas/tustreak-home.webp', title: 'Inicio', alt: 'Inicio de TuStreak con racha diaria, hábito y botón de registro' },
-    { src: '/areas/tustreak-progress.webp', title: 'Progreso', alt: 'Progreso de nivel, racha, consistencia e historial de TuStreak' },
-    { src: '/areas/tustreak-gym.webp', title: 'Gym', alt: 'Objetivo semanal, rutina y estadísticas de entrenamiento en TuStreak' },
-    { src: '/areas/tustreak-profile.webp', title: 'Perfil', alt: 'Perfil de TuStreak con avatar, hábito y opciones de personalización' },
+    { src: '/areas/tustreak-home.webp', title: 'Inicio', alt: 'Inicio de Streak con racha diaria, hábito y botón de registro' },
+    { src: '/areas/tustreak-progress.webp', title: 'Progreso', alt: 'Progreso de nivel, racha, consistencia e historial de Streak' },
+    { src: '/areas/tustreak-gym.webp', title: 'Gym', alt: 'Objetivo semanal, rutina y estadísticas de entrenamiento en Streak' },
+    { src: '/areas/tustreak-profile.webp', title: 'Perfil', alt: 'Perfil de Streak con avatar, hábito y opciones de personalización' },
   ]
   return <article className="systems-featured-project">
     <div className="systems-featured-copy">
       <p className="systems-featured-kicker"><span>01</span> PRODUCTO DIGITAL / APP WEB</p>
-      <div className="systems-featured-title"><h3>TuStreak</h3><span>EN VIVO</span></div>
-      <p className="systems-featured-description">TuStreak convierte la constancia en algo visible. Registrá tus hábitos con un toque, seguí tu racha diaria y mirá cómo avanzás con experiencia, niveles e historial. También reúne objetivos semanales, rutinas y estadísticas de gimnasio, con un perfil personalizable y tu propio avatar.</p>
+      <div className="systems-featured-title"><h3>Streak</h3><span>EN VIVO</span></div>
+      <p className="systems-featured-description">Streak reúne seguimiento de hábitos, entrenamiento y progreso en una app pensada para el celular e instalable como PWA. Registrá tu hábito diario y la toma de creatina, consultá la última vez que la marcaste y revisá un resumen semanal de actividad. La XP y los niveles reconocen la constancia sin perder lo acumulado cuando se corta una racha.</p>
+      <p className="systems-featured-description systems-featured-description-extra">En Gym podés anotar entrenamientos y grupos musculares, editar el historial, crear rutinas propias y seguir objetivos semanales, mensuales y por músculo en el calendario. El perfil suma frases motivadoras, avatar, tema, color principal, hábito y recordatorios configurables. Cada cuenta guarda sus datos de forma privada.</p>
       <ul className="systems-featured-details">
-        <li>Rachas y hábitos diarios</li><li>Progreso, niveles e historial</li><li>Objetivos y rutinas de gym</li><li>Perfil y avatar personalizables</li>
+        <li>Hábito diario, creatina y recordatorios</li><li>XP, niveles, rachas e historial</li><li>Rutinas, calendario y estadísticas de gym</li><li>Perfil personalizable y PWA instalable</li>
       </ul>
-      <a className="systems-featured-cta" href="https://tustreak.vercel.app/app" target="_blank" rel="noreferrer">ABRIR TUESTREAK <span aria-hidden="true">↗</span></a>
+      <a className="systems-featured-cta" href="https://tustreak.vercel.app/app" target="_blank" rel="noreferrer">ABRIR STREAK <span aria-hidden="true">↗</span></a>
     </div>
-    <div className="systems-streak-gallery" aria-label="Capturas de TuStreak">
+    <div className="systems-streak-gallery" aria-label="Capturas de Streak">
       {screens.map((screen, index) => <figure className="systems-streak-shot" key={screen.title}>
+        <div><img src={screen.src} alt={screen.alt} loading="lazy" /></div>
+        <figcaption><span>0{index + 1}</span>{screen.title}</figcaption>
+      </figure>)}
+    </div>
+  </article>
+}
+
+function FeaturedStugo() {
+  const screens = [
+    { src: '/areas/stugo1.webp', title: 'Inicio', alt: 'Inicio de STUGO con asistente, agenda, viajes y vivienda' },
+    { src: '/areas/stugo2.webp', title: 'Servicios', alt: 'Categorías de servicios cotidianos y comercios cercanos en STUGO' },
+    { src: '/areas/stugo3.webp', title: 'Asistente IA', alt: 'Asistente por voz y texto de STUGO con consultas rápidas de actividades y viajes' },
+    { src: '/areas/stugo4.webp', title: 'Actividades', alt: 'Descubrimiento de actividades y eventos locales en STUGO' },
+  ]
+  return <article className="systems-featured-project systems-featured-stugo">
+    <div className="systems-featured-copy">
+      <p className="systems-featured-kicker"><span>02</span> PLATAFORMA HIPERLOCAL / MOBILE + WEB</p>
+      <div className="systems-featured-title"><h3>STUGO</h3><span>PROYECTO PROPIO</span></div>
+      <p className="systems-featured-description">Un ecosistema para la vida universitaria que conecta a estudiantes con vivienda verificada, viajes compartidos, actividades y servicios cotidianos, empezando por Concepción del Uruguay.</p>
+      <p className="systems-featured-description systems-featured-description-extra">La app móvil y web reúne mapas y filtros locales, reservas de carpooling con contacto protegido, publicaciones inmobiliarias moderadas y un asistente conversacional por voz y texto. El asistente consulta información real de la plataforma y responde con tarjetas interactivas de viviendas, viajes, lugares y actividades.</p>
+      <ul className="systems-featured-details">
+        <li>Vivienda estudiantil, servicios y actividades</li><li>Carpooling con reservas y privacidad</li><li>App Expo y panel web de moderación</li><li>FastAPI, PostgreSQL y asistente con IA y voz</li>
+      </ul>
+      <div className="systems-stugo-stack" aria-label="Tecnologías principales"><span>React Native</span><span>Expo</span><span>TypeScript</span><span>FastAPI</span><span>PostgreSQL</span><span>Groq · Whisper</span></div>
+    </div>
+    <div className="systems-stugo-gallery" aria-label="Capturas de STUGO">
+      {screens.map((screen, index) => <figure className="systems-stugo-shot" key={screen.title}>
         <div><img src={screen.src} alt={screen.alt} loading="lazy" /></div>
         <figcaption><span>0{index + 1}</span>{screen.title}</figcaption>
       </figure>)}
