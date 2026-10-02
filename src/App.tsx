@@ -390,6 +390,7 @@ function DJPortfolio({ onBack }: { onBack: () => void }) {
   const tracks = [
     { number: '01', title: 'Se Preparo - Ozuna X Salgo Pa la Calle - Daddy Yankee', src: '/areas/dj-track-01.mp3', cover: '/areas/dj-cover-01.webp' },
     { number: '02', title: 'World Hold On X Stereo Love', src: '/areas/dj-track-02.mp3', cover: '/areas/dj-cover-02.webp' },
+    { number: '03', title: 'Its That Time X Im Not Alone', src: '/areas/dj-track-03.mp3', cover: '/areas/dj-cover-03.webp' },
   ]
   const audioRef = useRef<HTMLAudioElement>(null)
   const [activeIndex, setActiveIndex] = useState(0)
@@ -435,7 +436,8 @@ function DJPortfolio({ onBack }: { onBack: () => void }) {
       <div className="dj-carousel" aria-label="Elegí un mashup">
         <div className="dj-disc-stack">
           {tracks.map((track, index) => {
-            const position = index === activeIndex ? 'active' : index < activeIndex ? 'previous' : 'next'
+            const relativeIndex = (index - activeIndex + tracks.length) % tracks.length
+            const position = index === activeIndex ? 'active' : tracks.length === 2 ? (index < activeIndex ? 'previous' : 'next') : relativeIndex === 1 ? 'next' : 'previous'
             const selected = index === activeIndex
             return <button type="button" key={track.number} data-track={track.number} className={`dj-release-card is-${position}${selected ? ' is-selected' : ''}`} onClick={() => selectTrack(index)} aria-label={`${selected ? 'Seleccionado' : 'Seleccionar'}: ${track.title}`} aria-pressed={selected}>
               <span className="dj-release-card-art"><img src={track.cover} alt="" /><span className="dj-card-grain" /></span>

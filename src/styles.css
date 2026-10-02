@@ -350,8 +350,8 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--white); outline
 }
 
 @media (max-width: 760px) {
-  .home-hub .area-selector { padding: 128px 20px 20px; }
-  .home-hub .board-topline { justify-content: center; }
+  .home-hub .area-selector { padding: 128px 24px 20px; }
+  .home-hub .board-topline { inset: 24px 14px auto; justify-content: center; }
   .home-hub .board-brand { width: 100%; justify-items: center; gap: 9px; text-align: center; }
   .home-hub .board-logo { width: 94px; }
   .home-hub .board-edition { justify-items: center; font-size: 10px; line-height: 1.35; }
@@ -521,6 +521,7 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--white); outline
 .dj-release-card { position: absolute; top: 50%; display: block; width: clamp(228px, 26vw, 320px); padding: 0; aspect-ratio: 1 / 1.16; overflow: visible; border: 1px solid #a09d9880; background: #18191a; color: #f4f2ee; text-align: left; transform-origin: center; transition: left 460ms cubic-bezier(.22,.8,.24,1), transform 460ms cubic-bezier(.22,.8,.24,1), opacity 350ms ease, filter 350ms ease, box-shadow 350ms ease; }
 .dj-release-card[data-track="01"] { --cover-aura: rgba(221, 175, 102, .36); }
 .dj-release-card[data-track="02"] { --cover-aura: rgba(201, 76, 184, .36); }
+.dj-release-card[data-track="03"] { --cover-aura: rgba(172, 255, 35, .42); }
 .dj-release-card.is-selected { left: 50%; z-index: 3; opacity: 1; filter: none; transform: translate(-50%, -50%) rotate(0deg) scale(1); box-shadow: 0 24px 60px #0008, 0 0 54px 8px var(--cover-aura), 0 0 0 7px #ffffff08; }
 .dj-release-card.is-next { left: 68%; z-index: 2; opacity: .72; filter: brightness(.58); transform: translate(-50%, -50%) rotate(8deg) scale(.82); }
 .dj-release-card.is-previous { left: 32%; z-index: 2; opacity: .72; filter: brightness(.58); transform: translate(-50%, -50%) rotate(-8deg) scale(.82); }
