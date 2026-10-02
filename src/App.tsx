@@ -308,8 +308,8 @@ function DemoCard({ title, description, image, href }: { title: string; descript
 
 function DJPortfolio({ onBack }: { onBack: () => void }) {
   const tracks = [
-    { number: '01', title: 'Lanzamiento 01', description: 'Tema original · Escuchá el track completo.', src: '/areas/dj-track-01.mpeg', dancers: true },
-    { number: '02', title: 'Lanzamiento 02', description: 'Tema original · Escuchá el track completo.', src: '/areas/dj-track-02.mpeg', dancers: false },
+    { number: '01', title: 'Se Preparo - Ozuna X Salgo Pa la Calle - Daddy Yankee', src: '/areas/dj-track-01.mpeg', cover: '/areas/dj-cover-01.webp', dancer: '/areas/dj-dancer-one.webp', dancerStill: '/areas/dj-dancer-one-still.webp' },
+    { number: '02', title: 'World Hold On X Stereo Love', src: '/areas/dj-track-02.mpeg', cover: '/areas/dj-cover-02.webp', dancer: '/areas/dj-dancer-two.webp', dancerStill: '/areas/dj-dancer-two-still.webp' },
   ]
   return <main className="dj-page">
     <header className="archive-header"><button className="area-back" onClick={onBack}>← VOLVER</button><Logo /><span className="header-side header-side-right">02 / DJ · PRODUCCIÓN</span></header>
@@ -317,7 +317,7 @@ function DJPortfolio({ onBack }: { onBack: () => void }) {
       <div className="dj-heading">
         <p className="dj-kicker"><span>02</span> MÚSICA / EN VIVO</p>
         <h1 id="dj-title">Ritmo propio<span>.</span></h1>
-        <p className="dj-intro">Dos temas originales y una foto desde la cabina. Dale play y escuchalos acá.</p>
+        <p className="dj-intro">Me gusta mezclar canciones, probar cruces y jugar con la energía de cada tema. Voy a ir publicando mis mashups acá.</p>
       </div>
       <div className="dj-feature">
         <figure className="dj-portrait">
@@ -325,10 +325,11 @@ function DJPortfolio({ onBack }: { onBack: () => void }) {
           <figcaption><span>JOAQUÍN CALDERÓN</span><span>EN CABINA / 01</span></figcaption>
         </figure>
         <section className="dj-releases" aria-label="Temas originales">
-          <div className="dj-release-heading"><h2>Escuchá mis temas</h2><span>02 TRACKS</span></div>
+          <div className="dj-release-heading"><h2>Mis mashups</h2><span>02 / EN ROTACIÓN</span></div>
           <div className="dj-track-list">
             {tracks.map((track) => <DJTrack key={track.number} {...track} />)}
           </div>
+          <p className="dj-coming-soon">PRÓXIMAMENTE, MÁS MASHUPS <span>✳</span></p>
         </section>
       </div>
     </section>
@@ -336,12 +337,21 @@ function DJPortfolio({ onBack }: { onBack: () => void }) {
   </main>
 }
 
-function DJTrack({ number, title, description, src, dancers }: { number: string; title: string; description: string; src: string; dancers: boolean }) {
+function DJTrack({ number, title, src, cover, dancer, dancerStill }: { number: string; title: string; src: string; cover: string; dancer: string; dancerStill: string }) {
   const audioRef = useRef<HTMLAudioElement>(null)
   const [playing, setPlaying] = useState(false)
   const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(0)
   const [audioError, setAudioError] = useState(false)
+
+  useEffect(() => {
+    const pauseOtherTrack = (event: Event) => {
+      const playingTrack = (event as CustomEvent<string>).detail
+      if (playingTrack !== number) audioRef.current?.pause()
+    }
+    window.addEventListener('dj-track-play', pauseOtherTrack)
+    return () => window.removeEventListener('dj-track-play', pauseOtherTrack)
+  }, [number])
 
   const togglePlayback = () => {
     const audio = audioRef.current
@@ -351,16 +361,16 @@ function DJTrack({ number, title, description, src, dancers }: { number: string;
   }
   const formatTime = (seconds: number) => `${Math.floor(seconds / 60)}:${String(Math.floor(seconds % 60)).padStart(2, '0')}`
 
-  return <article className={`dj-track${dancers ? ' dj-track-with-dancers' : ''}`}>
-    <audio ref={audioRef} src={src} preload="metadata" onLoadedMetadata={(event) => setDuration(Number.isFinite(event.currentTarget.duration) ? event.currentTarget.duration : 0)} onTimeUpdate={(event) => setCurrentTime(event.currentTarget.currentTime)} onPlay={() => { setPlaying(true); setAudioError(false) }} onPause={() => setPlaying(false)} onEnded={() => { setPlaying(false); setCurrentTime(0) }} onError={() => setAudioError(true)} />
+  return <article className="dj-track">
+    <audio ref={audioRef} src={src} preload="metadata" onLoadedMetadata={(event) => setDuration(Number.isFinite(event.currentTarget.duration) ? event.currentTarget.duration : 0)} onTimeUpdate={(event) => setCurrentTime(event.currentTarget.currentTime)} onPlay={() => { window.dispatchEvent(new CustomEvent('dj-track-play', { detail: number })); setPlaying(true); setAudioError(false) }} onPause={() => setPlaying(false)} onEnded={() => { setPlaying(false); setCurrentTime(0) }} onError={() => setAudioError(true)} />
     <div className="dj-track-art" aria-hidden="true">
-      {dancers ? <div className="dj-dancers"><img className="dj-dancer dj-dancer-one" src="/areas/dj-dancer-one.webp" alt="" /><img className="dj-dancer dj-dancer-two" src="/areas/dj-dancer-two.webp" alt="" /><img className="dj-dancer dj-dancer-three" src="/areas/dj-dancer-three.webp" alt="" /></div> : <span className="dj-art-monogram">JC<span> / {number}</span></span>}
-      <span className="dj-art-index">ORIGINAL / {number}</span>
+      <img className="dj-cover" src={cover} alt="" />
+      <span className="dj-art-index">MASHUP / {number}</span>
     </div>
     <div className="dj-track-body">
-      <div className="dj-track-meta"><span>{number}</span><span>JOAQUÍN CALDERÓN · ORIGINAL</span></div>
+      <div className="dj-track-meta"><span>{number}</span><span>JOAQUÍN CALDERÓN · MASHUP</span></div>
       <h3>{title}</h3>
-      <p>{description}</p>
+      <div className={`dj-dancer-stage${playing ? ' is-playing' : ''}`} aria-hidden="true"><img src={playing ? dancer : dancerStill} alt="" /></div>
       <div className="dj-player">
         <button type="button" className="dj-play-button" onClick={togglePlayback} aria-label={`${playing ? 'Pausar' : 'Reproducir'} ${title}`}>{playing ? 'Ⅱ' : '▶'}</button>
         <input type="range" min="0" max={duration || 1} step="0.1" value={Math.min(currentTime, duration || 1)} onChange={(event) => { if (audioRef.current) audioRef.current.currentTime = Number(event.target.value) }} aria-label={`Posición de reproducción de ${title}`} />
