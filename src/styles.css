@@ -350,12 +350,14 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--white); outline
 }
 
 @media (max-width: 760px) {
+  .home-hub .area-selector { padding: 128px 20px 20px; }
   .home-hub .board-topline { justify-content: center; }
-  .home-hub .board-brand { width: 100%; justify-items: center; gap: 10px; text-align: center; }
+  .home-hub .board-brand { width: 100%; justify-items: center; gap: 9px; text-align: center; }
   .home-hub .board-logo { width: 94px; }
   .home-hub .board-edition { justify-items: center; font-size: 10px; line-height: 1.35; }
   .home-hub .board-edition span + span { font-size: 9px; }
   .home-hub .home-portrait { margin-bottom: 30px; }
+  .home-hub .home-portrait figcaption { font-size: clamp(6px, 1.7vw, 8px); letter-spacing: .03em; }
   .home-hub .home-about { margin: 0 auto 22px; }
   .home-hub .area-selector { height: auto; margin: 68px auto 26px; }
   .home-hub .home-about { top: auto; bottom: auto; }
