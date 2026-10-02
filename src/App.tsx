@@ -308,8 +308,8 @@ function DemoCard({ title, description, image, href }: { title: string; descript
 
 function DJPortfolioLegacy({ onBack }: { onBack: () => void }) {
   const tracks = [
-    { number: '01', title: 'Se Preparo - Ozuna X Salgo Pa la Calle - Daddy Yankee', src: '/areas/dj-track-01.mpeg', cover: '/areas/dj-cover-01.webp', dancer: '/areas/dj-dancer-one.webp', dancerStill: '/areas/dj-dancer-one-still.webp' },
-    { number: '02', title: 'World Hold On X Stereo Love', src: '/areas/dj-track-02.mpeg', cover: '/areas/dj-cover-02.webp', dancer: '/areas/dj-dancer-two.webp', dancerStill: '/areas/dj-dancer-two-still.webp' },
+    { number: '01', title: 'Se Preparo - Ozuna X Salgo Pa la Calle - Daddy Yankee', src: '/areas/dj-track-01.mp3', cover: '/areas/dj-cover-01.webp', dancer: '/areas/dj-dancer-one.webp', dancerStill: '/areas/dj-dancer-one-still.webp' },
+    { number: '02', title: 'World Hold On X Stereo Love', src: '/areas/dj-track-02.mp3', cover: '/areas/dj-cover-02.webp', dancer: '/areas/dj-dancer-two.webp', dancerStill: '/areas/dj-dancer-two-still.webp' },
   ]
   return <main className="dj-page">
     <header className="archive-header"><button className="area-back" onClick={onBack}>← VOLVER</button><Logo /><span className="header-side header-side-right">02 / DJ · PRODUCCIÓN</span></header>
@@ -383,8 +383,8 @@ function DJTrack({ number, title, src, cover, dancer, dancerStill }: { number: s
 
 function DJPortfolio({ onBack }: { onBack: () => void }) {
   const tracks = [
-    { number: '01', title: 'Se Preparo - Ozuna X Salgo Pa la Calle - Daddy Yankee', src: '/areas/dj-track-01.mpeg', cover: '/areas/dj-cover-01.webp', dancer: '/areas/dj-dancer-one.webp', dancerStill: '/areas/dj-dancer-one-still.webp' },
-    { number: '02', title: 'World Hold On X Stereo Love', src: '/areas/dj-track-02.mpeg', cover: '/areas/dj-cover-02.webp', dancer: '/areas/dj-dancer-two.webp', dancerStill: '/areas/dj-dancer-two-still.webp' },
+    { number: '01', title: 'Se Preparo - Ozuna X Salgo Pa la Calle - Daddy Yankee', src: '/areas/dj-track-01.mp3', cover: '/areas/dj-cover-01.webp' },
+    { number: '02', title: 'World Hold On X Stereo Love', src: '/areas/dj-track-02.mp3', cover: '/areas/dj-cover-02.webp' },
   ]
   const audioRef = useRef<HTMLAudioElement>(null)
   const [activeIndex, setActiveIndex] = useState(0)
@@ -394,6 +394,11 @@ function DJPortfolio({ onBack }: { onBack: () => void }) {
   const [audioError, setAudioError] = useState(false)
   const [volume, setVolume] = useState(0.75)
   const activeTrack = tracks[activeIndex]
+  useEffect(() => {
+    const audio = audioRef.current
+    if (!audio) return
+    audio.load()
+  }, [activeTrack.src])
   useEffect(() => { if (audioRef.current) audioRef.current.volume = volume }, [volume])
   const formatTime = (seconds: number) => `${Math.floor(seconds / 60)}:${String(Math.floor(seconds % 60)).padStart(2, '0')}`
   const togglePlayback = () => {
@@ -417,7 +422,7 @@ function DJPortfolio({ onBack }: { onBack: () => void }) {
   return <main className="dj-page dj-player-page">
     <header className="archive-header"><button className="area-back" onClick={onBack}>← VOLVER</button><Logo /><span className="header-side header-side-right">02 / DJ · PRODUCCIÓN</span></header>
     <section className="dj-content dj-player-content" aria-labelledby="dj-title">
-      <audio ref={audioRef} src={activeTrack.src} preload="metadata" onLoadedMetadata={(event) => setDuration(Number.isFinite(event.currentTarget.duration) ? event.currentTarget.duration : 0)} onTimeUpdate={(event) => setCurrentTime(event.currentTarget.currentTime)} onPlay={() => { setPlaying(true); setAudioError(false) }} onPause={() => setPlaying(false)} onEnded={() => { setPlaying(false); setCurrentTime(0) }} onError={() => setAudioError(true)} />
+      <audio ref={audioRef} src={activeTrack.src} preload="auto" onLoadedMetadata={(event) => setDuration(Number.isFinite(event.currentTarget.duration) ? event.currentTarget.duration : 0)} onTimeUpdate={(event) => setCurrentTime(event.currentTarget.currentTime)} onPlay={() => { setPlaying(true); setAudioError(false) }} onPause={() => setPlaying(false)} onEnded={() => { setPlaying(false); setCurrentTime(0) }} onError={() => setAudioError(true)} />
       <div className="dj-heading dj-player-heading">
         <p className="dj-kicker"><span>02</span> MÚSICA / EN VIVO</p>
         <h1 id="dj-title">Mis mashups<span>.</span></h1>
@@ -433,11 +438,10 @@ function DJPortfolio({ onBack }: { onBack: () => void }) {
             </button>
           })}
         </div>
-        <div className="dj-carousel-count"><span>0{activeIndex + 1}</span><i />0{tracks.length}</div>
       </div>
       <section className="dj-bottom-player" aria-label={`Reproductor: ${activeTrack.title}`}>
         <div className="dj-player-controls">
-          <div className="dj-player-buttons"><button type="button" onClick={() => stepTrack(-1)} aria-label="Mashup anterior">‹</button><button type="button" className="dj-play-button" onClick={togglePlayback} aria-label={playing ? 'Pausar mashup' : 'Reproducir mashup'}>{playing ? 'Ⅱ' : '▶'}</button><button type="button" onClick={() => stepTrack(1)} aria-label="Siguiente mashup">›</button></div>
+          <div className="dj-player-buttons"><button type="button" onClick={() => stepTrack(-1)} aria-label="Mashup anterior">‹</button><button type="button" className="dj-play-button" onClick={togglePlayback} aria-label={playing ? 'Pausar mashup' : 'Reproducir mashup'}><svg viewBox="0 0 24 24" aria-hidden="true">{playing ? <path d="M7 5h4v14H7zM15 5h4v14h-4z" /> : <path d="M7 4.8c0-.7.8-1.1 1.4-.7l11 7.2c.6.4.6 1.3 0 1.7l-11 7.2c-.6.4-1.4 0-1.4-.7V4.8Z" />}</svg></button><button type="button" onClick={() => stepTrack(1)} aria-label="Siguiente mashup">›</button></div>
           <div className="dj-player-timeline"><span>{formatTime(currentTime)}</span><input type="range" min="0" max={duration || 1} step="0.1" value={Math.min(currentTime, duration || 1)} onChange={(event) => { if (audioRef.current) audioRef.current.currentTime = Number(event.target.value) }} aria-label="Posición de reproducción" /><span>{formatTime(duration)}</span></div>
         </div>
         <label className="dj-player-volume" aria-label="Volumen">
