@@ -306,7 +306,7 @@ function DemoCard({ title, description, image, href }: { title: string; descript
   </a>
 }
 
-function DJPortfolio({ onBack }: { onBack: () => void }) {
+function DJPortfolioLegacy({ onBack }: { onBack: () => void }) {
   const tracks = [
     { number: '01', title: 'Se Preparo - Ozuna X Salgo Pa la Calle - Daddy Yankee', src: '/areas/dj-track-01.mpeg', cover: '/areas/dj-cover-01.webp', dancer: '/areas/dj-dancer-one.webp', dancerStill: '/areas/dj-dancer-one-still.webp' },
     { number: '02', title: 'World Hold On X Stereo Love', src: '/areas/dj-track-02.mpeg', cover: '/areas/dj-cover-02.webp', dancer: '/areas/dj-dancer-two.webp', dancerStill: '/areas/dj-dancer-two-still.webp' },
@@ -379,6 +379,74 @@ function DJTrack({ number, title, src, cover, dancer, dancerStill }: { number: s
       {audioError && <p className="dj-audio-error" role="status">No se pudo cargar el tema. Intentá reproducirlo otra vez.</p>}
     </div>
   </article>
+}
+
+function DJPortfolio({ onBack }: { onBack: () => void }) {
+  const tracks = [
+    { number: '01', title: 'Se Preparo - Ozuna X Salgo Pa la Calle - Daddy Yankee', src: '/areas/dj-track-01.mpeg', cover: '/areas/dj-cover-01.webp', dancer: '/areas/dj-dancer-one.webp', dancerStill: '/areas/dj-dancer-one-still.webp' },
+    { number: '02', title: 'World Hold On X Stereo Love', src: '/areas/dj-track-02.mpeg', cover: '/areas/dj-cover-02.webp', dancer: '/areas/dj-dancer-two.webp', dancerStill: '/areas/dj-dancer-two-still.webp' },
+  ]
+  const audioRef = useRef<HTMLAudioElement>(null)
+  const [activeIndex, setActiveIndex] = useState(0)
+  const [playing, setPlaying] = useState(false)
+  const [currentTime, setCurrentTime] = useState(0)
+  const [duration, setDuration] = useState(0)
+  const [audioError, setAudioError] = useState(false)
+  const activeTrack = tracks[activeIndex]
+  const formatTime = (seconds: number) => `${Math.floor(seconds / 60)}:${String(Math.floor(seconds % 60)).padStart(2, '0')}`
+  const togglePlayback = () => {
+    const audio = audioRef.current
+    if (!audio) return
+    if (audio.paused) void audio.play().catch(() => setAudioError(true))
+    else audio.pause()
+  }
+  const selectTrack = (index: number) => {
+    if (index === activeIndex) return
+    audioRef.current?.pause()
+    if (audioRef.current) audioRef.current.currentTime = 0
+    setActiveIndex(index)
+    setPlaying(false)
+    setCurrentTime(0)
+    setDuration(0)
+    setAudioError(false)
+  }
+  const stepTrack = (direction: -1 | 1) => selectTrack((activeIndex + direction + tracks.length) % tracks.length)
+
+  return <main className="dj-page dj-player-page">
+    <header className="archive-header"><button className="area-back" onClick={onBack}>← VOLVER</button><Logo /><span className="header-side header-side-right">02 / DJ · PRODUCCIÓN</span></header>
+    <section className="dj-content dj-player-content" aria-labelledby="dj-title">
+      <audio ref={audioRef} src={activeTrack.src} preload="metadata" onLoadedMetadata={(event) => setDuration(Number.isFinite(event.currentTarget.duration) ? event.currentTarget.duration : 0)} onTimeUpdate={(event) => setCurrentTime(event.currentTarget.currentTime)} onPlay={() => { setPlaying(true); setAudioError(false) }} onPause={() => setPlaying(false)} onEnded={() => { setPlaying(false); setCurrentTime(0) }} onError={() => setAudioError(true)} />
+      <div className="dj-heading dj-player-heading">
+        <p className="dj-kicker"><span>02</span> MÚSICA / EN VIVO</p>
+        <h1 id="dj-title">Mis mashups<span>.</span></h1>
+        <p className="dj-intro">Cruzo canciones, pruebo mezclas y juego con la energía. Acá voy a compartir algo que disfruto hacer.</p>
+      </div>
+      <div className="dj-carousel" aria-label="Elegí un mashup">
+        <div className="dj-disc-stack">
+          {tracks.map((track, index) => {
+            const position = index === activeIndex ? 'active' : index < activeIndex ? 'previous' : 'next'
+            const selected = index === activeIndex
+            return <button type="button" key={track.number} className={`dj-release-card is-${position}${selected ? ' is-selected' : ''}${selected && playing ? ' is-playing' : ''}`} onClick={() => selectTrack(index)} aria-label={`${selected ? 'Seleccionado' : 'Seleccionar'}: ${track.title}`} aria-pressed={selected}>
+              <span className="dj-release-card-art"><img src={track.cover} alt="" /><span className="dj-card-grain" /></span>
+              <span className="dj-release-card-dancer"><img src={selected && playing ? track.dancer : track.dancerStill} alt="" /></span>
+              <span className="dj-release-card-label"><span>MASHUP / {track.number}</span><strong>{track.title}</strong></span>
+            </button>
+          })}
+        </div>
+        <div className="dj-carousel-count"><span>0{activeIndex + 1}</span><i />0{tracks.length}</div>
+      </div>
+      <section className="dj-bottom-player" aria-label={`Reproductor: ${activeTrack.title}`}>
+        <div className="dj-player-current"><span className="dj-player-current-number">{activeTrack.number}</span><div><strong>{activeTrack.title}</strong><span>Joaquín Calderón · Mashup</span></div></div>
+        <div className="dj-player-controls">
+          <div className="dj-player-buttons"><button type="button" onClick={() => stepTrack(-1)} aria-label="Mashup anterior">‹</button><button type="button" className="dj-play-button" onClick={togglePlayback} aria-label={playing ? 'Pausar mashup' : 'Reproducir mashup'}>{playing ? 'Ⅱ' : '▶'}</button><button type="button" onClick={() => stepTrack(1)} aria-label="Siguiente mashup">›</button></div>
+          <div className="dj-player-timeline"><span>{formatTime(currentTime)}</span><input type="range" min="0" max={duration || 1} step="0.1" value={Math.min(currentTime, duration || 1)} onChange={(event) => { if (audioRef.current) audioRef.current.currentTime = Number(event.target.value) }} aria-label="Posición de reproducción" /><span>{formatTime(duration)}</span></div>
+        </div>
+        <span className="dj-player-queue">PRÓXIMAMENTE MÁS MASHUPS</span>
+      </section>
+      {audioError && <p className="dj-player-error" role="status">No se pudo cargar el mashup. Intentá reproducirlo otra vez.</p>}
+    </section>
+    <footer className="dj-page-footer"><span>CALDERÓN / MASHUPS</span><span>PRÓXIMAMENTE MÁS</span></footer>
+  </main>
 }
 
 function Home({ albums, onOpenAlbum, onBack }: { albums: Album[]; onOpenAlbum: (album: Album) => void; onBack: () => void }) {
