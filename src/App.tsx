@@ -421,7 +421,6 @@ function DJPortfolio({ onBack }: { onBack: () => void }) {
       <div className="dj-heading dj-player-heading">
         <p className="dj-kicker"><span>02</span> MÚSICA / EN VIVO</p>
         <h1 id="dj-title">Mis mashups<span>.</span></h1>
-        <p className="dj-intro">Cruzo canciones, pruebo mezclas y juego con la energía. Acá voy a compartir algo que disfruto hacer.</p>
       </div>
       <div className="dj-carousel" aria-label="Elegí un mashup">
         <div className="dj-disc-stack">

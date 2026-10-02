@@ -527,17 +527,17 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--white); outline
 .dj-carousel-count { display: flex; width: max-content; align-items: center; gap: 11px; margin: 0 auto; color: #777571; font-size: 9px; font-weight: 700; letter-spacing: .12em; }
 .dj-carousel-count span { color: #eeeae4; }
 .dj-carousel-count i { width: 34px; height: 1px; background: #5f5d59; }
-.dj-bottom-player { display: grid; width: min(960px, 100%); min-height: 78px; grid-template-columns: minmax(0, 1fr) minmax(145px, .28fr); align-items: center; gap: 30px; margin: 13px auto 20px; border: 1px solid #ffffff30; border-radius: 999px; padding: 11px 28px; background: #77756f24; box-shadow: 0 15px 50px #0005; backdrop-filter: blur(14px); }
+.dj-bottom-player { display: grid; width: min(720px, 100%); min-height: 62px; grid-template-columns: minmax(0, 1fr) minmax(110px, .28fr); align-items: center; gap: 20px; margin: 10px auto 15px; border: 1px solid #ffffff30; border-radius: 999px; padding: 7px 19px; background: #77756f24; box-shadow: 0 12px 34px #0005; backdrop-filter: blur(14px); }
 .dj-player-current { display: flex; min-width: 0; align-items: center; gap: 12px; }
 .dj-player-current-number { display: grid; width: 42px; height: 42px; flex: 0 0 auto; place-items: center; border: 1px solid #ffffff30; border-radius: 50%; color: #e6e3dd; font-size: 10px; letter-spacing: .06em; }
 .dj-player-current > div { display: grid; min-width: 0; gap: 4px; }
 .dj-player-current strong { overflow: hidden; color: #f4f2ee; font-size: 12px; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
 .dj-player-current > div > span { color: #a19e97; font-size: 10px; }
 .dj-player-controls { display: grid; min-width: 0; gap: 6px; }
-.dj-player-buttons { display: flex; align-items: center; justify-content: center; gap: 20px; }
-.dj-player-buttons > button:not(.dj-play-button) { display: grid; width: 28px; height: 30px; place-items: center; color: #d9d6d0; font-size: 27px; font-weight: 300; line-height: 1; }
-.dj-player-buttons .dj-play-button { width: 37px; height: 37px; font-size: 13px; }
-.dj-player-timeline { display: grid; grid-template-columns: 32px minmax(0, 1fr) 32px; align-items: center; gap: 8px; color: #aaa7a0; font-size: 9px; font-variant-numeric: tabular-nums; }
+.dj-player-buttons { display: flex; align-items: center; justify-content: center; gap: 15px; }
+.dj-player-buttons > button:not(.dj-play-button) { display: grid; width: 24px; height: 26px; place-items: center; color: #d9d6d0; font-size: 23px; font-weight: 300; line-height: 1; }
+.dj-player-buttons .dj-play-button { width: 31px; height: 31px; font-size: 11px; }
+.dj-player-timeline { display: grid; grid-template-columns: 27px minmax(0, 1fr) 27px; align-items: center; gap: 6px; color: #aaa7a0; font-size: 8px; font-variant-numeric: tabular-nums; }
 .dj-player-timeline > span:last-child { text-align: right; }
 .dj-player-timeline input { width: 100%; height: 16px; margin: 0; accent-color: #e5e1da; cursor: pointer; }
 .dj-player-queue { color: #a5a29c; font-size: 8px; font-weight: 700; letter-spacing: .12em; white-space: nowrap; }
@@ -564,7 +564,7 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--white); outline
   .dj-release-card-label strong { font-size: 17px; }
   .dj-release-card-dancer { top: -56px; right: 3px; height: 110px; }
   .dj-release-card-dancer img { max-width: 110px; }
-  .dj-bottom-player { width: 100%; min-height: 0; grid-template-columns: minmax(0, 1fr) minmax(80px, .34fr); gap: 12px; margin: 12px auto 18px; border-radius: 24px; padding: 13px 14px 11px; }
+  .dj-bottom-player { width: min(100%, 520px); min-height: 0; grid-template-columns: minmax(0, 1fr) minmax(74px, .34fr); gap: 10px; margin: 10px auto 15px; border-radius: 24px; padding: 9px 12px; }
   .dj-player-volume { gap: 6px; }
   .dj-player-volume svg { width: 17px; height: 17px; }
   .dj-player-buttons { gap: 22px; }
