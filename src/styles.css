@@ -501,15 +501,17 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--white); outline
 
 /* DJ listening room: layered mashup sleeves and a single shared player. */
 .dj-player-page { background: radial-gradient(ellipse at 70% 36%, #222324 0%, #111213 48%, #0b0b0c 100%); }
-.dj-player-content { display: flex; width: min(1280px, calc(100% - 10vw)); min-height: 0; flex: 1; flex-direction: column; align-items: center; justify-content: center; margin: 24px auto 0; }
-.dj-player-heading { max-width: 620px; margin: 0 auto 6px; text-align: center; }
+.dj-player-content { display: flex; width: min(1280px, calc(100% - 10vw)); min-height: 0; flex: 1; flex-direction: column; align-items: center; justify-content: flex-start; margin: 24px auto 0; }
+.dj-player-heading { max-width: 620px; margin: 0 auto 48px; text-align: center; }
 .dj-player-heading .dj-kicker { justify-content: center; margin-bottom: 13px; font-size: 10px; }
 .dj-player-heading h1 { font-size: clamp(48px, 6vw, 76px); letter-spacing: -.07em; line-height: .95; }
 .dj-player-heading .dj-intro { max-width: 48ch; margin: 14px auto 0; color: #aaa8a3; font-size: 14px; }
-.dj-carousel { width: min(900px, 100%); margin: 5px auto 10px; }
+.dj-carousel { width: min(900px, 100%); margin: 0 auto 10px; }
 .dj-disc-stack { position: relative; width: 100%; height: clamp(320px, 39vh, 410px); overflow: visible; }
-.dj-release-card { position: absolute; top: 50%; display: block; width: clamp(228px, 26vw, 320px); padding: 0; aspect-ratio: 1 / 1.16; overflow: visible; border: 1px solid #a09d9880; background: #18191a; color: #f4f2ee; text-align: left; transform-origin: center; transition: left 460ms cubic-bezier(.22,.8,.24,1), transform 460ms cubic-bezier(.22,.8,.24,1), opacity 350ms ease, filter 350ms ease; }
-.dj-release-card.is-selected { left: 50%; z-index: 3; opacity: 1; filter: none; transform: translate(-50%, -50%) rotate(0deg) scale(1); box-shadow: 0 24px 60px #0008, 0 0 0 7px #ffffff08; }
+.dj-release-card { position: absolute; top: 50%; display: block; width: clamp(228px, 26vw, 320px); padding: 0; aspect-ratio: 1 / 1.16; overflow: visible; border: 1px solid #a09d9880; background: #18191a; color: #f4f2ee; text-align: left; transform-origin: center; transition: left 460ms cubic-bezier(.22,.8,.24,1), transform 460ms cubic-bezier(.22,.8,.24,1), opacity 350ms ease, filter 350ms ease, box-shadow 350ms ease; }
+.dj-release-card[data-track="01"] { --cover-aura: rgba(221, 175, 102, .36); }
+.dj-release-card[data-track="02"] { --cover-aura: rgba(201, 76, 184, .36); }
+.dj-release-card.is-selected { left: 50%; z-index: 3; opacity: 1; filter: none; transform: translate(-50%, -50%) rotate(0deg) scale(1); box-shadow: 0 24px 60px #0008, 0 0 54px 8px var(--cover-aura), 0 0 0 7px #ffffff08; }
 .dj-release-card.is-next { left: 68%; z-index: 2; opacity: .72; filter: brightness(.58); transform: translate(-50%, -50%) rotate(8deg) scale(.82); }
 .dj-release-card.is-previous { left: 32%; z-index: 2; opacity: .72; filter: brightness(.58); transform: translate(-50%, -50%) rotate(-8deg) scale(.82); }
 .dj-release-card:not(.is-selected) { cursor: pointer; }
@@ -527,7 +529,7 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--white); outline
 .dj-carousel-count { display: flex; width: max-content; align-items: center; gap: 11px; margin: 0 auto; color: #777571; font-size: 9px; font-weight: 700; letter-spacing: .12em; }
 .dj-carousel-count span { color: #eeeae4; }
 .dj-carousel-count i { width: 34px; height: 1px; background: #5f5d59; }
-.dj-bottom-player { display: grid; width: min(720px, 100%); min-height: 62px; grid-template-columns: minmax(0, 1fr) minmax(110px, .28fr); align-items: center; gap: 20px; margin: 10px auto 15px; border: 1px solid #ffffff30; border-radius: 999px; padding: 7px 19px; background: #77756f24; box-shadow: 0 12px 34px #0005; backdrop-filter: blur(14px); }
+.dj-bottom-player { display: grid; width: min(320px, 100%); min-height: 0; grid-template-columns: minmax(0, 1fr); align-items: center; gap: 7px; margin: 10px auto 15px; border: 1px solid #ffffff30; border-radius: 24px; padding: 9px 14px; background: #77756f24; box-shadow: 0 12px 34px #0005; backdrop-filter: blur(14px); }
 .dj-player-current { display: flex; min-width: 0; align-items: center; gap: 12px; }
 .dj-player-current-number { display: grid; width: 42px; height: 42px; flex: 0 0 auto; place-items: center; border: 1px solid #ffffff30; border-radius: 50%; color: #e6e3dd; font-size: 10px; letter-spacing: .06em; }
 .dj-player-current > div { display: grid; min-width: 0; gap: 4px; }
@@ -550,7 +552,7 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--white); outline
 @media (max-width: 760px) {
   .dj-player-page .archive-header { padding: 25px 6vw 0; }
   .dj-player-content { width: calc(100% - 36px); justify-content: center; margin: 26px auto 0; }
-  .dj-player-heading { margin-bottom: 12px; }
+  .dj-player-heading { margin-bottom: 36px; }
   .dj-player-heading .dj-kicker { font-size: 9px; }
   .dj-player-heading h1 { font-size: clamp(48px, 13vw, 66px); }
   .dj-player-heading .dj-intro { max-width: 38ch; margin-top: 10px; font-size: 13px; }
@@ -564,7 +566,7 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--white); outline
   .dj-release-card-label strong { font-size: 17px; }
   .dj-release-card-dancer { top: -56px; right: 3px; height: 110px; }
   .dj-release-card-dancer img { max-width: 110px; }
-  .dj-bottom-player { width: min(100%, 520px); min-height: 0; grid-template-columns: minmax(0, 1fr) minmax(74px, .34fr); gap: 10px; margin: 10px auto 15px; border-radius: 24px; padding: 9px 12px; }
+  .dj-bottom-player { width: min(320px, 100%); min-height: 0; grid-template-columns: minmax(0, 1fr); gap: 8px; margin: 10px auto 15px; border-radius: 24px; padding: 9px 12px; }
   .dj-player-volume { gap: 6px; }
   .dj-player-volume svg { width: 17px; height: 17px; }
   .dj-player-buttons { gap: 22px; }

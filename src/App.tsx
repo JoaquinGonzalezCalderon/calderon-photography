@@ -427,7 +427,7 @@ function DJPortfolio({ onBack }: { onBack: () => void }) {
           {tracks.map((track, index) => {
             const position = index === activeIndex ? 'active' : index < activeIndex ? 'previous' : 'next'
             const selected = index === activeIndex
-            return <button type="button" key={track.number} className={`dj-release-card is-${position}${selected ? ' is-selected' : ''}`} onClick={() => selectTrack(index)} aria-label={`${selected ? 'Seleccionado' : 'Seleccionar'}: ${track.title}`} aria-pressed={selected}>
+            return <button type="button" key={track.number} data-track={track.number} className={`dj-release-card is-${position}${selected ? ' is-selected' : ''}`} onClick={() => selectTrack(index)} aria-label={`${selected ? 'Seleccionado' : 'Seleccionar'}: ${track.title}`} aria-pressed={selected}>
               <span className="dj-release-card-art"><img src={track.cover} alt="" /><span className="dj-card-grain" /></span>
               <span className="dj-release-card-label"><span>MASHUP / {track.number}</span><strong>{track.title}</strong></span>
             </button>
