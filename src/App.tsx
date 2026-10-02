@@ -207,8 +207,8 @@ function SystemsPortfolio({ onBack }: { onBack: () => void }) {
       </div>
       <section className="systems-projects" aria-labelledby="systems-projects-title">
         <div className="systems-section-heading"><div><p>PORTFOLIO / SELECCIÓN</p><h2 id="systems-projects-title">Proyectos</h2></div><span>01 — 04</span></div>
+        <FeaturedStreak />
         <div className="systems-project-grid">
-          <ProjectCard number="01" title="TuStreak" description="Constancia, un día a la vez." image="/areas/tustreak-desktop.webp" alt="Pantalla de acceso de la aplicación TuStreak" mobileImage="/areas/tustreak-mobile.webp" avatarImage="/areas/tustreak-avatar.webp" href="https://tustreak.vercel.app/app" status="SITIO EN VIVO" />
           <ProjectCard number="02" title="Mate Único" description="E-commerce full-stack con restricciones en base de datos y lógica avanzada de validación de stock." image="/areas/jgc-mate.webp" alt="Vista de la tienda online Mate Único" href="https://mate-unico-deployed.vercel.app/" status="SITIO EN VIVO" />
           <ProjectCard number="03" title="Inmobiliaria Andrea Duré" description="Sitio inmobiliario profesional y responsivo para el mercado local de Colón, Entre Ríos." image="/areas/jgc-inmobiliaria.webp" alt="Vista de la web inmobiliaria de Andrea Duré" href="https://andreadure.com/" status="SITIO EN VIVO" />
           <ProjectCard number="04" title="Barbería Los Santos" description="Plataforma web para presentar servicios, catálogo de cortes y reserva de turnos online." image="/areas/jgc-barberia.webp" alt="Vista del proyecto web Barbería Los Santos" status="EN DESARROLLO ACTIVO" />
@@ -227,9 +227,35 @@ function SystemsPortfolio({ onBack }: { onBack: () => void }) {
   </main>
 }
 
-function ProjectCard({ number, title, description, image, alt, href, status, mobileImage, avatarImage }: { number: string; title: string; description: string; image: string; alt: string; href?: string; status: string; mobileImage?: string; avatarImage?: string }) {
+function FeaturedStreak() {
+  const screens = [
+    { src: '/areas/tustreak-home.webp', title: 'Inicio', alt: 'Inicio de TuStreak con racha diaria, hábito y botón de registro' },
+    { src: '/areas/tustreak-progress.webp', title: 'Progreso', alt: 'Progreso de nivel, racha, consistencia e historial de TuStreak' },
+    { src: '/areas/tustreak-gym.webp', title: 'Gym', alt: 'Objetivo semanal, rutina y estadísticas de entrenamiento en TuStreak' },
+    { src: '/areas/tustreak-profile.webp', title: 'Perfil', alt: 'Perfil de TuStreak con avatar, hábito y opciones de personalización' },
+  ]
+  return <article className="systems-featured-project">
+    <div className="systems-featured-copy">
+      <p className="systems-featured-kicker"><span>01</span> PRODUCTO DIGITAL / APP WEB</p>
+      <div className="systems-featured-title"><h3>TuStreak</h3><span>EN VIVO</span></div>
+      <p className="systems-featured-description">TuStreak convierte la constancia en algo visible. Registrá tus hábitos con un toque, seguí tu racha diaria y mirá cómo avanzás con experiencia, niveles e historial. También reúne objetivos semanales, rutinas y estadísticas de gimnasio, con un perfil personalizable y tu propio avatar.</p>
+      <ul className="systems-featured-details">
+        <li>Rachas y hábitos diarios</li><li>Progreso, niveles e historial</li><li>Objetivos y rutinas de gym</li><li>Perfil y avatar personalizables</li>
+      </ul>
+      <a className="systems-featured-cta" href="https://tustreak.vercel.app/app" target="_blank" rel="noreferrer">ABRIR TUESTREAK <span aria-hidden="true">↗</span></a>
+    </div>
+    <div className="systems-streak-gallery" aria-label="Capturas de TuStreak">
+      {screens.map((screen, index) => <figure className="systems-streak-shot" key={screen.title}>
+        <div><img src={screen.src} alt={screen.alt} loading="lazy" /></div>
+        <figcaption><span>0{index + 1}</span>{screen.title}</figcaption>
+      </figure>)}
+    </div>
+  </article>
+}
+
+function ProjectCard({ number, title, description, image, alt, href, status }: { number: string; title: string; description: string; image: string; alt: string; href?: string; status: string }) {
   return <article className="systems-project-card">
-    <div className={`systems-project-image${mobileImage ? ' systems-project-image--tustreak' : ''}`}>{href ? <a href={href} target="_blank" rel="noreferrer" aria-label={`Abrir ${title} en una pestaña nueva`}><img className="systems-project-image-main" src={image} alt={alt} loading="lazy" />{mobileImage && <span className="systems-project-phone"><img src={mobileImage} alt="Vista móvil de TuStreak" loading="lazy" /></span>}{avatarImage && <span className="systems-project-avatar"><img src={avatarImage} alt="Personaje de Joaquín para TuStreak" loading="lazy" /></span>}</a> : <img src={image} alt={alt} loading="lazy" />}<span>{number} / {status}</span></div>
+    <div className="systems-project-image">{href ? <a href={href} target="_blank" rel="noreferrer" aria-label={`Abrir ${title} en una pestaña nueva`}><img src={image} alt={alt} loading="lazy" /></a> : <img src={image} alt={alt} loading="lazy" />}<span>{number} / {status}</span></div>
     <div className="systems-project-info"><h3>{title}</h3><p>{description}</p>{href ? <a className="systems-project-cta" href={href} target="_blank" rel="noreferrer">VER SITIO ↗</a> : <span className="systems-project-status">{status}</span>}</div>
   </article>
 }
