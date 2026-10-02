@@ -561,6 +561,10 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--white); outline
 .dj-player-error { margin: 0 0 8px; color: #e0b0a8; font-size: 12px; text-align: center; }
 .dj-page-footer { display: flex; justify-content: center; gap: 14px; border-top: 1px solid #ffffff1f; margin: 0 4.2vw; padding: 15px 0 19px; color: #88847e; font-size: 9px; font-weight: 600; letter-spacing: .13em; }
 .dj-page-footer span + span::before { padding-right: 14px; color: #4f4d49; content: '·'; }
+@media (min-width: 761px) {
+  .dj-player-page .archive-logo { top: 56px; }
+  .dj-player-page .dj-carousel { margin-bottom: 32px; }
+}
 @media (max-width: 760px) {
   .dj-player-page { overflow-x: clip; }
   .dj-player-page .archive-header { padding: 25px 6vw 0; }
