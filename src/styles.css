@@ -325,7 +325,7 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--white); outline
 }
 
 /* Final layout corrections from desktop and mobile review. */
-.home-hub .area-selector { z-index: 1; margin-top: clamp(54px, 7vh, 72px); }
+.home-hub .area-selector { z-index: 1; height: clamp(520px, 68vh, 700px); margin: clamp(30px, 5vh, 46px) auto 26px; }
 .home-hub .home-portrait { height: 58%; }
 .home-hub .home-about { top: 78%; bottom: auto; }
 .home-contact { position: relative; z-index: 1; display: grid; justify-items: center; gap: 13px; margin: 0 auto 26px; padding: 0 20px; text-align: center; }
@@ -350,7 +350,7 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--white); outline
 }
 
 @media (max-width: 760px) {
-  .home-hub .area-selector { margin-top: 68px; }
+  .home-hub .area-selector { height: auto; margin: 68px auto 26px; }
   .home-hub .home-about { top: auto; bottom: auto; }
   .home-contact { width: 100%; margin: 0 auto 20px; }
   .home-contact-links { width: min(100%, 360px); flex-direction: column; gap: 8px; }
