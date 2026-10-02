@@ -327,7 +327,7 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--white); outline
 /* Final layout corrections from desktop and mobile review. */
 .home-hub .area-selector { z-index: 1; margin-top: clamp(54px, 7vh, 72px); }
 .home-hub .home-portrait { height: 58%; }
-.home-hub .home-about { top: 79%; bottom: auto; }
+.home-hub .home-about { top: 78%; bottom: auto; }
 .home-contact { position: relative; z-index: 1; display: grid; justify-items: center; gap: 13px; margin: 0 auto 26px; padding: 0 20px; text-align: center; }
 .home-contact > p { margin: 0; color: #8f8d8b; font-size: 11px; font-weight: 700; letter-spacing: .16em; }
 .home-contact-links { display: flex; justify-content: center; gap: 12px; }
@@ -337,8 +337,6 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--white); outline
 .home-contact-links a span { grid-column: 1; color: #92908e; font-size: 9px; font-weight: 700; letter-spacing: .13em; }
 .home-contact-links a strong { grid-column: 1; margin-top: 3px; font-size: 14px; font-weight: 500; letter-spacing: .01em; }
 .home-contact-links a b { grid-column: 2; grid-row: 1 / span 2; color: #c9c8c5; font-size: 17px; font-weight: 400; }
-.home-hub .home-footer { justify-content: center; gap: 28px; text-align: center; }
-.home-hub .home-footer span { color: #817b76; }
 .systems-project-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .systems-project-image { aspect-ratio: 1.95; background: #0e0f10; }
 .systems-project-image img, .systems-demo-image img { object-fit: contain; }
@@ -357,7 +355,6 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--white); outline
   .home-contact { width: 100%; margin: 0 auto 20px; }
   .home-contact-links { width: min(100%, 360px); flex-direction: column; gap: 8px; }
   .home-contact-links a { min-width: 0; }
-  .home-hub .home-footer { flex-direction: row; gap: 16px; margin-bottom: 0; padding-bottom: 22px; }
   .systems-project-grid { grid-template-columns: minmax(0, 1fr); }
 }
 
