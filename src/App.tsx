@@ -461,9 +461,10 @@ function DJPortfolio({ onBack }: { onBack: () => void }) {
         <div className="dj-disc-stack">
           {tracks.map((track, index) => {
             const relativeIndex = (index - activeIndex + tracks.length) % tracks.length
-            const position = index === activeIndex ? 'active' : tracks.length === 2 ? (index < activeIndex ? 'previous' : 'next') : relativeIndex === 1 ? 'next' : 'previous'
             const selected = index === activeIndex
-            return <button type="button" key={track.number} data-track={track.number} className={`dj-release-card is-${position}${selected ? ' is-selected' : ''}`} onClick={() => selectTrack(index)} aria-label={`${selected ? 'Seleccionado' : 'Seleccionar'}: ${track.title}`} aria-pressed={selected}>
+            const position = selected ? 'active' : relativeIndex === 1 ? 'next' : relativeIndex === tracks.length - 1 ? 'previous' : 'hidden'
+            const isAdjacent = selected || position !== 'hidden'
+            return <button type="button" key={track.number} data-track={track.number} className={`dj-release-card is-${position}${selected ? ' is-selected' : ''}`} onClick={() => selectTrack(index)} aria-label={`${selected ? 'Seleccionado' : 'Seleccionar'}: ${track.title}`} aria-pressed={selected} aria-hidden={!isAdjacent} tabIndex={isAdjacent ? 0 : -1}>
               <span className="dj-release-card-art"><img src={track.cover} alt="" /><span className="dj-card-grain" /></span>
               <span className="dj-release-card-label"><span>MASHUP / {track.number}</span><strong>{track.title}</strong></span>
             </button>

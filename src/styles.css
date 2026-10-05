@@ -527,9 +527,11 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--white); outline
 .dj-release-card[data-track="01"] { --cover-aura: rgba(221, 175, 102, .36); }
 .dj-release-card[data-track="02"] { --cover-aura: rgba(201, 76, 184, .36); }
 .dj-release-card[data-track="03"] { --cover-aura: rgba(172, 255, 35, .42); }
+.dj-release-card[data-track="04"] { --cover-aura: rgba(191, 117, 77, .4); }
 .dj-release-card.is-selected { left: 50%; z-index: 3; opacity: 1; filter: none; transform: translate(-50%, -50%) rotate(0deg) scale(1); box-shadow: 0 24px 60px #0008, 0 0 54px 8px var(--cover-aura), 0 0 0 7px #ffffff08; }
 .dj-release-card.is-next { left: 68%; z-index: 2; opacity: .72; filter: brightness(.58); transform: translate(-50%, -50%) rotate(8deg) scale(.82); }
 .dj-release-card.is-previous { left: 32%; z-index: 2; opacity: .72; filter: brightness(.58); transform: translate(-50%, -50%) rotate(-8deg) scale(.82); }
+.dj-release-card.is-hidden { left: 50%; z-index: 1; opacity: 0; filter: brightness(.5); pointer-events: none; transform: translate(-50%, -50%) scale(.68); }
 .dj-release-card:not(.is-selected) { cursor: pointer; }
 .dj-release-card:not(.is-selected) .dj-release-card-label { visibility: hidden; }
 .dj-release-card:focus-visible { outline: 2px solid #e5e1da; outline-offset: 7px; }
