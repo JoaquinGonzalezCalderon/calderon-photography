@@ -182,29 +182,40 @@ function Logo() { return <a className="archive-logo" href="/" aria-label="Calder
 
 function HomeHub({ onOpenArea, isReducedMotion }: { onOpenArea: (area: 'systems' | 'dj' | 'photography') => void; isReducedMotion: boolean }) {
   const [openingArea, setOpeningArea] = useState<'systems' | 'dj' | 'photography' | null>(null)
+  const [isCharacterVisible, setIsCharacterVisible] = useState(false)
+  const [isSpeechVisible, setIsSpeechVisible] = useState(false)
   const [isAutoTalking, setIsAutoTalking] = useState(false)
   useEffect(() => {
     if (isReducedMotion) {
+      setIsCharacterVisible(true)
+      setIsSpeechVisible(true)
       setIsAutoTalking(false)
       return
     }
-    let idleTimer = 0
-    let talkingTimer = 0
-    let firstTurn = true
-    const scheduleNext = () => {
-      idleTimer = window.setTimeout(() => {
-        setIsAutoTalking(true)
-        talkingTimer = window.setTimeout(() => {
-          setIsAutoTalking(false)
-          scheduleNext()
-        }, 6200)
-      }, firstTurn ? 2600 : 22000 + Math.random() * 10000)
-      firstTurn = false
+    let entranceTimer = 0
+    let firstSpeechTimer = 0
+    let speechTimer = 0
+    let hideBubbleTimer = 0
+    let nextSpeechTimer = 0
+    const speak = () => {
+      setIsSpeechVisible(true)
+      setIsAutoTalking(true)
+      speechTimer = window.setTimeout(() => {
+        setIsAutoTalking(false)
+        hideBubbleTimer = window.setTimeout(() => setIsSpeechVisible(false), 220)
+        nextSpeechTimer = window.setTimeout(speak, 22000 + Math.random() * 10000)
+      }, 6200)
     }
-    scheduleNext()
+    entranceTimer = window.setTimeout(() => {
+      setIsCharacterVisible(true)
+      firstSpeechTimer = window.setTimeout(speak, 620)
+    }, 1700)
     return () => {
-      window.clearTimeout(idleTimer)
-      window.clearTimeout(talkingTimer)
+      window.clearTimeout(entranceTimer)
+      window.clearTimeout(firstSpeechTimer)
+      window.clearTimeout(speechTimer)
+      window.clearTimeout(hideBubbleTimer)
+      window.clearTimeout(nextSpeechTimer)
     }
   }, [isReducedMotion])
   const areas = [
@@ -245,9 +256,9 @@ function HomeHub({ onOpenArea, isReducedMotion }: { onOpenArea: (area: 'systems'
         <figure className="home-portrait"><img src="/areas/portrait-cutout.webp" alt="Retrato en blanco y negro de Joaquín González Calderón" />
           <figcaption><span>JOAQUÍN GONZÁLEZ CALDERÓN</span></figcaption>
         </figure>
-        <aside className={`home-narrator${isAutoTalking ? ' is-talking' : ''}`} aria-label="Presentación de Joaquín">
-          <p className="home-narrator-bubble">¡Hola! Soy Joaquín, tengo 23 años. Soy analista en sistemas, DJ y me gusta la fotografía. ¡Te invito a ver mis trabajos!</p>
-          <span className="home-narrator-character" role="img" aria-label="Personaje cartoon de Joaquín">
+        <aside className="home-narrator" aria-label="Presentación de Joaquín">
+          <p className={`home-narrator-bubble${isSpeechVisible ? ' is-visible' : ''}`} aria-hidden={!isSpeechVisible}>¡Hola! Soy Joaquín, tengo 23 años. Soy analista en sistemas, DJ y me gusta la fotografía. ¡Te invito a ver mis trabajos!</p>
+          <span className={`home-narrator-character${isCharacterVisible ? ' is-visible' : ''}${isAutoTalking ? ' is-talking' : ''}`} role="img" aria-label="Personaje cartoon de Joaquín" aria-hidden={!isCharacterVisible}>
             <img className="home-narrator-mouth-closed" src="/areas/joaquin-cartoon-idle.webp" alt="" />
             <img className="home-narrator-mouth-open" src="/areas/joaquin-cartoon-speaking.webp" alt="" aria-hidden="true" />
           </span>
