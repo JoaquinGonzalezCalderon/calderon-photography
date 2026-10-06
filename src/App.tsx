@@ -230,12 +230,14 @@ function HomeHub({ onOpenArea, isReducedMotion, isReady }: { onOpenArea: (area: 
         <a className="poster-social" href={site.instagramUrl} target="_blank" rel="noreferrer">Instagram <b aria-hidden="true">↗</b></a>
       </header>
       <section className="poster-hero" aria-label="Portfolio de Joaquín González Calderón">
-        <div className="poster-copy">
-          <p className="poster-eyebrow">Analista <span>·</span> DJ <span>·</span> Fotógrafo</p>
-          <h1>Joaquín<span>.</span></h1>
-          <p className="poster-full-name">González Calderón</p>
+        <div className="poster-profile">
+          <div className="poster-copy">
+            <p className="poster-eyebrow">Analista <span>·</span> DJ <span>·</span> Fotógrafo</p>
+            <h1>Joaquín<span>.</span></h1>
+            <p className="poster-full-name">González Calderón</p>
+          </div>
+          <nav className="poster-nav" aria-label="Elegí un área del portfolio">{areas.map((area) => <button className={`poster-link ${area.className}${openingArea === area.id ? ' is-opening' : ''}`} key={area.id} onClick={() => enterArea(area.id)} disabled={Boolean(openingArea)}><img className="poster-link-image" src={area.image} alt="" aria-hidden="true" /><span className="poster-link-number">{area.number}</span><span className="poster-link-title">{area.title}</span><span className="poster-link-note">{area.note}</span><span className="poster-link-arrow" aria-hidden="true">↗</span></button>)}</nav>
         </div>
-        <nav className="poster-nav" aria-label="Elegí un área del portfolio">{areas.map((area) => <button className={`poster-link ${area.className}${openingArea === area.id ? ' is-opening' : ''}`} key={area.id} onClick={() => enterArea(area.id)} disabled={Boolean(openingArea)}><img className="poster-link-image" src={area.image} alt="" aria-hidden="true" /><span className="poster-link-number">{area.number}</span><span className="poster-link-title">{area.title}</span><span className="poster-link-note">{area.note}</span><span className="poster-link-arrow" aria-hidden="true">↗</span></button>)}</nav>
         <figure className="poster-visual">
           <div className="poster-photo-slab" aria-hidden="true" />
           <span className="poster-photo-mark" aria-hidden="true">JG</span>
