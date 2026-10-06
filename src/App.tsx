@@ -182,32 +182,31 @@ function Logo() { return <a className="archive-logo" href="/" aria-label="Calder
 
 function HomeHub({ onOpenArea, isReducedMotion }: { onOpenArea: (area: 'systems' | 'dj' | 'photography') => void; isReducedMotion: boolean }) {
   const [openingArea, setOpeningArea] = useState<'systems' | 'dj' | 'photography' | null>(null)
-  const [portraitMode, setPortraitMode] = useState<'photo' | 'cartoon'>('photo')
   const [isAutoTalking, setIsAutoTalking] = useState(false)
-  const showsCartoon = portraitMode === 'cartoon' || isAutoTalking
-  const isTalking = !isReducedMotion && (portraitMode === 'cartoon' || isAutoTalking)
   useEffect(() => {
-    if (isReducedMotion || portraitMode === 'cartoon') {
+    if (isReducedMotion) {
       setIsAutoTalking(false)
       return
     }
     let idleTimer = 0
     let talkingTimer = 0
+    let firstTurn = true
     const scheduleNext = () => {
       idleTimer = window.setTimeout(() => {
         setIsAutoTalking(true)
         talkingTimer = window.setTimeout(() => {
           setIsAutoTalking(false)
           scheduleNext()
-        }, 3200)
-      }, 20000 + Math.random() * 12000)
+        }, 6200)
+      }, firstTurn ? 2600 : 22000 + Math.random() * 10000)
+      firstTurn = false
     }
     scheduleNext()
     return () => {
       window.clearTimeout(idleTimer)
       window.clearTimeout(talkingTimer)
     }
-  }, [isReducedMotion, portraitMode])
+  }, [isReducedMotion])
   const areas = [
     { id: 'systems' as const, number: '01', title: 'Analista en Sistemas', note: 'TECNOLOGÍA / SOLUCIONES', className: 'area-systems', image: '/areas/systems.webp' },
     { id: 'dj' as const, number: '02', title: 'DJ', note: 'MÚSICA / EN VIVO', className: 'area-dj', image: '/areas/dj.webp' },
@@ -243,19 +242,16 @@ function HomeHub({ onOpenArea, isReducedMotion }: { onOpenArea: (area: 'systems'
         <div className="board-brand"><img className="board-logo" src="/logo/calderon_logo.svg" alt="Calderón" /><div className="board-edition"><span>PORTAFOLIO PERSONAL · 2026</span><span>ENTRE RÍOS · ARGENTINA</span></div></div>
       </div>
       <section className="area-selector" aria-label="Áreas del portfolio">
-        <figure className={`home-portrait${portraitMode === 'cartoon' ? ' is-cartoon' : ''}${isAutoTalking ? ' is-auto-talking' : ''}${isTalking ? ' is-talking' : ''}`}>
-          <button className="home-profile-toggle" type="button" aria-label={showsCartoon ? 'Cambiar al retrato fotográfico' : 'Cambiar al personaje cartoon'} aria-pressed={portraitMode === 'cartoon'} onClick={() => { setIsAutoTalking(false); setPortraitMode(showsCartoon ? 'photo' : 'cartoon') }}>
-            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M6.25 6.1a5.25 5.25 0 0 1 8.63 1.24M13.75 13.9a5.25 5.25 0 0 1-8.63-1.24M14.9 4.6v3.1h-3.1M5.1 15.4v-3.1h3.1" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" /></svg>
-            <span>{showsCartoon ? 'VER FOTO' : 'VER CARTOON'}</span>
-          </button>
-          <span className="home-portrait-art">
-            <img className="home-portrait-photo" src="/areas/portrait-cutout.webp" alt="Retrato en blanco y negro de Joaquín González Calderón" aria-hidden={showsCartoon} />
-            <img className="home-portrait-cartoon home-portrait-cartoon-closed" src="/areas/joaquin-cartoon-closed.webp" alt={showsCartoon ? 'Personaje cartoon de Joaquín González Calderón' : ''} aria-hidden={!showsCartoon} />
-            <img className="home-portrait-cartoon home-portrait-cartoon-open" src="/areas/joaquin-cartoon-open.webp" alt="" aria-hidden="true" />
-          </span>
+        <figure className="home-portrait"><img src="/areas/portrait-cutout.webp" alt="Retrato en blanco y negro de Joaquín González Calderón" />
           <figcaption><span>JOAQUÍN GONZÁLEZ CALDERÓN</span></figcaption>
         </figure>
-        <aside className="home-about"><h1>SOBRE MÍ</h1><p>Joaquín González Calderón. 23 años.<br />Analista en Sistemas. DJ. Fotografía.<br />¡Te invito a ver mis trabajos!</p></aside>
+        <aside className={`home-narrator${isAutoTalking ? ' is-talking' : ''}`} aria-label="Presentación de Joaquín">
+          <p className="home-narrator-bubble">¡Hola! Soy Joaquín, tengo 23 años. Soy analista en sistemas, DJ y me gusta la fotografía. ¡Te invito a ver mis trabajos!</p>
+          <span className="home-narrator-character" role="img" aria-label="Personaje cartoon de Joaquín">
+            <img className="home-narrator-mouth-closed" src="/areas/joaquin-cartoon-idle.webp" alt="" />
+            <img className="home-narrator-mouth-open" src="/areas/joaquin-cartoon-speaking.webp" alt="" aria-hidden="true" />
+          </span>
+        </aside>
         <nav className="board-areas" aria-label="Elegí un área del portafolio">{areas.map((area) => <button className={`area-card ${area.className}${openingArea === area.id ? ' is-opening' : ''}`} key={area.id} onClick={() => enterArea(area.id)} onPointerMove={moveCardWeight} onPointerLeave={releaseCardWeight} disabled={Boolean(openingArea)}><img className="area-image" src={area.image} alt="" aria-hidden="true" /><span className="area-card-meta"><span>{area.number}</span><span className="area-note">{area.note}</span></span><span className="area-title">{area.title}</span><span className="area-arrow" aria-hidden="true">↗</span></button>)}</nav>
       </section>
     </div>
