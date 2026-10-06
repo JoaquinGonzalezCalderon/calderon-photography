@@ -36,7 +36,6 @@ function App() {
   const [isReducedMotion, setIsReducedMotion] = useState(false)
   const [showIntro, setShowIntro] = useState(true)
   const [isIntroLeaving, setIsIntroLeaving] = useState(false)
-  const [soundEnabled, setSoundEnabled] = useState(true)
   const [isMusicPlaying, setIsMusicPlaying] = useState(false)
   const [soundError, setSoundError] = useState(false)
   const musicAudioRef = useRef<HTMLAudioElement>(null)
@@ -51,8 +50,8 @@ function App() {
     const music = musicAudioRef.current
     if (music) {
       music.currentTime = 0
-      music.volume = 0.18
-      void music.play().catch(() => { setSoundError(true); setSoundEnabled(false) })
+      music.volume = 0.06
+      void music.play().catch(() => setSoundError(true))
     }
     setIsIntroLeaving(true)
     introTimer.current = window.setTimeout(() => {
@@ -62,18 +61,12 @@ function App() {
   }
 
   const toggleSound = () => {
-    const nextEnabled = !soundEnabled
-    setSoundEnabled(nextEnabled)
-    if (!nextEnabled) {
-      musicAudioRef.current?.pause()
-      mouthAudioRef.current?.pause()
-      return
-    }
     const music = musicAudioRef.current
-    if (music) {
-      music.volume = 0.18
-      void music.play().catch(() => { setSoundError(true); setSoundEnabled(false) })
-    }
+    if (!music) return
+    if (music.paused) {
+      music.volume = 0.06
+      void music.play().catch(() => setSoundError(true))
+    } else music.pause()
   }
 
   const navigateArea = (area: PortfolioArea) => {
@@ -210,8 +203,8 @@ function App() {
     <audio ref={mouthAudioRef} src="/audio/sonidoboca.mp3" preload="auto" aria-hidden="true" onError={() => setSoundError(true)} />
     {showIntro && <PortfolioEntry isLeaving={isIntroLeaving} onEnter={enterPortfolio} />}
     <div className="portfolio-content-layer" inert={showIntro}>
-      {!showIntro && <SiteSoundControl enabled={soundEnabled} isMusicPlaying={isMusicPlaying} hasError={soundError} isHome={activeArea === 'home'} onToggle={toggleSound} />}
-      {activeArea === 'home' ? <HomeHub onOpenArea={navigateArea} isReducedMotion={isReducedMotion} isReady={!showIntro} soundEnabled={soundEnabled} mouthAudioRef={mouthAudioRef} /> : activeArea === 'systems' ? <SystemsPortfolio onBack={goHome} /> : activeArea === 'photography' ? <Home albums={albumOrder} onOpenAlbum={openAlbum} onBack={goHome} /> : <DJPortfolio onBack={goHome} />}
+      {!showIntro && <SiteSoundControl isMusicPlaying={isMusicPlaying} hasError={soundError} isHome={activeArea === 'home'} onToggle={toggleSound} />}
+      {activeArea === 'home' ? <HomeHub onOpenArea={navigateArea} isReducedMotion={isReducedMotion} isReady={!showIntro} mouthAudioRef={mouthAudioRef} /> : activeArea === 'systems' ? <SystemsPortfolio onBack={goHome} /> : activeArea === 'photography' ? <Home albums={albumOrder} onOpenAlbum={openAlbum} onBack={goHome} /> : <DJPortfolio onBack={goHome} />}
       {activeAlbum && <AlbumOverlay album={activeAlbum} transition={transition} onClose={closeAlbum} onOpenPhoto={(photos, index) => setLightbox({ photos, index })} />}
       {lightbox && <PhotoLightbox photo={lightbox.photos[lightbox.index]} index={lightbox.index} total={lightbox.photos.length} onClose={() => setLightbox(null)} onMove={moveLightbox} />}
     </div>
@@ -220,7 +213,7 @@ function App() {
 
 function Logo() { return <a className="archive-logo" href="/" aria-label="Calderón, inicio"><img src="/logo/calderon_logo.svg" alt="Calderón" /></a> }
 
-function HomeHub({ onOpenArea, isReducedMotion, isReady, soundEnabled, mouthAudioRef }: { onOpenArea: (area: 'systems' | 'dj' | 'photography') => void; isReducedMotion: boolean; isReady: boolean; soundEnabled: boolean; mouthAudioRef: RefObject<HTMLAudioElement | null> }) {
+function HomeHub({ onOpenArea, isReducedMotion, isReady, mouthAudioRef }: { onOpenArea: (area: 'systems' | 'dj' | 'photography') => void; isReducedMotion: boolean; isReady: boolean; mouthAudioRef: RefObject<HTMLAudioElement | null> }) {
   const [openingArea, setOpeningArea] = useState<'systems' | 'dj' | 'photography' | null>(null)
   const [isCharacterVisible, setIsCharacterVisible] = useState(false)
   const [isSpeechVisible, setIsSpeechVisible] = useState(false)
@@ -235,32 +228,26 @@ function HomeHub({ onOpenArea, isReducedMotion, isReady, soundEnabled, mouthAudi
     let typingStartTimer = 0
     let typingTimer = 0
     let speechTimer = 0
-    let nextSpeechTimer = 0
-    let hasTypedMessage = false
     const message = 'Soy Joaquín González Calderón, tengo 23 años. Soy analista en sistemas, DJ y fotógrafo.'
     const speak = () => {
       setIsSpeechVisible(true)
       typingStartTimer = window.setTimeout(() => {
         setIsAutoTalking(true)
-        const fallbackDuration = hasTypedMessage ? 6200 : 360 + message.length * 34 + 900
-        if (!hasTypedMessage) {
-          setSpeechText('')
-          setIsTyping(true)
-          let character = 0
-          typingTimer = window.setInterval(() => {
-            character += 1
-            setSpeechText(message.slice(0, character))
-            if (character >= message.length) {
-              window.clearInterval(typingTimer)
-              typingTimer = 0
-              hasTypedMessage = true
-              setIsTyping(false)
-            }
-          }, 34)
-        }
+        const fallbackDuration = 360 + message.length * 34 + 900
+        setSpeechText('')
+        setIsTyping(true)
+        let character = 0
+        typingTimer = window.setInterval(() => {
+          character += 1
+          setSpeechText(message.slice(0, character))
+          if (character >= message.length) {
+            window.clearInterval(typingTimer)
+            typingTimer = 0
+            setIsTyping(false)
+          }
+        }, 34)
         speechTimer = window.setTimeout(() => {
           setIsAutoTalking(false)
-          nextSpeechTimer = window.setTimeout(speak, 22000 + Math.random() * 10000)
         }, fallbackDuration)
       }, 360)
     }
@@ -274,13 +261,12 @@ function HomeHub({ onOpenArea, isReducedMotion, isReady, soundEnabled, mouthAudi
       window.clearTimeout(typingStartTimer)
       window.clearInterval(typingTimer)
       window.clearTimeout(speechTimer)
-      window.clearTimeout(nextSpeechTimer)
     }
   }, [isReady])
   useEffect(() => {
     const audio = mouthAudioRef.current
     if (!audio) return
-    if (!isAutoTalking || !soundEnabled) {
+    if (!isAutoTalking) {
       audio.pause()
       audio.currentTime = 0
       return
@@ -292,7 +278,7 @@ function HomeHub({ onOpenArea, isReducedMotion, isReady, soundEnabled, mouthAudi
       audio.pause()
       audio.currentTime = 0
     }
-  }, [isAutoTalking, soundEnabled, mouthAudioRef])
+  }, [isAutoTalking, mouthAudioRef])
   useEffect(() => {
     if (!isCharacterVisible || isAutoTalking) {
       setCharacterLook('center')
@@ -665,16 +651,15 @@ function PortfolioEntry({ isLeaving, onEnter }: { isLeaving: boolean; onEnter: (
   return <section className={`portfolio-entry${isLeaving ? ' is-leaving' : ''}`} role="dialog" aria-modal="true" aria-label="Entrar al portfolio de Joaquín Calderón">
     <div className="portfolio-entry-lockup">
       <img className="portfolio-entry-logo" src="/logo/calderon_logo.svg" alt="Calderón" />
-      <button className="portfolio-entry-button" type="button" autoFocus onClick={onEnter} disabled={isLeaving}>ENTRAR <span aria-hidden="true">↗</span></button>
+      <button className="portfolio-entry-button" type="button" autoFocus onClick={onEnter} disabled={isLeaving} aria-label="Entrar al portfolio"><span aria-hidden="true">→</span></button>
     </div>
   </section>
 }
 
-function SiteSoundControl({ enabled, isMusicPlaying, hasError, isHome, onToggle }: { enabled: boolean; isMusicPlaying: boolean; hasError: boolean; isHome: boolean; onToggle: () => void }) {
+function SiteSoundControl({ isMusicPlaying, hasError, isHome, onToggle }: { isMusicPlaying: boolean; hasError: boolean; isHome: boolean; onToggle: () => void }) {
   return <aside className={`site-sound-control${isHome ? ' is-home' : ' is-subpage'}`} aria-label="Controles de sonido">
-    <button type="button" className="site-sound-toggle" onClick={onToggle} aria-pressed={enabled} aria-label={enabled ? 'Silenciar música y personaje' : 'Activar música y personaje'}>
-      <span className="site-sound-icon" aria-hidden="true">{isMusicPlaying ? 'Ⅱ' : '▶'}</span>
-      <span className="site-sound-state">{isMusicPlaying ? 'PAUSAR' : enabled ? 'CARGANDO' : 'REANUDAR'}</span>
+    <button type="button" className="site-sound-toggle" onClick={onToggle} aria-pressed={!isMusicPlaying} aria-label={isMusicPlaying ? 'Pausar tema' : 'Reproducir tema'}>
+      <svg className="site-sound-icon" viewBox="0 0 16 16" aria-hidden="true">{isMusicPlaying ? <><path d="M5 3.5v9" /><path d="M11 3.5v9" /></> : <path d="m5 3.5 7 4.5-7 4.5z" />}</svg>
     </button>
     {hasError && <span className="site-sound-error" role="status">NO SE PUDO CARGAR EL AUDIO</span>}
   </aside>
