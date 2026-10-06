@@ -185,30 +185,56 @@ function HomeHub({ onOpenArea, isReducedMotion, isReady }: { onOpenArea: (area: 
   const [isCharacterVisible, setIsCharacterVisible] = useState(false)
   const [isSpeechVisible, setIsSpeechVisible] = useState(false)
   const [isAutoTalking, setIsAutoTalking] = useState(false)
+  const [speechText, setSpeechText] = useState('')
+  const [isTyping, setIsTyping] = useState(false)
   useEffect(() => {
+    if (!isReady) return
     let entranceTimer = 0
     let firstSpeechTimer = 0
+    let typingStartTimer = 0
+    let typingTimer = 0
     let speechTimer = 0
     let nextSpeechTimer = 0
+    let hasTypedMessage = false
+    const message = 'Soy Joaquín González Calderón, tengo 23 años. Soy analista en sistemas, DJ y fotógrafo.'
     const speak = () => {
       setIsSpeechVisible(true)
-      setIsAutoTalking(true)
+      typingStartTimer = window.setTimeout(() => {
+        setIsAutoTalking(true)
+        if (!hasTypedMessage) {
+          setSpeechText('')
+          setIsTyping(true)
+          let character = 0
+          typingTimer = window.setInterval(() => {
+            character += 1
+            setSpeechText(message.slice(0, character))
+            if (character >= message.length) {
+              window.clearInterval(typingTimer)
+              typingTimer = 0
+              hasTypedMessage = true
+              setIsTyping(false)
+            }
+          }, 34)
+        }
+      }, 360)
       speechTimer = window.setTimeout(() => {
         setIsAutoTalking(false)
         nextSpeechTimer = window.setTimeout(speak, 22000 + Math.random() * 10000)
-      }, 6200)
+      }, hasTypedMessage ? 6200 : 360 + message.length * 34 + 900)
     }
     entranceTimer = window.setTimeout(() => {
       setIsCharacterVisible(true)
-      firstSpeechTimer = window.setTimeout(speak, 620)
-    }, 1700)
+      firstSpeechTimer = window.setTimeout(speak, 900)
+    }, 350)
     return () => {
       window.clearTimeout(entranceTimer)
       window.clearTimeout(firstSpeechTimer)
+      window.clearTimeout(typingStartTimer)
+      window.clearInterval(typingTimer)
       window.clearTimeout(speechTimer)
       window.clearTimeout(nextSpeechTimer)
     }
-  }, [])
+  }, [isReady])
   const areas = [
     { id: 'systems' as const, number: '01', title: 'Analista en Sistemas', note: 'TECNOLOGÍA / SOLUCIONES', className: 'area-systems', image: '/areas/systems.webp' },
     { id: 'dj' as const, number: '02', title: 'DJ', note: 'MÚSICA / EN VIVO', className: 'area-dj', image: '/areas/dj.webp' },
@@ -240,14 +266,14 @@ function HomeHub({ onOpenArea, isReducedMotion, isReady }: { onOpenArea: (area: 
         </div>
         <figure className="poster-visual">
           <div className="poster-photo-slab" aria-hidden="true" />
-          <span className="poster-photo-mark" aria-hidden="true">JG</span>
+          <span className="poster-photo-mark" aria-hidden="true">JGC</span>
           <img className="poster-portrait" src="/areas/portrait-yo2.webp" alt="Retrato de Joaquín González Calderón" />
           <aside className="poster-talker home-narrator" aria-label="Presentación de Joaquín">
             <span className={`home-narrator-character${isCharacterVisible ? ' is-visible' : ''}${isAutoTalking ? ' is-talking' : ''}`} role="img" aria-label="Personaje cartoon de Joaquín" aria-hidden={!isCharacterVisible}>
               <img className="home-narrator-mouth-closed" src="/areas/joaquin-cartoon-idle.webp" alt="" />
               <img className="home-narrator-mouth-open" src="/areas/joaquin-cartoon-speaking.webp" alt="" aria-hidden="true" />
             </span>
-            <p className={`home-narrator-bubble${isSpeechVisible ? ' is-visible' : ''}`} aria-hidden={!isSpeechVisible}>Soy Joaquín González Calderón, tengo 23 años. Soy analista en sistemas, DJ y fotógrafo.</p>
+            <p className={`home-narrator-bubble${isSpeechVisible ? ' is-visible' : ''}`} aria-hidden={!isSpeechVisible}>{speechText}{isTyping && <span className="home-narrator-caret" aria-hidden="true">▍</span>}</p>
           </aside>
         </figure>
       </section>

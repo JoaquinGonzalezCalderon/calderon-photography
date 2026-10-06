@@ -847,8 +847,8 @@ body.is-arriving-back .home-hub { animation: back-home-enter 420ms cubic-bezier(
   background-size: 13px 13px;
   filter: none;
   opacity: .12;
-  transform: none;
-  animation: none;
+  transform-origin: center;
+  animation: poster-texture-drift 34s ease-in-out infinite alternate;
   mask-image: linear-gradient(115deg, transparent 20%, #000 100%);
 }
 .poster-home::after { position: absolute; z-index: 0; top: 7%; right: 2%; width: min(58vw, 760px); aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle, #b99a5112 0%, #a49d8b08 40%, transparent 70%); content: ''; pointer-events: none; transform-origin: center; animation: poster-ambient-glow 10s ease-in-out infinite alternate; }
@@ -877,7 +877,8 @@ body.is-arriving-back .home-hub { animation: back-home-enter 420ms cubic-bezier(
 .poster-talker.home-narrator { position: absolute; z-index: 3; right: 0; bottom: 4%; width: min(480px, 92%); height: 152px; }
 .poster-talker .home-narrator-character { position: absolute; z-index: 1; right: 0; bottom: 0; width: clamp(112px, 10vw, 136px); height: 100%; }
 .poster-home .home-narrator-character.is-visible:not(.is-talking) { animation: poster-character-idle 2.8s ease-in-out infinite; }
-.poster-talker .home-narrator-bubble { position: absolute; z-index: 2; right: clamp(126px, 12vw, 148px); bottom: 24px; width: min(320px, calc(100% - 142px)); border: 1px solid #6e6d6a; border-radius: 16px 16px 4px 16px; padding: 16px 18px; background: #e4e0d9; box-shadow: 0 8px 20px #0007; color: var(--poster-ink); font-size: clamp(15px, 1.15vw, 17px); line-height: 1.42; }
+.poster-talker .home-narrator-bubble { position: absolute; z-index: 2; right: clamp(126px, 12vw, 148px); bottom: 24px; width: min(320px, calc(100% - 142px)); min-height: 72px; border: 1px solid #6e6d6a; border-radius: 16px 16px 4px 16px; padding: 16px 18px; background: #e4e0d9; box-shadow: 0 8px 20px #0007; color: var(--poster-ink); font-size: clamp(15px, 1.15vw, 17px); line-height: 1.42; }
+.poster-talker .home-narrator-caret { display: inline-block; margin-left: 2px; color: #9b772d; animation: narrator-caret-blink 820ms steps(2, end) infinite; }
 .poster-talker .home-narrator-bubble::after { top: auto; right: -8px; bottom: 31px; left: auto; width: 14px; height: 14px; border: 0; border-top: 1px solid #6e6d6a; border-right: 1px solid #6e6d6a; background: #e4e0d9; transform: rotate(45deg); }
 .poster-nav { z-index: 2; display: grid; width: 100%; min-width: 0; max-width: 100%; grid-template-columns: minmax(0, 1fr); gap: 10px; border: 0; }
 .poster-link { position: relative; isolation: isolate; display: grid; width: auto; min-width: 0; min-height: clamp(88px, 10vh, 112px); grid-template-columns: 48px minmax(0, 1fr) 24px; grid-template-rows: auto 1fr; align-items: center; column-gap: 10px; overflow: hidden; border: 1px solid #ffffff35; padding: 14px clamp(14px, 1.6vw, 21px); background: #151516; color: var(--poster-paper); text-align: left; transition: border-color 220ms ease, transform 220ms ease; }
@@ -891,7 +892,9 @@ body.is-arriving-back .home-hub { animation: back-home-enter 420ms cubic-bezier(
 .poster-link-number { color: var(--poster-accent); font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums; }
 .poster-link-title { font-family: var(--display-font); font-size: clamp(20px, 2.1vw, 29px); font-weight: 700; letter-spacing: -.03em; }
 .poster-link-note { color: #aaa6a0; font-size: 8px; font-weight: 700; letter-spacing: .11em; text-align: right; }
-.poster-link-arrow { justify-self: end; color: var(--poster-accent); font-size: 18px; transition: transform 180ms ease; }
+.poster-link-arrow { justify-self: end; color: var(--poster-accent); font-size: 18px; transition: transform 180ms ease; animation: poster-arrow-float 3.6s ease-in-out infinite; }
+.poster-link:nth-child(2) .poster-link-arrow { animation-delay: -1.2s; }
+.poster-link:nth-child(3) .poster-link-arrow { animation-delay: -2.4s; }
 .poster-link:hover, .poster-link:focus-visible { border-color: var(--poster-accent); color: var(--poster-paper); }
 .poster-link:hover .poster-link-image, .poster-link:focus-visible .poster-link-image { transform: scale(1.08); opacity: .78; }
 .poster-link:hover .poster-link-arrow, .poster-link:focus-visible .poster-link-arrow { transform: translate(2px, -2px); }
@@ -974,6 +977,18 @@ body.is-arriving-back .home-hub { animation: back-home-enter 420ms cubic-bezier(
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-4px); }
 }
+@keyframes poster-texture-drift {
+  from { transform: translate3d(-.35%, -.2%, 0) scale(1); }
+  to { transform: translate3d(.35%, .2%, 0) scale(1.015); }
+}
+@keyframes poster-arrow-float {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -3px; }
+}
+@keyframes narrator-caret-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
 .poster-home.is-ready .poster-header { animation: poster-enter-down 460ms cubic-bezier(.16, 1, .3, 1) both; }
 .poster-home.is-ready .poster-copy > * { animation: poster-enter-up 480ms cubic-bezier(.16, 1, .3, 1) both; }
 .poster-home.is-ready .poster-eyebrow { animation-delay: 60ms; }
@@ -996,6 +1011,7 @@ body.is-arriving-back .home-hub { animation: back-home-enter 420ms cubic-bezier(
   .poster-home::after { top: 24%; right: -38%; width: 132vw; }
 }
 @media (prefers-reduced-motion: reduce) {
+  .poster-home::before { animation-duration: 34s !important; }
   .poster-home::after { animation-duration: 10s !important; }
   .poster-home.is-ready .poster-header,
   .poster-home.is-ready .poster-copy > *,
@@ -1006,7 +1022,11 @@ body.is-arriving-back .home-hub { animation: back-home-enter 420ms cubic-bezier(
   .poster-home .home-narrator-character.is-visible:not(.is-talking) { animation-duration: 2.8s !important; }
   .poster-home .home-narrator-character.is-talking .home-narrator-mouth-closed,
   .poster-home .home-narrator-character.is-talking .home-narrator-mouth-open { animation-duration: 620ms !important; }
+  .poster-home .home-narrator-caret { animation-duration: 820ms !important; }
+  .poster-home .poster-link-arrow { animation-duration: 3.6s !important; }
   .poster-home .poster-portrait, .poster-home .poster-photo-slab { transition-duration: 650ms !important; }
   .poster-home .poster-link-image { transition-duration: 650ms !important; }
-  .poster-home .home-narrator-character, .poster-home .home-narrator-bubble { transition-duration: 480ms !important; }
+  .poster-home .poster-link-arrow { transition-duration: 180ms !important; }
+  .poster-home .home-narrator-character { transition-property: opacity, transform !important; transition-duration: 480ms !important; }
+  .poster-home .home-narrator-bubble { transition-property: opacity, transform, visibility !important; transition-duration: 220ms !important; }
 }
