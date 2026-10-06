@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState, type RefObject } from 'react'
 import { albumCover, albumPhotos, albums, driveUrls, type Album } from './data/albums'
 import type { Photo } from './data/photos'
 import { site } from './config/site'
@@ -35,9 +35,53 @@ function App() {
   const [lightbox, setLightbox] = useState<{ photos: Photo[]; index: number } | null>(null)
   const [isReducedMotion, setIsReducedMotion] = useState(false)
   const [showIntro, setShowIntro] = useState(true)
+  const [isIntroLeaving, setIsIntroLeaving] = useState(false)
+  const [soundEnabled, setSoundEnabled] = useState(true)
+  const [soundVolume, setSoundVolume] = useState(0.36)
+  const [isMusicPlaying, setIsMusicPlaying] = useState(false)
+  const [soundError, setSoundError] = useState(false)
+  const musicAudioRef = useRef<HTMLAudioElement>(null)
+  const mouthAudioRef = useRef<HTMLAudioElement>(null)
   const scrollPosition = useRef(0)
   const albumReturnPath = useRef(activeAlbum ? '/fotografia' : '/')
   const navigationTimer = useRef<number | null>(null)
+  const introTimer = useRef<number | null>(null)
+
+  const enterPortfolio = () => {
+    if (isIntroLeaving) return
+    const music = musicAudioRef.current
+    if (music) {
+      music.currentTime = 0
+      music.volume = soundVolume
+      void music.play().catch(() => { setSoundError(true); setSoundEnabled(false) })
+    }
+    setIsIntroLeaving(true)
+    introTimer.current = window.setTimeout(() => {
+      setShowIntro(false)
+      introTimer.current = null
+    }, isReducedMotion ? 0 : 900)
+  }
+
+  const toggleSound = () => {
+    const nextEnabled = !soundEnabled
+    setSoundEnabled(nextEnabled)
+    if (!nextEnabled) {
+      musicAudioRef.current?.pause()
+      mouthAudioRef.current?.pause()
+      return
+    }
+    const music = musicAudioRef.current
+    if (music) {
+      music.volume = soundVolume
+      void music.play().catch(() => { setSoundError(true); setSoundEnabled(false) })
+    }
+  }
+
+  const changeSoundVolume = (volume: number) => {
+    setSoundVolume(volume)
+    if (musicAudioRef.current) musicAudioRef.current.volume = volume
+    if (mouthAudioRef.current) mouthAudioRef.current.volume = Math.min(0.34, volume * 0.72)
+  }
 
   const navigateArea = (area: PortfolioArea) => {
     setActiveArea(area)
@@ -69,6 +113,9 @@ function App() {
 
   useEffect(() => () => {
     if (navigationTimer.current !== null) window.clearTimeout(navigationTimer.current)
+    if (introTimer.current !== null) window.clearTimeout(introTimer.current)
+    musicAudioRef.current?.pause()
+    mouthAudioRef.current?.pause()
     document.body.classList.remove('is-navigating-back', 'is-arriving-back')
   }, [])
 
@@ -81,9 +128,9 @@ function App() {
   }, [])
 
   useEffect(() => {
-    const timer = window.setTimeout(() => setShowIntro(false), isReducedMotion ? 120 : 1500)
-    return () => window.clearTimeout(timer)
-  }, [isReducedMotion])
+    if (musicAudioRef.current) musicAudioRef.current.volume = soundVolume
+    if (mouthAudioRef.current) mouthAudioRef.current.volume = Math.min(0.34, soundVolume * 0.72)
+  }, [soundVolume])
 
   useEffect(() => {
     const titles: Record<PortfolioArea, string> = {
@@ -171,8 +218,11 @@ function App() {
   }
 
   return <>
-    {showIntro && <IntroSplash />}
-    {activeArea === 'home' ? <HomeHub onOpenArea={navigateArea} isReducedMotion={isReducedMotion} isReady={!showIntro} /> : activeArea === 'systems' ? <SystemsPortfolio onBack={goHome} /> : activeArea === 'photography' ? <Home albums={albumOrder} onOpenAlbum={openAlbum} onBack={goHome} /> : <DJPortfolio onBack={goHome} />}
+    <audio ref={musicAudioRef} src="/audio/doomsday.mp3" preload="auto" loop aria-hidden="true" onPlay={() => { setIsMusicPlaying(true); setSoundError(false) }} onPause={() => setIsMusicPlaying(false)} onError={() => setSoundError(true)} />
+    <audio ref={mouthAudioRef} src="/audio/sonidoboca.mp3" preload="auto" aria-hidden="true" onError={() => setSoundError(true)} />
+    {showIntro && <PortfolioEntry isLeaving={isIntroLeaving} onEnter={enterPortfolio} />}
+    {!showIntro && <SiteSoundControl enabled={soundEnabled} isMusicPlaying={isMusicPlaying} volume={soundVolume} hasError={soundError} isHome={activeArea === 'home'} onToggle={toggleSound} onVolumeChange={changeSoundVolume} />}
+    {activeArea === 'home' ? <HomeHub onOpenArea={navigateArea} isReducedMotion={isReducedMotion} isReady={!showIntro} soundEnabled={soundEnabled} mouthAudioRef={mouthAudioRef} /> : activeArea === 'systems' ? <SystemsPortfolio onBack={goHome} /> : activeArea === 'photography' ? <Home albums={albumOrder} onOpenAlbum={openAlbum} onBack={goHome} /> : <DJPortfolio onBack={goHome} />}
     {activeAlbum && <AlbumOverlay album={activeAlbum} transition={transition} onClose={closeAlbum} onOpenPhoto={(photos, index) => setLightbox({ photos, index })} />}
     {lightbox && <PhotoLightbox photo={lightbox.photos[lightbox.index]} index={lightbox.index} total={lightbox.photos.length} onClose={() => setLightbox(null)} onMove={moveLightbox} />}
   </>
@@ -180,7 +230,7 @@ function App() {
 
 function Logo() { return <a className="archive-logo" href="/" aria-label="Calderón, inicio"><img src="/logo/calderon_logo.svg" alt="Calderón" /></a> }
 
-function HomeHub({ onOpenArea, isReducedMotion, isReady }: { onOpenArea: (area: 'systems' | 'dj' | 'photography') => void; isReducedMotion: boolean; isReady: boolean }) {
+function HomeHub({ onOpenArea, isReducedMotion, isReady, soundEnabled, mouthAudioRef }: { onOpenArea: (area: 'systems' | 'dj' | 'photography') => void; isReducedMotion: boolean; isReady: boolean; soundEnabled: boolean; mouthAudioRef: RefObject<HTMLAudioElement | null> }) {
   const [openingArea, setOpeningArea] = useState<'systems' | 'dj' | 'photography' | null>(null)
   const [isCharacterVisible, setIsCharacterVisible] = useState(false)
   const [isSpeechVisible, setIsSpeechVisible] = useState(false)
@@ -202,6 +252,11 @@ function HomeHub({ onOpenArea, isReducedMotion, isReady }: { onOpenArea: (area: 
       setIsSpeechVisible(true)
       typingStartTimer = window.setTimeout(() => {
         setIsAutoTalking(true)
+        const audioDuration = mouthAudioRef.current?.duration
+        const fallbackDuration = hasTypedMessage ? 6200 : 360 + message.length * 34 + 900
+        const speakingDuration = soundEnabled && Number.isFinite(audioDuration) && audioDuration! > 0
+          ? audioDuration! * 1000
+          : fallbackDuration
         if (!hasTypedMessage) {
           setSpeechText('')
           setIsTyping(true)
@@ -217,11 +272,11 @@ function HomeHub({ onOpenArea, isReducedMotion, isReady }: { onOpenArea: (area: 
             }
           }, 34)
         }
+        speechTimer = window.setTimeout(() => {
+          setIsAutoTalking(false)
+          nextSpeechTimer = window.setTimeout(speak, 22000 + Math.random() * 10000)
+        }, speakingDuration)
       }, 360)
-      speechTimer = window.setTimeout(() => {
-        setIsAutoTalking(false)
-        nextSpeechTimer = window.setTimeout(speak, 22000 + Math.random() * 10000)
-      }, hasTypedMessage ? 6200 : 360 + message.length * 34 + 900)
     }
     entranceTimer = window.setTimeout(() => {
       setIsCharacterVisible(true)
@@ -236,6 +291,21 @@ function HomeHub({ onOpenArea, isReducedMotion, isReady }: { onOpenArea: (area: 
       window.clearTimeout(nextSpeechTimer)
     }
   }, [isReady])
+  useEffect(() => {
+    const audio = mouthAudioRef.current
+    if (!audio) return
+    if (!isAutoTalking || !soundEnabled) {
+      audio.pause()
+      audio.currentTime = 0
+      return
+    }
+    audio.currentTime = 0
+    void audio.play().catch(() => {})
+    return () => {
+      audio.pause()
+      audio.currentTime = 0
+    }
+  }, [isAutoTalking, soundEnabled, mouthAudioRef])
   useEffect(() => {
     if (!isCharacterVisible || isAutoTalking) {
       setCharacterLook('center')
@@ -604,8 +674,31 @@ function PhotoLightboxLegacy({ photo, index, total, onClose, onMove }: { photo: 
   return <div className="photo-lightbox" role="dialog" aria-modal="true" aria-label="Fotografía ampliada" onTouchStart={(event) => { touchStart.current = event.changedTouches[0].clientX }} onTouchEnd={(event) => { const delta = event.changedTouches[0].clientX - touchStart.current; if (Math.abs(delta) > 45) onMove(delta < 0 ? 1 : -1) }}><div className="lightbox-bar"><span>{String(index + 1).padStart(2, '0')} / {String(total).padStart(2, '0')}</span><button onClick={onClose}>CLOSE ×</button></div><img src={photo.large} alt={`${photo.category}, ${photo.tags.join(', ')}`} /><div className="lightbox-controls"><button onClick={() => onMove(-1)} aria-label="Fotografía anterior">←</button><span>{photo.tags.join(' / ')}</span><button onClick={() => onMove(1)} aria-label="Fotografía siguiente">→</button></div></div>
 }
 
-function IntroSplash() {
-  return <div className="intro-splash" aria-hidden="true"><img className="intro-splash-logo" src="/logo/calderon_logo.svg" alt="" /></div>
+function PortfolioEntry({ isLeaving, onEnter }: { isLeaving: boolean; onEnter: () => void }) {
+  return <section className={`portfolio-entry${isLeaving ? ' is-leaving' : ''}`} role="dialog" aria-modal="true" aria-labelledby="portfolio-entry-title" aria-describedby="portfolio-entry-track portfolio-entry-hint">
+    <div className="portfolio-entry-atmosphere" aria-hidden="true" />
+    <div className="portfolio-entry-lockup">
+      <p className="portfolio-entry-kicker">PORTFOLIO PERSONAL <span>·</span> 2026</p>
+      <img className="portfolio-entry-logo" src="/logo/calderon_logo.svg" alt="Calderón" />
+      <p id="portfolio-entry-title" className="portfolio-entry-location">ENTRE RÍOS, ARGENTINA</p>
+      <button className="portfolio-entry-button" type="button" onClick={onEnter} disabled={isLeaving}>ENTRAR AL PORTFOLIO <span aria-hidden="true">↗</span></button>
+      <p id="portfolio-entry-track" className="portfolio-entry-track"><span aria-hidden="true">♫</span> MF DOOM — DOOMSDAY</p>
+      <p id="portfolio-entry-hint" className="portfolio-entry-hint">EL TEMA COMIENZA AL ENTRAR</p>
+    </div>
+    <span className="portfolio-entry-index" aria-hidden="true">JGC / 01</span>
+  </section>
+}
+
+function SiteSoundControl({ enabled, isMusicPlaying, volume, hasError, isHome, onToggle, onVolumeChange }: { enabled: boolean; isMusicPlaying: boolean; volume: number; hasError: boolean; isHome: boolean; onToggle: () => void; onVolumeChange: (volume: number) => void }) {
+  return <aside className={`site-sound-control${isHome ? ' is-home' : ' is-subpage'}`} aria-label="Controles de sonido">
+    <button type="button" className="site-sound-toggle" onClick={onToggle} aria-pressed={enabled} aria-label={enabled ? 'Silenciar música y personaje' : 'Activar música y personaje'}>
+      <span className="site-sound-icon" aria-hidden="true">{isMusicPlaying ? 'Ⅱ' : '▶'}</span>
+      <span className="site-sound-name">MF DOOM</span>
+      <span className="site-sound-state">{isMusicPlaying ? 'SONANDO' : enabled ? 'CARGANDO' : 'SILENCIADO'}</span>
+    </button>
+    <label className="site-sound-volume"><span aria-hidden="true">VOL</span><input type="range" min="0" max="0.8" step="0.01" value={volume} onChange={(event) => onVolumeChange(Number(event.target.value))} aria-label="Volumen de la música y el personaje" /></label>
+    {hasError && <span className="site-sound-error" role="status">NO SE PUDO CARGAR EL AUDIO</span>}
+  </aside>
 }
 
 function PhotoLightbox({ photo, index, total, onClose, onMove }: { photo: Photo; index: number; total: number; onClose: () => void; onMove: (direction: 1 | -1) => void }) {
