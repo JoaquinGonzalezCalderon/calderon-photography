@@ -87,6 +87,11 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--white); outline
 .home-hub .home-narrator-character img { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: contain; }
 .home-hub .home-narrator-mouth-closed { opacity: 1; }
 .home-hub .home-narrator-mouth-open { opacity: 0; }
+.home-hub .home-narrator-glance { opacity: 0; transition: opacity 280ms ease-in-out; }
+.home-hub .home-narrator-character.is-looking-left:not(.is-talking) .home-narrator-mouth-closed,
+.home-hub .home-narrator-character.is-looking-right:not(.is-talking) .home-narrator-mouth-closed { opacity: 0; }
+.home-hub .home-narrator-character.is-looking-left:not(.is-talking) .home-narrator-glance-left,
+.home-hub .home-narrator-character.is-looking-right:not(.is-talking) .home-narrator-glance-right { opacity: 1; }
 .home-hub .home-narrator-character.is-talking .home-narrator-mouth-closed { animation: narrator-mouth-closed 620ms steps(1, end) infinite; }
 .home-hub .home-narrator-character.is-talking .home-narrator-mouth-open { animation: narrator-mouth-open 620ms steps(1, end) infinite; }
 .home-hub .board-areas { position: absolute; z-index: 2; inset: 0; pointer-events: none; }
@@ -1021,5 +1026,6 @@ body.is-arriving-back .home-hub { animation: back-home-enter 420ms cubic-bezier(
   .poster-home .poster-link-image { transition-duration: 650ms !important; }
   .poster-home .poster-link-arrow { transition-duration: 180ms !important; }
   .poster-home .home-narrator-character { transition-property: opacity, transform !important; transition-duration: 480ms !important; }
+  .poster-home .home-narrator-glance { transition-duration: 280ms !important; }
   .poster-home .home-narrator-bubble { transition-property: opacity, transform, visibility !important; transition-duration: 220ms !important; }
 }

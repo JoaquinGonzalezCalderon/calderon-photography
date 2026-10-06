@@ -185,6 +185,7 @@ function HomeHub({ onOpenArea, isReducedMotion, isReady }: { onOpenArea: (area: 
   const [isCharacterVisible, setIsCharacterVisible] = useState(false)
   const [isSpeechVisible, setIsSpeechVisible] = useState(false)
   const [isAutoTalking, setIsAutoTalking] = useState(false)
+  const [characterLook, setCharacterLook] = useState<'center' | 'left' | 'right'>('center')
   const [speechText, setSpeechText] = useState('')
   const [isTyping, setIsTyping] = useState(false)
   useEffect(() => {
@@ -235,6 +236,30 @@ function HomeHub({ onOpenArea, isReducedMotion, isReady }: { onOpenArea: (area: 
       window.clearTimeout(nextSpeechTimer)
     }
   }, [isReady])
+  useEffect(() => {
+    if (!isCharacterVisible || isAutoTalking) {
+      setCharacterLook('center')
+      return
+    }
+    let glanceTimer = 0
+    let returnTimer = 0
+    let nextLook: 'left' | 'right' = Math.random() < 0.5 ? 'left' : 'right'
+    const scheduleGlance = (delay = 1800 + Math.random() * 2200) => {
+      glanceTimer = window.setTimeout(() => {
+        setCharacterLook(nextLook)
+        nextLook = nextLook === 'left' ? 'right' : 'left'
+        returnTimer = window.setTimeout(() => {
+          setCharacterLook('center')
+          scheduleGlance(2800 + Math.random() * 2400)
+        }, 1050)
+      }, delay)
+    }
+    scheduleGlance()
+    return () => {
+      window.clearTimeout(glanceTimer)
+      window.clearTimeout(returnTimer)
+    }
+  }, [isCharacterVisible, isAutoTalking])
   const areas = [
     { id: 'systems' as const, number: '01', title: 'Analista en Sistemas', note: 'TECNOLOGÍA / SOLUCIONES', className: 'area-systems', image: '/areas/systems.webp' },
     { id: 'dj' as const, number: '02', title: 'DJ', note: 'MÚSICA / EN VIVO', className: 'area-dj', image: '/areas/dj.webp' },
@@ -268,9 +293,11 @@ function HomeHub({ onOpenArea, isReducedMotion, isReady }: { onOpenArea: (area: 
           <span className="poster-photo-mark" aria-hidden="true">JGC</span>
           <img className="poster-portrait" src="/areas/portrait-yo2.webp" alt="Retrato de Joaquín González Calderón" />
           <aside className="poster-talker home-narrator" aria-label="Presentación de Joaquín">
-            <span className={`home-narrator-character${isCharacterVisible ? ' is-visible' : ''}${isAutoTalking ? ' is-talking' : ''}`} role="img" aria-label="Personaje cartoon de Joaquín" aria-hidden={!isCharacterVisible}>
+            <span className={`home-narrator-character${isCharacterVisible ? ' is-visible' : ''}${isAutoTalking ? ' is-talking' : ''}${characterLook === 'left' ? ' is-looking-left' : characterLook === 'right' ? ' is-looking-right' : ''}`} role="img" aria-label="Personaje cartoon de Joaquín" aria-hidden={!isCharacterVisible}>
               <img className="home-narrator-mouth-closed" src="/areas/joaquin-cartoon-idle.webp" alt="" />
               <img className="home-narrator-mouth-open" src="/areas/joaquin-cartoon-speaking.webp" alt="" aria-hidden="true" />
+              <img className="home-narrator-glance home-narrator-glance-left" src="/areas/joaquin-glance-left.webp" alt="" aria-hidden="true" />
+              <img className="home-narrator-glance home-narrator-glance-right" src="/areas/joaquin-glance-right.webp" alt="" aria-hidden="true" />
             </span>
             <p className={`home-narrator-bubble${isSpeechVisible ? ' is-visible' : ''}`} aria-hidden={!isSpeechVisible}>{speechText}{isTyping && <span className="home-narrator-caret" aria-hidden="true">▍</span>}</p>
           </aside>
