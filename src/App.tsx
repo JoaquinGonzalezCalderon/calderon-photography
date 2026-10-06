@@ -221,10 +221,12 @@ function App() {
     <audio ref={musicAudioRef} src="/audio/doomsday.mp3" preload="auto" loop aria-hidden="true" onPlay={() => { setIsMusicPlaying(true); setSoundError(false) }} onPause={() => setIsMusicPlaying(false)} onError={() => setSoundError(true)} />
     <audio ref={mouthAudioRef} src="/audio/sonidoboca.mp3" preload="auto" aria-hidden="true" onError={() => setSoundError(true)} />
     {showIntro && <PortfolioEntry isLeaving={isIntroLeaving} onEnter={enterPortfolio} />}
-    {!showIntro && <SiteSoundControl enabled={soundEnabled} isMusicPlaying={isMusicPlaying} volume={soundVolume} hasError={soundError} isHome={activeArea === 'home'} onToggle={toggleSound} onVolumeChange={changeSoundVolume} />}
-    {activeArea === 'home' ? <HomeHub onOpenArea={navigateArea} isReducedMotion={isReducedMotion} isReady={!showIntro} soundEnabled={soundEnabled} mouthAudioRef={mouthAudioRef} /> : activeArea === 'systems' ? <SystemsPortfolio onBack={goHome} /> : activeArea === 'photography' ? <Home albums={albumOrder} onOpenAlbum={openAlbum} onBack={goHome} /> : <DJPortfolio onBack={goHome} />}
-    {activeAlbum && <AlbumOverlay album={activeAlbum} transition={transition} onClose={closeAlbum} onOpenPhoto={(photos, index) => setLightbox({ photos, index })} />}
-    {lightbox && <PhotoLightbox photo={lightbox.photos[lightbox.index]} index={lightbox.index} total={lightbox.photos.length} onClose={() => setLightbox(null)} onMove={moveLightbox} />}
+    <div className="portfolio-content-layer" inert={showIntro}>
+      {!showIntro && <SiteSoundControl enabled={soundEnabled} isMusicPlaying={isMusicPlaying} volume={soundVolume} hasError={soundError} isHome={activeArea === 'home'} onToggle={toggleSound} onVolumeChange={changeSoundVolume} />}
+      {activeArea === 'home' ? <HomeHub onOpenArea={navigateArea} isReducedMotion={isReducedMotion} isReady={!showIntro} soundEnabled={soundEnabled} mouthAudioRef={mouthAudioRef} /> : activeArea === 'systems' ? <SystemsPortfolio onBack={goHome} /> : activeArea === 'photography' ? <Home albums={albumOrder} onOpenAlbum={openAlbum} onBack={goHome} /> : <DJPortfolio onBack={goHome} />}
+      {activeAlbum && <AlbumOverlay album={activeAlbum} transition={transition} onClose={closeAlbum} onOpenPhoto={(photos, index) => setLightbox({ photos, index })} />}
+      {lightbox && <PhotoLightbox photo={lightbox.photos[lightbox.index]} index={lightbox.index} total={lightbox.photos.length} onClose={() => setLightbox(null)} onMove={moveLightbox} />}
+    </div>
   </>
 }
 
@@ -681,7 +683,7 @@ function PortfolioEntry({ isLeaving, onEnter }: { isLeaving: boolean; onEnter: (
       <p className="portfolio-entry-kicker">PORTFOLIO PERSONAL <span>·</span> 2026</p>
       <img className="portfolio-entry-logo" src="/logo/calderon_logo.svg" alt="Calderón" />
       <p id="portfolio-entry-title" className="portfolio-entry-location">ENTRE RÍOS, ARGENTINA</p>
-      <button className="portfolio-entry-button" type="button" onClick={onEnter} disabled={isLeaving}>ENTRAR AL PORTFOLIO <span aria-hidden="true">↗</span></button>
+      <button className="portfolio-entry-button" type="button" autoFocus onClick={onEnter} disabled={isLeaving}>ENTRAR AL PORTFOLIO <span aria-hidden="true">↗</span></button>
       <p id="portfolio-entry-track" className="portfolio-entry-track"><span aria-hidden="true">♫</span> MF DOOM — DOOMSDAY</p>
       <p id="portfolio-entry-hint" className="portfolio-entry-hint">EL TEMA COMIENZA AL ENTRAR</p>
     </div>
