@@ -1,10 +1,24 @@
-fotos/
-desafio ciudadania/
-photo-source/originals/
-node_modules/
-.git/
-dist/
-yo.HEIC
-analista.HEIC
-dj.jpeg
-fotografia.jpeg
+/fotos/
+/desafio ciudadania/
+/photo-source/originals/
+/node_modules/
+/.git/
+/dist/
+/yo.HEIC
+/analista.HEIC
+/dj.jpeg
+/fotografia.jpeg
+/.agents/
+/lossantos/
+/scentea/
+/dj/
+/dj.HEIC
+/pjjoaquin.png
+/pjjoaquinhablando.png
+/pjjoaquinizq.png
+/pjjoaquinder.png
+/yo.png
+/yo2.png
+/skills-lock.json
+/MF DOOM*
+/sonidoboca.mp3
