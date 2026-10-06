@@ -251,7 +251,7 @@ function HomeHub({ onOpenArea, isReducedMotion }: { onOpenArea: (area: 'systems'
               <img className="home-narrator-mouth-closed" src="/areas/joaquin-cartoon-idle.webp" alt="" />
               <img className="home-narrator-mouth-open" src="/areas/joaquin-cartoon-speaking.webp" alt="" aria-hidden="true" />
             </span>
-            <p className={`home-narrator-bubble${isSpeechVisible ? ' is-visible' : ''}`} aria-hidden={!isSpeechVisible}>¡Hola! Soy Joaquín. Me gusta crear soluciones, compartir música y guardar historias con mi cámara.</p>
+            <p className={`home-narrator-bubble${isSpeechVisible ? ' is-visible' : ''}`} aria-hidden={!isSpeechVisible}>Soy Joaquín González Calderón, tengo 23 años. Soy analista en sistemas, DJ y fotógrafo.</p>
           </aside>
         </figure>
         <nav className="poster-nav" aria-label="Elegí un área del portfolio">{areas.map((area) => <button className={`poster-link ${area.className}${openingArea === area.id ? ' is-opening' : ''}`} key={area.id} onClick={() => enterArea(area.id)} disabled={Boolean(openingArea)}><span className="poster-link-number">{area.number}</span><span className="poster-link-title">{area.title}</span><span className="poster-link-note">{area.note}</span><span className="poster-link-arrow" aria-hidden="true">↗</span></button>)}</nav>
