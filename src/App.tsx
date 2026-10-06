@@ -651,7 +651,9 @@ function PortfolioEntry({ isLeaving, onEnter }: { isLeaving: boolean; onEnter: (
   return <section className={`portfolio-entry${isLeaving ? ' is-leaving' : ''}`} role="dialog" aria-modal="true" aria-label="Entrar al portfolio de Joaquín Calderón">
     <div className="portfolio-entry-lockup">
       <img className="portfolio-entry-logo" src="/logo/calderon_logo.svg" alt="Calderón" />
-      <button className="portfolio-entry-button" type="button" autoFocus onClick={onEnter} disabled={isLeaving} aria-label="Entrar al portfolio"><span aria-hidden="true">→</span></button>
+      <button className="portfolio-entry-button" type="button" autoFocus onClick={onEnter} disabled={isLeaving} aria-label="Entrar al portfolio">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M8.5 3.5 13 8l-4.5 4.5" /></svg>
+      </button>
     </div>
   </section>
 }
