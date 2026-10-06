@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { albumCover, albumPhotos, albums, driveUrls, type Album } from './data/albums'
 import type { Photo } from './data/photos'
 import { site } from './config/site'
@@ -226,49 +226,35 @@ function HomeHub({ onOpenArea, isReducedMotion }: { onOpenArea: (area: 'systems'
     const delay = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 260
     window.setTimeout(() => onOpenArea(area), delay)
   }
-  const moveCardWeight = (event: ReactPointerEvent<HTMLButtonElement>) => {
-    if (event.pointerType !== 'mouse') return
-    const card = event.currentTarget
-    const bounds = card.getBoundingClientRect()
-    const x = (event.clientX - bounds.left) / bounds.width
-    const y = (event.clientY - bounds.top) / bounds.height
-    card.style.setProperty('--weight-x', `${(x * 100).toFixed(1)}%`)
-    card.style.setProperty('--weight-y', `${(y * 100).toFixed(1)}%`)
-    card.style.setProperty('--tilt-x', `${((0.5 - y) * 3).toFixed(2)}deg`)
-    card.style.setProperty('--tilt-y', `${((x - 0.5) * 3).toFixed(2)}deg`)
-  }
-  const releaseCardWeight = (event: ReactPointerEvent<HTMLButtonElement>) => {
-    const card = event.currentTarget
-    card.style.setProperty('--weight-x', '50%')
-    card.style.setProperty('--weight-y', '50%')
-    card.style.setProperty('--tilt-x', '0deg')
-    card.style.setProperty('--tilt-y', '0deg')
-  }
-  return <main className={`home-hub${openingArea ? ' is-leaving-up' : ''}`}>
-    <div className="home-board-frame">
-      <div className="board-topline">
-        <div className="board-brand"><img className="board-logo" src="/logo/calderon_logo.svg" alt="Calderón" /><div className="board-edition"><span>PORTAFOLIO PERSONAL</span><span>ENTRE RÍOS · ARGENTINA <i>2026</i></span></div></div>
-      </div>
-      <section className="area-selector" aria-label="Portfolio de Joaquín González Calderón">
-        <figure className="home-portrait-group">
-          <span className="home-portrait-index" aria-hidden="true">RETRATO / 01</span>
-          <img className="home-portrait" src="/areas/portrait-yo2.webp" alt="Retrato en blanco y negro de Joaquín González Calderón" />
-          <figcaption>ENTRE RÍOS, ARGENTINA <span>·</span> 2026</figcaption>
-        </figure>
-        <div className="home-copy">
-          <p className="home-kicker"><span>PORTFOLIO PERSONAL</span><span>01 — 03</span></p>
+  return <main className={`home-hub poster-home${openingArea ? ' is-leaving-up' : ''}`}>
+    <div className="poster-shell">
+      <header className="poster-header">
+        <a className="poster-brand" href="/" aria-label="Joaquín Calderón, inicio">
+          <img src="/logo/calderon_logo.svg" alt="Calderón" />
+          <span>Portfolio personal <i>·</i> 2026</span>
+        </a>
+        <a className="poster-social" href={site.instagramUrl} target="_blank" rel="noreferrer">Instagram <b aria-hidden="true">↗</b></a>
+      </header>
+      <section className="poster-hero" aria-label="Portfolio de Joaquín González Calderón">
+        <div className="poster-copy">
+          <p className="poster-eyebrow">Analista <span>·</span> DJ <span>·</span> Fotógrafo</p>
           <h1>Joaquín<span>.</span></h1>
-          <p className="home-full-name">GONZÁLEZ CALDERÓN</p>
-          <p className="home-role">Analista en sistemas <i>·</i> DJ <i>·</i> Fotografía</p>
-          <aside className="home-narrator" aria-label="Presentación de Joaquín">
+          <p className="poster-full-name">González Calderón</p>
+          <p className="poster-intro">Ideas que se programan.<br />Música que se comparte.<br />Imágenes que quedan.</p>
+        </div>
+        <figure className="poster-visual">
+          <div className="poster-photo-slab" aria-hidden="true" />
+          <span className="poster-photo-mark" aria-hidden="true">JG</span>
+          <img className="poster-portrait" src="/areas/portrait-yo2.webp" alt="Retrato de Joaquín González Calderón" />
+          <aside className="poster-talker home-narrator" aria-label="Presentación de Joaquín">
             <span className={`home-narrator-character${isCharacterVisible ? ' is-visible' : ''}${isAutoTalking ? ' is-talking' : ''}`} role="img" aria-label="Personaje cartoon de Joaquín" aria-hidden={!isCharacterVisible}>
               <img className="home-narrator-mouth-closed" src="/areas/joaquin-cartoon-idle.webp" alt="" />
               <img className="home-narrator-mouth-open" src="/areas/joaquin-cartoon-speaking.webp" alt="" aria-hidden="true" />
             </span>
             <p className={`home-narrator-bubble${isSpeechVisible ? ' is-visible' : ''}`} aria-hidden={!isSpeechVisible}>¡Hola! Soy Joaquín. Me gusta crear soluciones, compartir música y guardar historias con mi cámara.</p>
           </aside>
-        </div>
-        <nav className="board-areas" aria-label="Elegí un área del portfolio">{areas.map((area) => <button className={`area-card ${area.className}${openingArea === area.id ? ' is-opening' : ''}`} key={area.id} onClick={() => enterArea(area.id)} onPointerMove={moveCardWeight} onPointerLeave={releaseCardWeight} disabled={Boolean(openingArea)}><img className="area-image" src={area.image} alt="" aria-hidden="true" /><span className="area-card-meta"><span>{area.number}</span><span className="area-note">{area.note}</span></span><span className="area-title">{area.title}</span><span className="area-arrow" aria-hidden="true">↗</span></button>)}</nav>
+        </figure>
+        <nav className="poster-nav" aria-label="Elegí un área del portfolio">{areas.map((area) => <button className={`poster-link ${area.className}${openingArea === area.id ? ' is-opening' : ''}`} key={area.id} onClick={() => enterArea(area.id)} disabled={Boolean(openingArea)}><span className="poster-link-number">{area.number}</span><span className="poster-link-title">{area.title}</span><span className="poster-link-note">{area.note}</span><span className="poster-link-arrow" aria-hidden="true">↗</span></button>)}</nav>
       </section>
     </div>
     <ContactSection />
