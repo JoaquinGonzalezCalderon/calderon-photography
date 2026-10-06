@@ -228,7 +228,7 @@ function HomeHub({ onOpenArea, isReducedMotion, isReady, mouthAudioRef }: { onOp
     let typingStartTimer = 0
     let typingTimer = 0
     let speechTimer = 0
-    const message = 'Soy Joaquín González Calderón, tengo 23 años. Soy analista en sistemas, DJ y fotógrafo.'
+    const message = 'Soy Joaquín Gonzalez Calderón, tengo 23 años. Soy analista en sistemas, DJ y fotógrafo.'
     const speak = () => {
       setIsSpeechVisible(true)
       typingStartTimer = window.setTimeout(() => {
@@ -322,19 +322,19 @@ function HomeHub({ onOpenArea, isReducedMotion, isReady, mouthAudioRef }: { onOp
           <span>Portfolio personal <i>·</i> 2026</span>
         </a>
       </header>
-      <section className="poster-hero" aria-label="Portfolio de Joaquín González Calderón">
+      <section className="poster-hero" aria-label="Portfolio de Joaquín Gonzalez Calderón">
         <div className="poster-profile">
           <div className="poster-copy">
             <p className="poster-eyebrow">Analista <span>·</span> DJ <span>·</span> Fotógrafo</p>
             <h1>Joaquín<span>.</span></h1>
-            <p className="poster-full-name">González Calderón</p>
+            <p className="poster-full-name">Gonzalez Calderón</p>
           </div>
           <nav className="poster-nav" aria-label="Elegí un área del portfolio">{areas.map((area) => <button className={`poster-link ${area.className}${openingArea === area.id ? ' is-opening' : ''}`} key={area.id} onClick={() => enterArea(area.id)} disabled={Boolean(openingArea)}><img className="poster-link-image" src={area.image} alt="" aria-hidden="true" /><span className="poster-link-number">{area.number}</span><span className="poster-link-title">{area.title}</span><span className="poster-link-note">{area.note}</span><span className="poster-link-arrow" aria-hidden="true">↗</span></button>)}</nav>
         </div>
         <figure className="poster-visual">
           <div className="poster-photo-slab" aria-hidden="true" />
           <span className="poster-photo-mark" aria-hidden="true">JGC</span>
-          <img className="poster-portrait" src="/areas/portrait-yo2.webp" alt="Retrato de Joaquín González Calderón" />
+          <img className="poster-portrait" src="/areas/portrait-yo2.webp" alt="Retrato de Joaquín Gonzalez Calderón" />
           <aside className="poster-talker home-narrator" aria-label="Presentación de Joaquín">
             <span className={`home-narrator-character${isCharacterVisible ? ' is-visible' : ''}${isAutoTalking ? ' is-talking' : ''}${characterLook === 'left' ? ' is-looking-left' : characterLook === 'right' ? ' is-looking-right' : ''}`} role="img" aria-label="Personaje cartoon de Joaquín" aria-hidden={!isCharacterVisible}>
               <img className="home-narrator-mouth-closed" src="/areas/joaquin-cartoon-idle.webp" alt="" />
