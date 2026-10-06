@@ -325,7 +325,6 @@ function HomeHub({ onOpenArea, isReducedMotion, isReady, mouthAudioRef }: { onOp
       <section className="poster-hero" aria-label="Portfolio de Joaquín Gonzalez Calderón">
         <div className="poster-profile">
           <div className="poster-copy">
-            <p className="poster-eyebrow">Analista <span>·</span> DJ <span>·</span> Fotógrafo</p>
             <h1>Joaquín<span>.</span></h1>
             <p className="poster-full-name">Gonzalez Calderón</p>
           </div>
