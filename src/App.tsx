@@ -34,7 +34,7 @@ function App() {
   const [transition, setTransition] = useState<Transition>(() => albumFromPathname(window.location.pathname) ? 'open' : 'opening')
   const [lightbox, setLightbox] = useState<{ photos: Photo[]; index: number } | null>(null)
   const [isReducedMotion, setIsReducedMotion] = useState(false)
-  const [showIntro, setShowIntro] = useState(true)
+  const [showIntro, setShowIntro] = useState(() => (window.location.pathname.replace(/\/+$/, '') || '/') === '/')
   const [isIntroLeaving, setIsIntroLeaving] = useState(false)
   const [isMusicPlaying, setIsMusicPlaying] = useState(false)
   const [soundError, setSoundError] = useState(false)
