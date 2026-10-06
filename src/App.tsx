@@ -195,14 +195,12 @@ function HomeHub({ onOpenArea, isReducedMotion }: { onOpenArea: (area: 'systems'
     let entranceTimer = 0
     let firstSpeechTimer = 0
     let speechTimer = 0
-    let hideBubbleTimer = 0
     let nextSpeechTimer = 0
     const speak = () => {
       setIsSpeechVisible(true)
       setIsAutoTalking(true)
       speechTimer = window.setTimeout(() => {
         setIsAutoTalking(false)
-        hideBubbleTimer = window.setTimeout(() => setIsSpeechVisible(false), 220)
         nextSpeechTimer = window.setTimeout(speak, 22000 + Math.random() * 10000)
       }, 6200)
     }
@@ -214,7 +212,6 @@ function HomeHub({ onOpenArea, isReducedMotion }: { onOpenArea: (area: 'systems'
       window.clearTimeout(entranceTimer)
       window.clearTimeout(firstSpeechTimer)
       window.clearTimeout(speechTimer)
-      window.clearTimeout(hideBubbleTimer)
       window.clearTimeout(nextSpeechTimer)
     }
   }, [isReducedMotion])
@@ -250,22 +247,27 @@ function HomeHub({ onOpenArea, isReducedMotion }: { onOpenArea: (area: 'systems'
   return <main className={`home-hub${openingArea ? ' is-leaving-up' : ''}`}>
     <div className="home-board-frame">
       <div className="board-topline">
-        <div className="board-brand"><img className="board-logo" src="/logo/calderon_logo.svg" alt="Calderón" /><div className="board-edition"><span>PORTAFOLIO PERSONAL · 2026</span><span>ENTRE RÍOS · ARGENTINA</span></div></div>
+        <div className="board-brand"><img className="board-logo" src="/logo/calderon_logo.svg" alt="Calderón" /><div className="board-edition"><span>PORTAFOLIO PERSONAL</span><span>ENTRE RÍOS · ARGENTINA <i>2026</i></span></div></div>
       </div>
-      <section className="area-selector" aria-label="Áreas del portfolio">
-        <div className="home-portrait-group">
-          <figure className="home-portrait"><img src="/areas/portrait-cutout.webp" alt="Retrato en blanco y negro de Joaquín González Calderón" />
-            <figcaption><span>JOAQUÍN GONZÁLEZ CALDERÓN</span></figcaption>
-          </figure>
+      <section className="area-selector" aria-label="Portfolio de Joaquín González Calderón">
+        <div className="home-copy">
+          <p className="home-kicker"><span>HOLA, SOY JOAQUÍN</span><span>01 — 03</span></p>
+          <h1>Joaquín <span>González</span><br />Calderón</h1>
+          <p className="home-role">Analista en sistemas <i>·</i> DJ <i>·</i> Fotografía</p>
           <aside className="home-narrator" aria-label="Presentación de Joaquín">
-            <p className={`home-narrator-bubble${isSpeechVisible ? ' is-visible' : ''}`} aria-hidden={!isSpeechVisible}>¡Hola! Soy Joaquín, tengo 23 años. Soy analista en sistemas, DJ y me gusta la fotografía. ¡Te invito a ver mis trabajos!</p>
             <span className={`home-narrator-character${isCharacterVisible ? ' is-visible' : ''}${isAutoTalking ? ' is-talking' : ''}`} role="img" aria-label="Personaje cartoon de Joaquín" aria-hidden={!isCharacterVisible}>
               <img className="home-narrator-mouth-closed" src="/areas/joaquin-cartoon-idle.webp" alt="" />
               <img className="home-narrator-mouth-open" src="/areas/joaquin-cartoon-speaking.webp" alt="" aria-hidden="true" />
             </span>
+            <p className={`home-narrator-bubble${isSpeechVisible ? ' is-visible' : ''}`} aria-hidden={!isSpeechVisible}>¡Hola! Soy Joaquín. Me gusta crear soluciones, compartir música y guardar historias con mi cámara.</p>
           </aside>
+          <nav className="board-areas" aria-label="Elegí un área del portfolio">{areas.map((area) => <button className={`area-card ${area.className}${openingArea === area.id ? ' is-opening' : ''}`} key={area.id} onClick={() => enterArea(area.id)} onPointerMove={moveCardWeight} onPointerLeave={releaseCardWeight} disabled={Boolean(openingArea)}><img className="area-image" src={area.image} alt="" aria-hidden="true" /><span className="area-card-meta"><span>{area.number}</span><span className="area-note">{area.note}</span></span><span className="area-title">{area.title}</span><span className="area-arrow" aria-hidden="true">↗</span></button>)}</nav>
         </div>
-        <nav className="board-areas" aria-label="Elegí un área del portafolio">{areas.map((area) => <button className={`area-card ${area.className}${openingArea === area.id ? ' is-opening' : ''}`} key={area.id} onClick={() => enterArea(area.id)} onPointerMove={moveCardWeight} onPointerLeave={releaseCardWeight} disabled={Boolean(openingArea)}><img className="area-image" src={area.image} alt="" aria-hidden="true" /><span className="area-card-meta"><span>{area.number}</span><span className="area-note">{area.note}</span></span><span className="area-title">{area.title}</span><span className="area-arrow" aria-hidden="true">↗</span></button>)}</nav>
+        <figure className="home-portrait-group">
+          <span className="home-portrait-index" aria-hidden="true">JGC — 2026</span>
+          <img className="home-portrait" src="/areas/portrait-cutout.webp" alt="Retrato en blanco y negro de Joaquín González Calderón" />
+          <figcaption>ENTRE RÍOS, ARGENTINA <span>·</span> RETRATO / 01</figcaption>
+        </figure>
       </section>
     </div>
     <ContactSection />
