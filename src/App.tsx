@@ -172,7 +172,7 @@ function App() {
 
   return <>
     {showIntro && <IntroSplash />}
-    {activeArea === 'home' ? <HomeHub onOpenArea={navigateArea} isReducedMotion={isReducedMotion} /> : activeArea === 'systems' ? <SystemsPortfolio onBack={goHome} /> : activeArea === 'photography' ? <Home albums={albumOrder} onOpenAlbum={openAlbum} onBack={goHome} /> : <DJPortfolio onBack={goHome} />}
+    {activeArea === 'home' ? <HomeHub onOpenArea={navigateArea} isReducedMotion={isReducedMotion} isReady={!showIntro} /> : activeArea === 'systems' ? <SystemsPortfolio onBack={goHome} /> : activeArea === 'photography' ? <Home albums={albumOrder} onOpenAlbum={openAlbum} onBack={goHome} /> : <DJPortfolio onBack={goHome} />}
     {activeAlbum && <AlbumOverlay album={activeAlbum} transition={transition} onClose={closeAlbum} onOpenPhoto={(photos, index) => setLightbox({ photos, index })} />}
     {lightbox && <PhotoLightbox photo={lightbox.photos[lightbox.index]} index={lightbox.index} total={lightbox.photos.length} onClose={() => setLightbox(null)} onMove={moveLightbox} />}
   </>
@@ -180,7 +180,7 @@ function App() {
 
 function Logo() { return <a className="archive-logo" href="/" aria-label="Calderón, inicio"><img src="/logo/calderon_logo.svg" alt="Calderón" /></a> }
 
-function HomeHub({ onOpenArea, isReducedMotion }: { onOpenArea: (area: 'systems' | 'dj' | 'photography') => void; isReducedMotion: boolean }) {
+function HomeHub({ onOpenArea, isReducedMotion, isReady }: { onOpenArea: (area: 'systems' | 'dj' | 'photography') => void; isReducedMotion: boolean; isReady: boolean }) {
   const [openingArea, setOpeningArea] = useState<'systems' | 'dj' | 'photography' | null>(null)
   const [isCharacterVisible, setIsCharacterVisible] = useState(false)
   const [isSpeechVisible, setIsSpeechVisible] = useState(false)
@@ -226,7 +226,7 @@ function HomeHub({ onOpenArea, isReducedMotion }: { onOpenArea: (area: 'systems'
     const delay = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 260
     window.setTimeout(() => onOpenArea(area), delay)
   }
-  return <main className={`home-hub poster-home${openingArea ? ' is-leaving-up' : ''}`}>
+  return <main className={`home-hub poster-home${isReady ? ' is-ready' : ''}${openingArea ? ' is-leaving-up' : ''}`}>
     <div className="poster-shell">
       <header className="poster-header">
         <a className="poster-brand" href="/" aria-label="Joaquín Calderón, inicio">

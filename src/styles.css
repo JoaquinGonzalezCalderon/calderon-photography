@@ -933,3 +933,46 @@ body.is-arriving-back .home-hub { animation: back-home-enter 420ms cubic-bezier(
   .poster-visual { height: 82vw; }
   .poster-link-title { font-size: 20px; }
 }
+
+@keyframes poster-enter-down {
+  from { opacity: 0; transform: translateY(-9px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes poster-enter-up {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes poster-visual-enter {
+  from { opacity: 0; transform: translateY(16px) scale(.985); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes poster-link-enter {
+  from { opacity: 0; transform: translateX(-11px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+.poster-home.is-ready .poster-header { animation: poster-enter-down 460ms cubic-bezier(.16, 1, .3, 1) both; }
+.poster-home.is-ready .poster-copy > * { animation: poster-enter-up 480ms cubic-bezier(.16, 1, .3, 1) both; }
+.poster-home.is-ready .poster-eyebrow { animation-delay: 60ms; }
+.poster-home.is-ready .poster-copy h1 { animation-delay: 120ms; }
+.poster-home.is-ready .poster-full-name { animation-delay: 180ms; }
+.poster-home.is-ready .poster-intro { animation-delay: 240ms; }
+.poster-home.is-ready .poster-visual { animation: poster-visual-enter 720ms cubic-bezier(.16, 1, .3, 1) 100ms both; }
+.poster-home.is-ready .poster-nav .poster-link { animation: poster-link-enter 460ms cubic-bezier(.16, 1, .3, 1) both; }
+.poster-home.is-ready .poster-nav .poster-link:nth-child(1) { animation-delay: 220ms; }
+.poster-home.is-ready .poster-nav .poster-link:nth-child(2) { animation-delay: 300ms; }
+.poster-home.is-ready .poster-nav .poster-link:nth-child(3) { animation-delay: 380ms; }
+.poster-home.is-ready .home-contact { animation: poster-enter-up 520ms cubic-bezier(.16, 1, .3, 1) 420ms both; }
+@media (hover: hover) and (pointer: fine) {
+  .poster-portrait { transition: transform 620ms cubic-bezier(.16, 1, .3, 1); }
+  .poster-visual:hover .poster-portrait { transform: translateY(-5px) scale(1.012); }
+  .poster-photo-slab { transition: transform 680ms cubic-bezier(.16, 1, .3, 1); }
+  .poster-visual:hover .poster-photo-slab { transform: rotate(.4deg) scale(1.018); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .poster-home.is-ready .poster-header,
+  .poster-home.is-ready .poster-copy > *,
+  .poster-home.is-ready .poster-visual,
+  .poster-home.is-ready .poster-nav .poster-link,
+  .poster-home.is-ready .home-contact { animation: none; }
+  .poster-portrait, .poster-photo-slab { transition: none; }
+}
