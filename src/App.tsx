@@ -186,12 +186,6 @@ function HomeHub({ onOpenArea, isReducedMotion, isReady }: { onOpenArea: (area: 
   const [isSpeechVisible, setIsSpeechVisible] = useState(false)
   const [isAutoTalking, setIsAutoTalking] = useState(false)
   useEffect(() => {
-    if (isReducedMotion) {
-      setIsCharacterVisible(true)
-      setIsSpeechVisible(true)
-      setIsAutoTalking(false)
-      return
-    }
     let entranceTimer = 0
     let firstSpeechTimer = 0
     let speechTimer = 0
@@ -214,7 +208,7 @@ function HomeHub({ onOpenArea, isReducedMotion, isReady }: { onOpenArea: (area: 
       window.clearTimeout(speechTimer)
       window.clearTimeout(nextSpeechTimer)
     }
-  }, [isReducedMotion])
+  }, [])
   const areas = [
     { id: 'systems' as const, number: '01', title: 'Analista en Sistemas', note: 'TECNOLOGÍA / SOLUCIONES', className: 'area-systems', image: '/areas/systems.webp' },
     { id: 'dj' as const, number: '02', title: 'DJ', note: 'MÚSICA / EN VIVO', className: 'area-dj', image: '/areas/dj.webp' },
@@ -240,8 +234,8 @@ function HomeHub({ onOpenArea, isReducedMotion, isReady }: { onOpenArea: (area: 
           <p className="poster-eyebrow">Analista <span>·</span> DJ <span>·</span> Fotógrafo</p>
           <h1>Joaquín<span>.</span></h1>
           <p className="poster-full-name">González Calderón</p>
-          <p className="poster-intro">Ideas que se programan.<br />Música que se comparte.<br />Imágenes que quedan.</p>
         </div>
+        <nav className="poster-nav" aria-label="Elegí un área del portfolio">{areas.map((area) => <button className={`poster-link ${area.className}${openingArea === area.id ? ' is-opening' : ''}`} key={area.id} onClick={() => enterArea(area.id)} disabled={Boolean(openingArea)}><img className="poster-link-image" src={area.image} alt="" aria-hidden="true" /><span className="poster-link-number">{area.number}</span><span className="poster-link-title">{area.title}</span><span className="poster-link-note">{area.note}</span><span className="poster-link-arrow" aria-hidden="true">↗</span></button>)}</nav>
         <figure className="poster-visual">
           <div className="poster-photo-slab" aria-hidden="true" />
           <span className="poster-photo-mark" aria-hidden="true">JG</span>
@@ -254,7 +248,6 @@ function HomeHub({ onOpenArea, isReducedMotion, isReady }: { onOpenArea: (area: 
             <p className={`home-narrator-bubble${isSpeechVisible ? ' is-visible' : ''}`} aria-hidden={!isSpeechVisible}>Soy Joaquín González Calderón, tengo 23 años. Soy analista en sistemas, DJ y fotógrafo.</p>
           </aside>
         </figure>
-        <nav className="poster-nav" aria-label="Elegí un área del portfolio">{areas.map((area) => <button className={`poster-link ${area.className}${openingArea === area.id ? ' is-opening' : ''}`} key={area.id} onClick={() => enterArea(area.id)} disabled={Boolean(openingArea)}><span className="poster-link-number">{area.number}</span><span className="poster-link-title">{area.title}</span><span className="poster-link-note">{area.note}</span><span className="poster-link-arrow" aria-hidden="true">↗</span></button>)}</nav>
       </section>
     </div>
     <ContactSection />
