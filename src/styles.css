@@ -1038,7 +1038,9 @@ body.is-arriving-back .home-hub { animation: back-home-enter 420ms cubic-bezier(
 }
 .portfolio-entry::before { position: absolute; z-index: -1; inset: 0; background: radial-gradient(ellipse at center, #b99a5109, transparent 50%); content: ''; pointer-events: none; }
 .portfolio-entry-lockup { display: grid; justify-items: center; gap: 30px; width: min(520px, calc(100vw - 40px)); padding: 36px 20px; text-align: center; }
-.portfolio-entry-logo { display: block; width: min(390px, 72vw); height: auto; animation: entry-logo-in 850ms cubic-bezier(.16, 1, .3, 1) 120ms both; }
+.portfolio-entry-brand { position: relative; display: grid; width: min(390px, 72vw); place-items: center; isolation: isolate; }
+.portfolio-entry-brand::before { position: absolute; z-index: -1; width: 125%; aspect-ratio: 1.75; border-radius: 50%; background: radial-gradient(ellipse, #d1ad5b38 0%, #b99a511c 40%, transparent 72%); content: ''; filter: blur(18px); pointer-events: none; animation: entry-logo-aura 4.8s ease-in-out infinite; }
+.portfolio-entry-logo { display: block; width: 100%; height: auto; filter: drop-shadow(0 0 18px #d1ad5b25); animation: entry-logo-in 850ms cubic-bezier(.16, 1, .3, 1) 120ms both; }
 .portfolio-entry-button { position: relative; display: grid; width: 56px; height: 56px; place-items: center; border: 1px solid #b99a51a8; border-radius: 50%; background: #b99a510b; color: #d8b85d; cursor: pointer; transition: background-color 180ms ease, border-color 180ms ease, transform 120ms ease; }
 .portfolio-entry-button::before { position: absolute; z-index: -1; inset: -1px; border: 1px solid #d8b85d8c; border-radius: inherit; content: ''; pointer-events: none; animation: entry-cue-ripple 2.4s cubic-bezier(.16, 1, .3, 1) 900ms infinite; }
 .portfolio-entry-button svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.4; animation: entry-cue-nudge 2.4s ease-in-out 900ms infinite; }
@@ -1057,12 +1059,13 @@ body.is-arriving-back .home-hub { animation: back-home-enter 420ms cubic-bezier(
 .site-sound-error { position: absolute; right: 0; bottom: calc(100% + 7px); max-width: 220px; border: 1px solid #8a665c; padding: 7px 9px; background: #171413; color: #e4bcb0; font-size: 8px; font-weight: 700; letter-spacing: .08em; }
 .site-sound-control button:focus-visible { outline: 2px solid #d3b25e; outline-offset: 4px; }
 @keyframes entry-logo-in { from { opacity: 0; transform: translateY(20px) scale(.94); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes entry-logo-aura { 0%, 100% { opacity: .62; transform: scale(.94); } 50% { opacity: 1; transform: scale(1.04); } }
 @keyframes entry-cue-ripple { 0%, 12% { opacity: .45; transform: scale(.9); } 58%, 100% { opacity: 0; transform: scale(1.48); } }
 @keyframes entry-cue-nudge { 0%, 12%, 58%, 100% { transform: translateX(0); } 30%, 44% { transform: translateX(3px); } }
 @keyframes portfolio-entry-exit { from { transform: translateY(0); } to { transform: translateY(-101%); } }
 @media (max-width: 760px) {
   .portfolio-entry-lockup { gap: 28px; padding-inline: 10px; }
-  .portfolio-entry-logo { width: min(340px, 72vw); }
+  .portfolio-entry-brand { width: min(340px, 72vw); }
   .site-sound-control.is-home { top: 8px; right: 12px; padding: 0; }
   .site-sound-control.is-subpage { right: 14px; bottom: 14px; }
 }

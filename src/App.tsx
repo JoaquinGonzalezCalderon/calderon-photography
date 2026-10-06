@@ -650,7 +650,9 @@ function PhotoLightboxLegacy({ photo, index, total, onClose, onMove }: { photo: 
 function PortfolioEntry({ isLeaving, onEnter }: { isLeaving: boolean; onEnter: () => void }) {
   return <section className={`portfolio-entry${isLeaving ? ' is-leaving' : ''}`} role="dialog" aria-modal="true" aria-label="Entrar al portfolio de Joaquín Calderón">
     <div className="portfolio-entry-lockup">
-      <img className="portfolio-entry-logo" src="/logo/calderon_logo.svg" alt="Calderón" />
+      <div className="portfolio-entry-brand">
+        <img className="portfolio-entry-logo" src="/logo/calderon_logo.svg" alt="Calderón" />
+      </div>
       <button className="portfolio-entry-button" type="button" autoFocus onClick={onEnter} disabled={isLeaving} aria-label="Entrar al portfolio">
         <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M8.5 3.5 13 8l-4.5 4.5" /></svg>
       </button>
