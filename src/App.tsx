@@ -253,7 +253,6 @@ function HomeHub({ onOpenArea, isReducedMotion, isReady }: { onOpenArea: (area: 
           <img src="/logo/calderon_logo.svg" alt="Calderón" />
           <span>Portfolio personal <i>·</i> 2026</span>
         </a>
-        <a className="poster-social" href={site.instagramUrl} target="_blank" rel="noreferrer">Instagram <b aria-hidden="true">↗</b></a>
       </header>
       <section className="poster-hero" aria-label="Portfolio de Joaquín González Calderón">
         <div className="poster-profile">
@@ -552,7 +551,7 @@ function Home({ albums, onOpenAlbum, onBack }: { albums: Album[]; onOpenAlbum: (
 
 function AlbumCard({ album, index, onOpen }: { album: Album; index: number; onOpen: () => void }) {
   const cover = albumCover(album)
-  return <button className={`album-card album-card-${index + 1}`} data-album-id={album.id} onClick={onOpen} aria-label={`Abrir álbum ${album.title}`}>
+  return <button className={`album-card album-card-${index + 1}`} style={{ animationDelay: `${index * 220}ms` }} data-album-id={album.id} onClick={onOpen} aria-label={`Abrir álbum ${album.title}`}>
     <span className="album-card-image" style={{ aspectRatio: `${cover.width} / ${cover.height}` }}><img src={cover.medium} srcSet={`${cover.medium} 960w, ${cover.large} 1600w`} sizes="(max-width: 760px) 94vw, 46vw" alt={`Portada del álbum ${album.title}`} loading={index === 0 ? 'eager' : 'lazy'} /></span>
     <span className="album-card-meta"><span>{album.title}</span><span>{album.year}</span></span>
     {driveUrls[album.id] && <a className="album-drive-link" href={driveUrls[album.id]} target="_blank" rel="noreferrer" onClick={(event) => event.stopPropagation()}>ABRIR EN DRIVE ↗</a>}

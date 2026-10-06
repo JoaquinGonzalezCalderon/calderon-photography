@@ -16,9 +16,6 @@ body.album-is-open .archive-home { opacity: 0; pointer-events: none; visibility:
 .archive-logo img { display: block; height: auto; width: 100%; }
 .archive-logo { animation: logo-in .9s .08s var(--ease) both; }
 .album-card { animation: album-in .8s var(--ease) both; }
-.album-card:nth-child(1) { animation-delay: .5s; }
-.album-card:nth-child(2) { animation-delay: .68s; }
-.album-card:nth-child(3) { animation-delay: .86s; }
 .header-side, .index-intro, .archive-footer, .album-card-meta, .micro-label, .album-overlay-bar, .album-heading-meta, .album-end, .lightbox-bar, .lightbox-controls { color: var(--soft); font-size: 9px; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; }
 .header-side-right { text-align: right; }
 .album-index { margin: 65px auto 0; max-width: 1380px; padding: 0 7vw 100px; }
@@ -856,11 +853,8 @@ body.is-arriving-back .home-hub { animation: back-home-enter 420ms cubic-bezier(
 .poster-header { display: flex; min-height: 72px; align-items: center; justify-content: space-between; border-bottom: 1px solid #ffffff2b; }
 .poster-brand { display: inline-flex; align-items: center; gap: 20px; color: var(--poster-paper); }
 .poster-brand img { display: block; width: clamp(90px, 9vw, 126px); height: auto; }
-.poster-brand span, .poster-social { font-size: 11px; font-weight: 600; letter-spacing: .06em; }
+.poster-brand span { font-size: 11px; font-weight: 600; letter-spacing: .06em; }
 .poster-brand i { padding: 0 4px; color: var(--poster-accent); font-style: normal; }
-.poster-social { display: inline-flex; align-items: center; gap: 12px; padding: 10px 0 10px 12px; }
-.poster-social b { color: var(--poster-accent); font-size: 17px; transition: transform 180ms ease; }
-.poster-social:hover b { transform: translate(2px, -2px); }
 .poster-hero { display: grid; width: 100%; min-width: 0; flex: 1; grid-template-columns: minmax(0, .92fr) minmax(0, 1.08fr); grid-template-rows: minmax(0, 1fr); align-items: center; column-gap: clamp(18px, 4vw, 58px); min-height: clamp(650px, calc(100svh - 178px), 850px); padding: 18px 0 25px; }
 .poster-profile { position: relative; z-index: 2; display: flex; min-width: 0; grid-column: 1; grid-row: 1; flex-direction: column; align-self: center; gap: clamp(22px, 3vh, 34px); }
 .poster-copy { position: relative; padding: 0; }
@@ -911,8 +905,7 @@ body.is-arriving-back .home-hub { animation: back-home-enter 420ms cubic-bezier(
   .poster-header { min-height: 58px; }
   .poster-brand { gap: 12px; }
   .poster-brand img { width: 78px; }
-  .poster-brand span, .poster-social { font-size: 9px; }
-  .poster-social { gap: 7px; }
+  .poster-brand span { font-size: 9px; }
   .poster-hero { display: flex; width: calc(100vw - var(--poster-mobile-gutter)); min-height: 0; flex-direction: column; align-items: stretch; gap: 0; padding: 26px 0 18px; }
   .poster-profile { width: 100%; gap: 20px; }
   .poster-copy { width: 100%; align-self: stretch; text-align: left; }
