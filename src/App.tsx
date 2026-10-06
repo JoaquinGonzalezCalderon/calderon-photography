@@ -37,7 +37,6 @@ function App() {
   const [showIntro, setShowIntro] = useState(true)
   const [isIntroLeaving, setIsIntroLeaving] = useState(false)
   const [soundEnabled, setSoundEnabled] = useState(true)
-  const [soundVolume, setSoundVolume] = useState(0.36)
   const [isMusicPlaying, setIsMusicPlaying] = useState(false)
   const [soundError, setSoundError] = useState(false)
   const musicAudioRef = useRef<HTMLAudioElement>(null)
@@ -52,7 +51,7 @@ function App() {
     const music = musicAudioRef.current
     if (music) {
       music.currentTime = 0
-      music.volume = soundVolume
+      music.volume = 0.18
       void music.play().catch(() => { setSoundError(true); setSoundEnabled(false) })
     }
     setIsIntroLeaving(true)
@@ -72,15 +71,9 @@ function App() {
     }
     const music = musicAudioRef.current
     if (music) {
-      music.volume = soundVolume
+      music.volume = 0.18
       void music.play().catch(() => { setSoundError(true); setSoundEnabled(false) })
     }
-  }
-
-  const changeSoundVolume = (volume: number) => {
-    setSoundVolume(volume)
-    if (musicAudioRef.current) musicAudioRef.current.volume = volume
-    if (mouthAudioRef.current) mouthAudioRef.current.volume = Math.min(0.34, volume * 0.72)
   }
 
   const navigateArea = (area: PortfolioArea) => {
@@ -126,11 +119,6 @@ function App() {
     media.addEventListener('change', update)
     return () => media.removeEventListener('change', update)
   }, [])
-
-  useEffect(() => {
-    if (musicAudioRef.current) musicAudioRef.current.volume = soundVolume
-    if (mouthAudioRef.current) mouthAudioRef.current.volume = Math.min(0.34, soundVolume * 0.72)
-  }, [soundVolume])
 
   useEffect(() => {
     const titles: Record<PortfolioArea, string> = {
@@ -222,7 +210,7 @@ function App() {
     <audio ref={mouthAudioRef} src="/audio/sonidoboca.mp3" preload="auto" aria-hidden="true" onError={() => setSoundError(true)} />
     {showIntro && <PortfolioEntry isLeaving={isIntroLeaving} onEnter={enterPortfolio} />}
     <div className="portfolio-content-layer" inert={showIntro}>
-      {!showIntro && <SiteSoundControl enabled={soundEnabled} isMusicPlaying={isMusicPlaying} volume={soundVolume} hasError={soundError} isHome={activeArea === 'home'} onToggle={toggleSound} onVolumeChange={changeSoundVolume} />}
+      {!showIntro && <SiteSoundControl enabled={soundEnabled} isMusicPlaying={isMusicPlaying} hasError={soundError} isHome={activeArea === 'home'} onToggle={toggleSound} />}
       {activeArea === 'home' ? <HomeHub onOpenArea={navigateArea} isReducedMotion={isReducedMotion} isReady={!showIntro} soundEnabled={soundEnabled} mouthAudioRef={mouthAudioRef} /> : activeArea === 'systems' ? <SystemsPortfolio onBack={goHome} /> : activeArea === 'photography' ? <Home albums={albumOrder} onOpenAlbum={openAlbum} onBack={goHome} /> : <DJPortfolio onBack={goHome} />}
       {activeAlbum && <AlbumOverlay album={activeAlbum} transition={transition} onClose={closeAlbum} onOpenPhoto={(photos, index) => setLightbox({ photos, index })} />}
       {lightbox && <PhotoLightbox photo={lightbox.photos[lightbox.index]} index={lightbox.index} total={lightbox.photos.length} onClose={() => setLightbox(null)} onMove={moveLightbox} />}
@@ -254,11 +242,7 @@ function HomeHub({ onOpenArea, isReducedMotion, isReady, soundEnabled, mouthAudi
       setIsSpeechVisible(true)
       typingStartTimer = window.setTimeout(() => {
         setIsAutoTalking(true)
-        const audioDuration = mouthAudioRef.current?.duration
         const fallbackDuration = hasTypedMessage ? 6200 : 360 + message.length * 34 + 900
-        const speakingDuration = soundEnabled && Number.isFinite(audioDuration) && audioDuration! > 0
-          ? audioDuration! * 1000
-          : fallbackDuration
         if (!hasTypedMessage) {
           setSpeechText('')
           setIsTyping(true)
@@ -277,7 +261,7 @@ function HomeHub({ onOpenArea, isReducedMotion, isReady, soundEnabled, mouthAudi
         speechTimer = window.setTimeout(() => {
           setIsAutoTalking(false)
           nextSpeechTimer = window.setTimeout(speak, 22000 + Math.random() * 10000)
-        }, speakingDuration)
+        }, fallbackDuration)
       }, 360)
     }
     entranceTimer = window.setTimeout(() => {
@@ -302,6 +286,7 @@ function HomeHub({ onOpenArea, isReducedMotion, isReady, soundEnabled, mouthAudi
       return
     }
     audio.currentTime = 0
+    audio.volume = 0.2
     void audio.play().catch(() => {})
     return () => {
       audio.pause()
@@ -677,28 +662,20 @@ function PhotoLightboxLegacy({ photo, index, total, onClose, onMove }: { photo: 
 }
 
 function PortfolioEntry({ isLeaving, onEnter }: { isLeaving: boolean; onEnter: () => void }) {
-  return <section className={`portfolio-entry${isLeaving ? ' is-leaving' : ''}`} role="dialog" aria-modal="true" aria-labelledby="portfolio-entry-title" aria-describedby="portfolio-entry-track portfolio-entry-hint">
-    <div className="portfolio-entry-atmosphere" aria-hidden="true" />
+  return <section className={`portfolio-entry${isLeaving ? ' is-leaving' : ''}`} role="dialog" aria-modal="true" aria-label="Entrar al portfolio de Joaquín Calderón">
     <div className="portfolio-entry-lockup">
-      <p className="portfolio-entry-kicker">PORTFOLIO PERSONAL <span>·</span> 2026</p>
       <img className="portfolio-entry-logo" src="/logo/calderon_logo.svg" alt="Calderón" />
-      <p id="portfolio-entry-title" className="portfolio-entry-location">ENTRE RÍOS, ARGENTINA</p>
-      <button className="portfolio-entry-button" type="button" autoFocus onClick={onEnter} disabled={isLeaving}>ENTRAR AL PORTFOLIO <span aria-hidden="true">↗</span></button>
-      <p id="portfolio-entry-track" className="portfolio-entry-track"><span aria-hidden="true">♫</span> MF DOOM — DOOMSDAY</p>
-      <p id="portfolio-entry-hint" className="portfolio-entry-hint">EL TEMA COMIENZA AL ENTRAR</p>
+      <button className="portfolio-entry-button" type="button" autoFocus onClick={onEnter} disabled={isLeaving}>ENTRAR <span aria-hidden="true">↗</span></button>
     </div>
-    <span className="portfolio-entry-index" aria-hidden="true">JGC / 01</span>
   </section>
 }
 
-function SiteSoundControl({ enabled, isMusicPlaying, volume, hasError, isHome, onToggle, onVolumeChange }: { enabled: boolean; isMusicPlaying: boolean; volume: number; hasError: boolean; isHome: boolean; onToggle: () => void; onVolumeChange: (volume: number) => void }) {
+function SiteSoundControl({ enabled, isMusicPlaying, hasError, isHome, onToggle }: { enabled: boolean; isMusicPlaying: boolean; hasError: boolean; isHome: boolean; onToggle: () => void }) {
   return <aside className={`site-sound-control${isHome ? ' is-home' : ' is-subpage'}`} aria-label="Controles de sonido">
     <button type="button" className="site-sound-toggle" onClick={onToggle} aria-pressed={enabled} aria-label={enabled ? 'Silenciar música y personaje' : 'Activar música y personaje'}>
       <span className="site-sound-icon" aria-hidden="true">{isMusicPlaying ? 'Ⅱ' : '▶'}</span>
-      <span className="site-sound-name">MF DOOM</span>
-      <span className="site-sound-state">{isMusicPlaying ? 'SONANDO' : enabled ? 'CARGANDO' : 'SILENCIADO'}</span>
+      <span className="site-sound-state">{isMusicPlaying ? 'PAUSAR' : enabled ? 'CARGANDO' : 'REANUDAR'}</span>
     </button>
-    <label className="site-sound-volume"><span aria-hidden="true">VOL</span><input type="range" min="0" max="0.8" step="0.01" value={volume} onChange={(event) => onVolumeChange(Number(event.target.value))} aria-label="Volumen de la música y el personaje" /></label>
     {hasError && <span className="site-sound-error" role="status">NO SE PUDO CARGAR EL AUDIO</span>}
   </aside>
 }
