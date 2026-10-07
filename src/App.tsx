@@ -53,11 +53,16 @@ function App() {
       music.volume = 0.06
       void music.play().catch(() => setSoundError(true))
     }
+    if (isReducedMotion) {
+      setShowIntro(false)
+      return
+    }
     setIsIntroLeaving(true)
     introTimer.current = window.setTimeout(() => {
       setShowIntro(false)
+      setIsIntroLeaving(false)
       introTimer.current = null
-    }, 900)
+    }, 760)
   }
 
   const toggleSound = () => {
@@ -235,7 +240,7 @@ function App() {
     <audio ref={musicAudioRef} src="/audio/temafondo.mp3" preload="auto" loop aria-hidden="true" onPlay={() => { setIsMusicPlaying(true); setSoundError(false) }} onPause={() => setIsMusicPlaying(false)} onError={() => setSoundError(true)} />
     <audio ref={mouthAudioRef} src="/audio/sonidoboca.mp3" preload="auto" aria-hidden="true" onError={() => setSoundError(true)} />
     {showIntro && <PortfolioEntry isLeaving={isIntroLeaving} onEnter={enterPortfolio} />}
-    <div className="portfolio-content-layer" inert={showIntro}>
+    <div className={`portfolio-content-layer${isIntroLeaving ? ' is-intro-arrival' : ''}`} inert={showIntro}>
       {!showIntro && activeArea !== 'dj' && <SiteSoundControl isMusicPlaying={isMusicPlaying} hasError={soundError} isHome={activeArea === 'home'} onToggle={toggleSound} />}
       {activeArea === 'home' ? <HomeHub onOpenArea={navigateArea} isReducedMotion={isReducedMotion} isReady={!showIntro} mouthAudioRef={mouthAudioRef} /> : activeArea === 'systems' ? <SystemsPortfolio onBack={goHome} /> : activeArea === 'photography' ? <Home albums={albumOrder} onOpenAlbum={openAlbum} onBack={goHome} /> : <DJPortfolio onBack={goHome} />}
       {activeAlbum && <AlbumOverlay album={activeAlbum} transition={transition} onClose={closeAlbum} onOpenPhoto={(photos, index) => setLightbox({ photos, index })} />}
