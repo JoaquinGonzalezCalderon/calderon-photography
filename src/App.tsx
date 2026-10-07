@@ -317,8 +317,8 @@ function HomeHub({ onOpenArea, isReducedMotion, isReady, hasInitialIntro }: { on
   }, [isCharacterVisible, isAutoTalking])
   const areas = [
     { id: 'systems' as const, number: '01', title: 'Analista en Sistemas', note: 'TECNOLOGÍA / SOLUCIONES', className: 'area-systems', image: '/areas/systems.webp' },
-    { id: 'dj' as const, number: '02', title: 'DJ', note: 'MÚSICA / EN VIVO', className: 'area-dj', image: '/areas/dj.webp' },
-    { id: 'photography' as const, number: '03', title: 'Fotografía', note: 'IMÁGENES / ARCHIVO', className: 'area-photography', image: '/areas/photography.webp' },
+    { id: 'photography' as const, number: '02', title: 'Fotografía', note: 'IMÁGENES / ARCHIVO', className: 'area-photography', image: '/areas/photography.webp' },
+    { id: 'dj' as const, number: '03', title: 'DJ', note: 'MÚSICA / EN VIVO', className: 'area-dj', image: '/areas/dj.webp' },
   ]
   const enterArea = (area: 'systems' | 'dj' | 'photography') => {
     if (openingArea) return
