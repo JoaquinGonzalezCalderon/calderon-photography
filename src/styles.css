@@ -886,7 +886,7 @@ body.is-arriving-back .home-hub { animation: back-home-enter 420ms cubic-bezier(
 .poster-talker.home-narrator { position: absolute; z-index: 3; right: 0; bottom: 4%; width: min(480px, 92%); height: 152px; }
 .poster-talker .home-narrator-character { position: absolute; z-index: 1; right: 0; bottom: 0; width: clamp(112px, 10vw, 136px); height: 100%; }
 .poster-home .home-narrator-character.is-visible:not(.is-talking) { animation: poster-character-idle 2.8s ease-in-out infinite; }
-.poster-talker .home-narrator-bubble { position: absolute; z-index: 2; right: clamp(126px, 12vw, 148px); bottom: 24px; width: min(320px, calc(100% - 142px)); min-height: 72px; border: 1px solid #ffffffb8; border-radius: 18px 18px 5px 18px; padding: 16px 19px; background: linear-gradient(145deg, #f4f0e7 0%, #e5ddcf 100%); box-shadow: 0 2px 4px #0003, 0 14px 30px #0005, inset 0 1px #fff; color: var(--poster-ink); font-size: clamp(15px, 1.15vw, 17px); font-weight: 500; letter-spacing: -.01em; line-height: 1.48; transform-origin: right bottom; transition: opacity 220ms ease-out, transform 280ms cubic-bezier(.22, 1, .36, 1), visibility 0s linear 280ms; }
+.poster-talker .home-narrator-bubble { position: absolute; z-index: 2; right: clamp(126px, 12vw, 148px); bottom: 24px; width: min(320px, calc(100% - 142px)); min-height: 72px; border: 1px solid #ffffffb8; border-radius: 18px; padding: 16px 19px; background: linear-gradient(145deg, #f4f0e7 0%, #e5ddcf 100%); box-shadow: 0 2px 4px #0003, 0 14px 30px #0005, inset 0 1px #fff; color: var(--poster-ink); font-size: clamp(15px, 1.15vw, 17px); font-weight: 500; letter-spacing: -.01em; line-height: 1.48; transform-origin: right bottom; transition: opacity 220ms ease-out, transform 280ms cubic-bezier(.22, 1, .36, 1), visibility 0s linear 280ms; }
 .poster-talker .home-narrator-bubble.is-visible { transform: translate3d(0, 0, 0) scale(1); transition: opacity 220ms ease-out, transform 280ms cubic-bezier(.22, 1, .36, 1), visibility 0s; }
 .poster-talker .home-narrator-bubble.is-typing { border-color: #c3a765; box-shadow: 0 3px 8px #0003, 0 16px 34px #0005, 0 0 0 3px #b99a5118, inset 0 1px #fff; transform: translate3d(0, -2px, 0) scale(1.008); }
 .poster-talker .home-narrator-caret { display: inline-block; margin-left: 2px; color: #9b772d; animation: narrator-caret-blink 820ms steps(2, end) infinite; }
@@ -945,7 +945,7 @@ body.is-arriving-back .home-hub { animation: back-home-enter 420ms cubic-bezier(
   .poster-photo-mark { top: 12%; right: 1%; font-size: 42px; }
   .poster-talker.home-narrator { right: 0; bottom: -142px; width: 100%; height: 128px; }
   .poster-talker .home-narrator-character { width: clamp(94px, 27vw, 112px); }
-  .poster-talker .home-narrator-bubble { right: 118px; bottom: 19px; width: calc(100% - 124px); padding: 13px 14px; font-size: clamp(14px, 4vw, 16px); line-height: 1.36; }
+  .poster-talker .home-narrator-bubble { right: 118px; bottom: 8px; width: calc(100% - 124px); padding: 13px 14px; font-size: clamp(14px, 4vw, 16px); line-height: 1.36; }
   .poster-talker .home-narrator-bubble::after { right: -7px; bottom: 27px; width: 12px; height: 12px; }
   .poster-home .home-contact { display: grid; grid-template-columns: 1fr; justify-items: start; gap: 9px; margin-top: 7px; padding: 14px 0 0; }
   .poster-home .home-contact > p { margin: 0; }
