@@ -34,25 +34,9 @@ function App() {
   const [lightbox, setLightbox] = useState<{ photos: Photo[]; index: number } | null>(null)
   const [isReducedMotion, setIsReducedMotion] = useState(false)
   const [showIntro, setShowIntro] = useState(() => (window.location.pathname.replace(/\/+$/, '') || '/') === '/')
-  const [isIntroLeaving, setIsIntroLeaving] = useState(false)
   const scrollPosition = useRef(0)
   const albumReturnPath = useRef(activeAlbum ? '/fotografia' : '/')
   const navigationTimer = useRef<number | null>(null)
-  const introTimer = useRef<number | null>(null)
-
-  const enterPortfolio = () => {
-    if (isIntroLeaving) return
-    if (isReducedMotion) {
-      setShowIntro(false)
-      return
-    }
-    setIsIntroLeaving(true)
-    introTimer.current = window.setTimeout(() => {
-      setShowIntro(false)
-      setIsIntroLeaving(false)
-      introTimer.current = null
-    }, 900)
-  }
 
   const navigateArea = (area: PortfolioArea) => {
     setActiveArea(area)
@@ -84,9 +68,14 @@ function App() {
 
   useEffect(() => () => {
     if (navigationTimer.current !== null) window.clearTimeout(navigationTimer.current)
-    if (introTimer.current !== null) window.clearTimeout(introTimer.current)
     document.body.classList.remove('is-navigating-back', 'is-arriving-back')
   }, [])
+
+  useEffect(() => {
+    if (!showIntro) return
+    const timer = window.setTimeout(() => setShowIntro(false), isReducedMotion ? 120 : 1500)
+    return () => window.clearTimeout(timer)
+  }, [showIntro, isReducedMotion])
 
   useEffect(() => {
     const media = window.matchMedia('(prefers-reduced-motion: reduce)')
@@ -182,7 +171,7 @@ function App() {
   }
 
   return <>
-    {showIntro && <PortfolioEntry isLeaving={isIntroLeaving} onEnter={enterPortfolio} />}
+    {showIntro && <IntroSplash />}
     <div className="portfolio-content-layer" inert={showIntro}>
       {activeArea === 'home' ? <HomeHub onOpenArea={navigateArea} isReducedMotion={isReducedMotion} isReady={!showIntro} /> : activeArea === 'systems' ? <SystemsPortfolio onBack={goHome} /> : activeArea === 'photography' ? <Home albums={albumOrder} onOpenAlbum={openAlbum} onBack={goHome} /> : <DJPortfolio onBack={goHome} />}
       {activeAlbum && <AlbumOverlay album={activeAlbum} transition={transition} onClose={closeAlbum} onOpenPhoto={(photos, index) => setLightbox({ photos, index })} />}
@@ -684,17 +673,8 @@ function PhotoLightboxLegacy({ photo, index, total, onClose, onMove }: { photo: 
   return <div className="photo-lightbox" role="dialog" aria-modal="true" aria-label="Fotografía ampliada" onTouchStart={(event) => { touchStart.current = event.changedTouches[0].clientX }} onTouchEnd={(event) => { const delta = event.changedTouches[0].clientX - touchStart.current; if (Math.abs(delta) > 45) onMove(delta < 0 ? 1 : -1) }}><div className="lightbox-bar"><span>{String(index + 1).padStart(2, '0')} / {String(total).padStart(2, '0')}</span><button onClick={onClose}>CLOSE ×</button></div><img src={photo.large} alt={`${photo.category}, ${photo.tags.join(', ')}`} /><div className="lightbox-controls"><button onClick={() => onMove(-1)} aria-label="Fotografía anterior">←</button><span>{photo.tags.join(' / ')}</span><button onClick={() => onMove(1)} aria-label="Fotografía siguiente">→</button></div></div>
 }
 
-function PortfolioEntry({ isLeaving, onEnter }: { isLeaving: boolean; onEnter: () => void }) {
-  return <section className={`portfolio-entry${isLeaving ? ' is-leaving' : ''}`} role="dialog" aria-modal="true" aria-label="Entrar al portfolio de Joaquín Calderón">
-    <div className="portfolio-entry-lockup">
-      <div className="portfolio-entry-brand">
-        <img className="portfolio-entry-logo" src="/logo/calderon_logo.svg" alt="Calderón" />
-      </div>
-      <button className="portfolio-entry-button" type="button" autoFocus onClick={onEnter} disabled={isLeaving} aria-label="Entrar al portfolio">
-        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M8.5 3.5 13 8l-4.5 4.5" /></svg>
-      </button>
-    </div>
-  </section>
+function IntroSplash() {
+  return <div className="intro-splash" aria-hidden="true"><img className="intro-splash-logo" src="/logo/calderon_logo.svg" alt="" /></div>
 }
 
 
