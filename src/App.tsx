@@ -199,13 +199,16 @@ function HomeHub({ onOpenArea, isReducedMotion, isReady, hasInitialIntro }: { on
     let firstSpeechTimer = 0
     let typingStartTimer = 0
     let typingTimer = 0
-    let speechTimer = 0
-    const message = 'Soy Joaquín Gonzalez Calderón, tengo 23 años. Soy analista en sistemas, DJ y fotógrafo.'
-    const speak = () => {
+    let nextMessageTimer = 0
+    const messages = [
+      'Hola, ¿cómo estás?',
+      'Soy Joaquín Gonzalez Calderón, tengo 23 años. Soy analista en sistemas, DJ y fotógrafo.',
+    ]
+    const speak = (messageIndex: number) => {
+      const message = messages[messageIndex]
       setIsSpeechVisible(true)
       typingStartTimer = window.setTimeout(() => {
         setIsAutoTalking(true)
-        const fallbackDuration = 360 + message.length * 34 + 900
         setSpeechText('')
         setIsTyping(true)
         let character = 0
@@ -216,23 +219,24 @@ function HomeHub({ onOpenArea, isReducedMotion, isReady, hasInitialIntro }: { on
             window.clearInterval(typingTimer)
             typingTimer = 0
             setIsTyping(false)
+            setIsAutoTalking(false)
+            if (messageIndex + 1 < messages.length) {
+              nextMessageTimer = window.setTimeout(() => speak(messageIndex + 1), 900)
+            }
           }
         }, 34)
-        speechTimer = window.setTimeout(() => {
-          setIsAutoTalking(false)
-        }, fallbackDuration)
-      }, 360)
+      }, 320)
     }
     entranceTimer = window.setTimeout(() => {
       setIsCharacterVisible(true)
-      firstSpeechTimer = window.setTimeout(speak, 900)
+      firstSpeechTimer = window.setTimeout(() => speak(0), 900)
     }, 350)
     return () => {
       window.clearTimeout(entranceTimer)
       window.clearTimeout(firstSpeechTimer)
       window.clearTimeout(typingStartTimer)
       window.clearInterval(typingTimer)
-      window.clearTimeout(speechTimer)
+      window.clearTimeout(nextMessageTimer)
     }
   }, [isReady])
   useEffect(() => {
