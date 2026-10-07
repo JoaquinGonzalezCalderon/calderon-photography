@@ -1,10 +1,7 @@
-/* Motion layer: page curtain, text masks, image wipes, marquee, orbit, vinyl and scroll-linked depth. */
+/* Motion layer: page curtain, text masks, image wipes, orbit, vinyl and scroll-linked depth. */
 
 [data-magnetic] { transition: transform .45s var(--ease-out), background-color .2s ease, color .2s ease, border-color .2s ease; }
 
-/* Pointer parallax on the cover (uses `translate`, so it composes with entrance transforms) */
-.cover-portrait { translate: calc(var(--px, 0) * 18px) calc(var(--py, 0) * 10px); }
-.cover-masthead-word { translate: calc(var(--px, 0) * -14px) calc(var(--py, 0) * -6px); }
 .narrator { translate: calc(var(--px, 0) * 8px) calc(var(--py, 0) * 6px); }
 
 /* Curtain between pages */
@@ -37,13 +34,6 @@ body.is-arriving .curtain img { opacity: 0; transform: translateY(-30px); transi
 [data-reveal='clip'] .album-card-meta, [data-reveal='clip'] .client-info { transition: opacity .8s .35s ease, transform .8s .35s var(--ease-out); }
 [data-reveal='clip']:not(.is-in) .album-card-meta, [data-reveal='clip']:not(.is-in) .client-info { opacity: 0; transform: translateY(14px); }
 
-/* Marquee */
-.marquee { overflow: hidden; padding: clamp(18px, 3vh, 32px) 0; border-block: 1px solid var(--line); }
-.marquee-track { display: flex; width: max-content; will-change: transform; }
-.marquee-group { display: flex; flex: none; }
-.marquee-group > span { display: inline-flex; align-items: center; gap: clamp(20px, 3vw, 44px); padding-right: clamp(20px, 3vw, 44px); font-family: var(--display); font-size: clamp(44px, 8vw, 120px); font-stretch: 75%; font-weight: 800; line-height: .9; text-transform: uppercase; white-space: nowrap; }
-.marquee-group > span.is-outline { color: var(--ink-3); }
-.marquee-group i { color: var(--accent); font-size: .42em; font-style: normal; }
 
 /* Orbit */
 .orbit {
@@ -95,8 +85,6 @@ body.is-arriving .curtain img { opacity: 0; transform: translateY(-30px); transi
 /* Scroll-linked depth where the browser supports it */
 @supports (animation-timeline: scroll()) {
   @media (prefers-reduced-motion: no-preference) {
-    .cover-masthead { animation: mast-away linear both; animation-timeline: scroll(root); animation-range: 0 80vh; }
-    .cover-portrait { animation: portrait-away linear both; animation-timeline: scroll(root); animation-range: 0 80vh; }
     .page-title { animation: title-away linear both; animation-timeline: scroll(root); animation-range: 0 60vh; }
     .phone { animation: drift linear both; animation-timeline: view(); }
     .phone:nth-child(even) { animation-name: drift-reverse; }
@@ -104,8 +92,6 @@ body.is-arriving .curtain img { opacity: 0; transform: translateY(-30px); transi
     .album-card-image .album-cover-current.is-transitioning { animation: cover-fade 1.4s var(--ease-out) both, inner-pan linear both; animation-timeline: auto, view(); }
   }
 }
-@keyframes mast-away { to { transform: translateY(16vh) scale(.94); opacity: .2; } }
-@keyframes portrait-away { to { transform: translateY(-5vh) scale(1.05); } }
 @keyframes title-away { to { transform: translateY(10vh) scale(.9); opacity: .15; } }
 @keyframes drift { from { translate: 0 48px; } to { translate: 0 -48px; } }
 @keyframes drift-reverse { from { translate: 0 -24px; } to { translate: 0 64px; } }

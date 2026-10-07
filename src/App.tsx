@@ -4,7 +4,7 @@ import type { Photo } from './data/photos'
 import { site } from './config/site'
 import { albumDescriptions } from './config/album-descriptions'
 import { Orbit } from './components/Orbit'
-import { Marquee, SplitLetters, useMagnetic, usePointerParallax } from './motion'
+import { SplitLetters, useMagnetic, usePointerParallax } from './motion'
 
 type Transition = 'opening' | 'open' | 'closing'
 type PortfolioArea = 'home' | 'systems' | 'dj' | 'photography'
@@ -211,7 +211,6 @@ function App() {
 
   return <>
     {showIntro && <IntroSplash />}
-    <SketchFilters />
     <div className="curtain" aria-hidden="true"><img src="/logo/calderon_logo.svg" alt="" /></div>
     <div className="site" inert={showIntro}>
       <SiteHeader current={activeArea} onNavigate={navigate} />
@@ -350,122 +349,89 @@ function HomeCover({ onNavigate, isReady }: { onNavigate: (area: PortfolioArea) 
     }
   }, [isCharacterVisible, isAutoTalking])
 
-  const coverLines: { id: Area; title: string; meta: string; image: string }[] = [
-    { id: 'systems', title: 'Apps y sitios web en vivo', meta: '5 proyectos', image: '/areas/systems.webp' },
-    { id: 'photography', title: 'Eventos, marcas y comercios', meta: `${albums.length} álbumes`, image: '/areas/photography.webp' },
-    { id: 'dj', title: 'Mashups para escuchar acá', meta: `${djTracks.length} temas`, image: '/areas/dj.webp' },
-  ]
   const parallaxRef = usePointerParallax<HTMLElement>()
   const look = characterLook === 'left' ? ' is-looking-left' : characterLook === 'right' ? ' is-looking-right' : ''
+  const go = (area: Area) => (event: MouseEvent<HTMLAnchorElement>) => {
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.button !== 0) return
+    event.preventDefault()
+    onNavigate(area)
+  }
+  const photoStacks = albums.slice(0, 3).map((album) => {
+    const cover = albumCover(album)
+    const rest = albumPhotos(album).filter((photo) => photo.id !== cover.id)
+    return { album, photos: [rest[Math.floor(rest.length / 3)], rest[Math.floor((rest.length * 2) / 3)], cover].filter(Boolean) }
+  })
 
-  return <main className="home">
-  <section ref={parallaxRef} className={`cover${isReady ? ' is-ready' : ''}`}>
-    <h1 className="cover-masthead">
-      <span className="sr-only">Joaquín Gonzalez Calderón: analista en sistemas, DJ y fotógrafo</span>
-      <span className="cover-masthead-word" aria-hidden="true">{[...'Joaquín'].map((letter, index) => <span key={index} style={{ '--i': index } as CSSProperties}>{letter}</span>)}</span>
-    </h1>
-    <span className="doodle cover-doodle" aria-hidden="true">Portfolio</span>
-    <span className="tag cover-tag" aria-hidden="true">Calderón</span>
-    <figure className="cover-portrait">
-      <img src="/areas/portrait-yo2.webp" alt="Retrato de Joaquín Gonzalez Calderón con gorra" width="1239" height="1269" fetchPriority="high" />
-    </figure>
-    <div className="cover-intro">
-      <p className="cover-name">Gonzalez Calderón</p>
-      <nav className="cover-lines" aria-label="Áreas del portfolio">
-        {coverLines.map((line, index) => <a key={line.id} className="cover-line" href={pathForArea(line.id)} style={{ '--i': index } as CSSProperties} onClick={(event) => { event.preventDefault(); onNavigate(line.id) }}>
-          <img src={line.image} alt="" loading="lazy" />
-          <span className="cover-line-label">{areaLabels[line.id]}</span>
-          <strong className="cover-line-title">{line.title}</strong>
-          <span className="cover-line-meta">{line.meta}</span>
-          <Arrow />
-        </a>)}
-      </nav>
-    </div>
-    <aside className="narrator" aria-label="Presentación de Joaquín">
-      <p className={`narrator-bubble${isSpeechVisible ? ' is-visible' : ''}${isTyping ? ' is-typing' : ''}`} aria-hidden={!isSpeechVisible}>{speechText}{isTyping && <span className="narrator-caret" aria-hidden="true" />}</p>
-      <span className={`narrator-character${isCharacterVisible ? ' is-visible' : ''}${isAutoTalking ? ' is-talking' : ''}${look}`} role="img" aria-label="Personaje cartoon de Joaquín" aria-hidden={!isCharacterVisible}>
-        <img className="narrator-idle" src="/areas/joaquin-cartoon-idle.webp" alt="" />
-        <img className="narrator-open" src="/areas/joaquin-cartoon-speaking.webp" alt="" />
-        <img className="narrator-glance narrator-glance-left" src="/areas/joaquin-glance-left.webp" alt="" />
-        <img className="narrator-glance narrator-glance-right" src="/areas/joaquin-glance-right.webp" alt="" />
-      </span>
-    </aside>
-  </section>
-  <Marquee words={['Sistemas', 'Fotografía', 'DJ', 'Entre Ríos', 'Sitios web', 'Eventos', 'Mashups', 'Apps']} />
-  <AboutSection />
-  <SkillsSection />
-  </main>
-}
-
-function SketchFilters() {
-  return <svg className="sketch-defs" aria-hidden="true" focusable="false">
-    <filter id="sketch"><feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="2" seed="3" /><feDisplacementMap in="SourceGraphic" scale="5" /></filter>
-    <filter id="sketch-2"><feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="2" seed="11" /><feDisplacementMap in="SourceGraphic" scale="6" /></filter>
-  </svg>
-}
-
-function CameraDrawing() {
-  const parts = <>
-    <rect x="12" y="44" width="616" height="384" rx="34" />
-    <rect x="466" y="16" width="96" height="30" rx="8" />
-    <rect x="76" y="24" width="64" height="22" rx="6" />
-    <rect x="30" y="70" width="460" height="350" rx="18" />
-    <rect x="40" y="80" width="440" height="330" rx="12" />
-    <rect x="518" y="96" width="74" height="24" rx="12" />
-    <rect x="518" y="134" width="74" height="24" rx="12" />
-    <circle cx="555" cy="252" r="50" />
-    <circle cx="555" cy="252" r="18" />
-    <path d="M555 210v10M555 284v10M513 252h10M587 252h10" />
-    <rect x="518" y="336" width="74" height="24" rx="12" />
-    <rect x="518" y="372" width="74" height="24" rx="12" />
-  </>
-  return <svg className="camera-drawing" viewBox="0 0 640 440" aria-hidden="true">
-    <g filter="url(#sketch)">{parts}</g>
-    <g filter="url(#sketch-2)" opacity=".55">{parts}</g>
-  </svg>
-}
-
-function AboutSection() {
-  return <section className="about paper" aria-labelledby="about-title">
-    <div className="about-inner">
-      <figure className="camera" data-reveal>
-        <img className="camera-photo" src="/areas/portrait-dither.png" alt="Retrato tramado de Joaquín con gorra" width="400" height="300" loading="lazy" />
-        <CameraDrawing />
-        <span className="tag camera-tag" aria-hidden="true">Calderón</span>
+  return <main className={`home${isReady ? ' is-ready' : ''}`}>
+    <section ref={parallaxRef} className="hero-card" aria-labelledby="hero-title">
+      <span className="hero-deboss" aria-hidden="true">{[...'Portfolio'].map((letter, index) => <span key={index} style={{ '--i': index } as CSSProperties}>{letter}</span>)}</span>
+      <figure className="hero-portrait">
+        <img src="/areas/portrait-yo2.webp" alt="Retrato de Joaquín Gonzalez Calderón con gorra" width="1239" height="1269" fetchPriority="high" />
       </figure>
-      <div className="about-copy" data-reveal>
-        <h2 className="doodle about-title" id="about-title">Sobre mí</h2>
-        <p className="about-text">¡Hola! Soy Joaquín Gonzalez Calderón, tengo 23 años y soy de Entre Ríos. Soy analista en sistemas: hago sitios, apps y tiendas online para negocios. Además saco fotos en eventos y para marcas, y mezclo música como DJ.</p>
-        <h3 className="doodle about-subtitle" id="contacto">Escribime</h3>
-        <ul className="about-links">
-          <li><a href={links.whatsapp} target="_blank" rel="noreferrer"><span>WhatsApp</span>11 3369-3052</a></li>
-          <li><a href={site.instagramUrl} target="_blank" rel="noreferrer"><span>Instagram</span>@joaquinncalderon</a></li>
-          <li><a href={links.linkedin} target="_blank" rel="noreferrer"><span>LinkedIn</span>Joaquín Gonzalez Calderón</a></li>
-          <li><a href={links.github} target="_blank" rel="noreferrer"><span>GitHub</span>JoaquinGonzalezCalderon</a></li>
-        </ul>
-      </div>
-    </div>
-  </section>
-}
+      <h1 className="hero-name" id="hero-title">
+        <span className="sr-only">Joaquín Gonzalez Calderón: analista en sistemas, DJ y fotógrafo</span>
+        <span className="hero-script hero-script-first" aria-hidden="true">Joaquín</span>
+        <span className="hero-script hero-script-last" aria-hidden="true">Calderón</span>
+      </h1>
+      <p className="hero-handles"><span>ig: @joaquinncalderon</span><span>gh: JoaquinGonzalezCalderon</span></p>
+      <aside className="narrator" aria-label="Presentación de Joaquín">
+        <p className={`narrator-bubble${isSpeechVisible ? ' is-visible' : ''}${isTyping ? ' is-typing' : ''}`} aria-hidden={!isSpeechVisible}>{speechText}{isTyping && <span className="narrator-caret" aria-hidden="true" />}</p>
+        <span className={`narrator-character${isCharacterVisible ? ' is-visible' : ''}${isAutoTalking ? ' is-talking' : ''}${look}`} role="img" aria-label="Personaje cartoon de Joaquín" aria-hidden={!isCharacterVisible}>
+          <img className="narrator-idle" src="/areas/joaquin-cartoon-idle.webp" alt="" />
+          <img className="narrator-open" src="/areas/joaquin-cartoon-speaking.webp" alt="" />
+          <img className="narrator-glance narrator-glance-left" src="/areas/joaquin-glance-left.webp" alt="" />
+          <img className="narrator-glance narrator-glance-right" src="/areas/joaquin-glance-right.webp" alt="" />
+        </span>
+      </aside>
+    </section>
 
-function SkillsSection() {
-  const groups = [
-    { title: 'Sistemas', items: ['Sitios web y e-commerce', 'Apps móviles y PWA', 'Asistentes con IA y voz', 'Demos para comercios'] },
-    { title: 'Fotografía', items: ['Coberturas de eventos', 'Marcas y comercios', 'Retratos y detalles', 'Entrega por Drive'] },
-    { title: 'DJ', items: ['Mashups propios', 'Cruces de géneros', 'Música para tu evento'] },
-  ]
-  const tools = ['React', 'TypeScript', 'React Native', 'Expo', 'FastAPI', 'PostgreSQL', 'Vercel']
-  return <section className="skills" aria-labelledby="skills-title">
-    <h2 className="doodle skills-title" id="skills-title" data-reveal>Qué hago</h2>
-    <div className="skills-grid">
-      {groups.map((group) => <div className="skills-group" key={group.title} data-reveal>
-        <h3 className="doodle">{group.title}</h3>
-        <ul>{group.items.map((item) => <li key={item}>{item}</li>)}</ul>
-      </div>)}
+    <div className="case-grid">
+      <a className="case-card case-systems" href={pathForArea('systems')} onClick={go('systems')} data-reveal>
+        <h2 className="case-title">Sistemas</h2>
+        <p className="case-rule"><span>Apps y sitios web</span></p>
+        <span className="case-thumbs case-thumbs-screens">
+          <img src="/areas/tustreak-desktop.webp" alt="" loading="lazy" />
+          <img src="/areas/jgc-mate.webp" alt="" loading="lazy" />
+          <img src="/areas/jgc-barberia.webp" alt="" loading="lazy" />
+        </span>
+        <span className="case-foot"><span>5 proyectos + 3 demos</span><span className="case-cta">Ver proyectos <Arrow /></span></span>
+      </a>
+
+      <a className="case-card case-photo" href={pathForArea('photography')} onClick={go('photography')} data-reveal>
+        <h2 className="case-title">Fotografía</h2>
+        <p className="case-rule"><span>Eventos y marcas</span></p>
+        <span className="case-thumbs case-thumbs-stacks">
+          {photoStacks.map(({ album, photos }) => <span className="case-stack" key={album.id}>
+            {photos.map((photo) => <img key={photo.id} src={photo.src} alt="" loading="lazy" />)}
+          </span>)}
+        </span>
+        <span className="case-foot"><span>{albums.length} álbumes</span><span className="case-cta">Ver álbumes <Arrow /></span></span>
+      </a>
+
+      <a className="case-card case-dj" href={pathForArea('dj')} onClick={go('dj')} data-reveal>
+        <h2 className="case-title"><span className="case-deboss" aria-hidden="true">Mashups</span>DJ</h2>
+        <p className="case-rule"><span>Mezclas propias</span></p>
+        <span className="case-thumbs case-thumbs-covers">
+          {djTracks.slice(0, 3).map((track) => <img key={track.number} src={track.cover} alt="" loading="lazy" />)}
+        </span>
+        <span className="case-foot"><span>{djTracks.length} temas para escuchar</span><span className="case-cta">Escuchar <Arrow /></span></span>
+      </a>
+
+      <section className="case-card case-contact" id="contacto" aria-labelledby="contact-card-title" data-reveal>
+        <h2 className="case-contact-title" id="contact-card-title">¿Tenés un proyecto? Arrancamos cuando quieras.</h2>
+        <p className="case-contact-lede">Escaneá un QR o escribime directo.</p>
+        <div className="qr-row">
+          <a className="qr" href={links.whatsapp} target="_blank" rel="noreferrer"><img src="/areas/qr-whatsapp.svg" alt="Código QR para escribir por WhatsApp" width="120" height="120" /><span>WhatsApp</span></a>
+          <a className="qr" href={site.instagramUrl} target="_blank" rel="noreferrer"><img src="/areas/qr-instagram.svg" alt="Código QR del Instagram @joaquinncalderon" width="120" height="120" /><span>Instagram</span></a>
+        </div>
+        <ul className="case-contact-links">
+          <li><a href={links.whatsapp} target="_blank" rel="noreferrer">11 3369-3052 <Arrow /></a></li>
+          <li><a href={links.linkedin} target="_blank" rel="noreferrer">LinkedIn <Arrow /></a></li>
+          <li><a href={links.github} target="_blank" rel="noreferrer">GitHub <Arrow /></a></li>
+        </ul>
+      </section>
     </div>
-    <h3 className="doodle skills-tools-title" data-reveal>Herramientas</h3>
-    <ul className="tools" data-reveal>{tools.map((tool) => <li key={tool}>{tool}</li>)}</ul>
-  </section>
+  </main>
 }
 
 function PageHead({ title, lede, children }: { title: string; lede: string; children?: ReactNode }) {
