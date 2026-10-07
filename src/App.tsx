@@ -304,11 +304,7 @@ function HomeCover({ onNavigate, isReady }: { onNavigate: (area: PortfolioArea) 
       <a className="case-card case-systems" href={pathForArea('systems')} onClick={go('systems')} data-reveal>
         <h2 className="case-title">Sistemas</h2>
         <p className="case-rule"><span>Apps y sitios web</span></p>
-        <span className="case-thumbs case-thumbs-screens">
-          <img src="/areas/tustreak-desktop.webp" alt="" loading="lazy" />
-          <img src="/areas/jgc-mate.webp" alt="" loading="lazy" />
-          <img src="/areas/jgc-barberia.webp" alt="" loading="lazy" />
-        </span>
+        <SystemsRotator />
         <span className="case-foot"><span>5 proyectos + 3 demos</span><span className="case-cta">Ver proyectos <Arrow /></span></span>
       </a>
 
@@ -317,7 +313,7 @@ function HomeCover({ onNavigate, isReady }: { onNavigate: (area: PortfolioArea) 
         <p className="case-rule"><span>Amateur · eventos y marcas</span></p>
         <span className="case-thumbs case-thumbs-stacks">
           {photoStacks.map(({ album, photos }) => <span className="case-stack" key={album.id}>
-            {photos.map((photo) => <img key={photo.id} src={photo.src} alt="" loading="lazy" />)}
+            {photos.map((photo) => <img key={photo.id} src={photo.src} srcSet={`${photo.src} 520w, ${photo.medium} 960w`} sizes="(max-width: 760px) 30vw, 180px" alt="" loading="lazy" />)}
           </span>)}
         </span>
         <span className="case-foot"><span>{albums.length} álbumes</span><span className="case-cta">Ver álbumes <Arrow /></span></span>
@@ -347,6 +343,55 @@ function HomeCover({ onNavigate, isReady }: { onNavigate: (area: PortfolioArea) 
       </section>
     </div>
   </main>
+}
+
+const systemsShowcase = [
+  { name: 'Streak', image: '/areas/tustreak-desktop.webp' },
+  { name: 'STUGO', image: '/areas/stugo1.webp', phone: true },
+  { name: 'Mate Único', image: '/areas/jgc-mate.webp' },
+  { name: 'Inmobiliaria Andrea Duré', image: '/areas/jgc-inmobiliaria.webp' },
+  { name: 'Barbería Los Santos', image: '/areas/jgc-barberia.webp' },
+  { name: 'Demo Cafetería', image: '/areas/jgc-demo-cafeteria.webp' },
+  { name: 'Demo Bazar', image: '/areas/jgc-demo-bazar.webp' },
+  { name: 'Demo Tienda', image: '/areas/jgc-demo-tienda.webp' },
+]
+
+/** Cycles through every systems project, one in front and its neighbours tilted to the sides. */
+function SystemsRotator() {
+  const [active, setActive] = useState(0)
+  const ref = useRef<HTMLSpanElement>(null)
+  const count = systemsShowcase.length
+  useEffect(() => {
+    if (prefersReducedMotion()) return
+    const card = ref.current?.closest('.case-card')
+    let paused = false
+    let visible = true
+    const pause = () => { paused = true }
+    const resume = () => { paused = false }
+    card?.addEventListener('pointerenter', pause)
+    card?.addEventListener('pointerleave', resume)
+    const observer = new IntersectionObserver(([entry]) => { visible = entry.isIntersecting })
+    if (ref.current) observer.observe(ref.current)
+    const timer = window.setInterval(() => {
+      if (!paused && visible && !document.hidden) setActive((current) => (current + 1) % count)
+    }, 2600)
+    return () => {
+      window.clearInterval(timer)
+      observer.disconnect()
+      card?.removeEventListener('pointerenter', pause)
+      card?.removeEventListener('pointerleave', resume)
+    }
+  }, [count])
+  return <span className="rotator" ref={ref}>
+    <span className="rotator-stage">
+      {systemsShowcase.map((project, index) => {
+        const offset = (index - active + count) % count
+        const slot = offset === 0 ? 'center' : offset === 1 ? 'right' : offset === count - 1 ? 'left' : offset === 2 ? 'next' : 'away'
+        return <img key={project.name} className={`rotator-item is-${slot}${project.phone ? ' is-phone' : ''}`} src={project.image} alt="" loading="lazy" />
+      })}
+    </span>
+    <span className="rotator-caption" aria-live="off"><span key={active}>{systemsShowcase[active].name}</span><span>{active + 1} / {count}</span></span>
+  </span>
 }
 
 function PageHead({ title, lede, children }: { title: string; lede: string; children?: ReactNode }) {
@@ -596,7 +641,7 @@ function PhotographyPage({ albums, onOpenAlbum }: { albums: Album[]; onOpenAlbum
   const totalPhotos = albums.reduce((sum, album) => sum + albumPhotos(album).length, 0)
   const [activeAlbumIndex, setActiveAlbumIndex] = useState(0)
   const [orbitItems, orbitAlbumIndex] = useMemo(() => {
-    const items: { key: string; src: string; alt: string }[] = []
+    const items: { key: string; src: string; srcSet: string; alt: string }[] = []
     const owners: number[] = []
     albums.forEach((album, albumIndex) => {
       const photos = albumPhotos(album)
@@ -604,7 +649,7 @@ function PhotographyPage({ albums, onOpenAlbum }: { albums: Album[]; onOpenAlbum
       const rest = photos.filter((photo) => photo.id !== cover.id)
       const picks = [cover, ...[1, 2, 3].map((part) => rest[Math.floor((rest.length * part) / 4)]).filter(Boolean)]
       picks.forEach((photo) => {
-        items.push({ key: photo.id, src: photo.src, alt: `Abrir álbum ${album.title}` })
+        items.push({ key: photo.id, src: photo.src, srcSet: `${photo.src} 520w, ${photo.medium} 960w`, alt: `Abrir álbum ${album.title}` })
         owners.push(albumIndex)
       })
     })
@@ -648,11 +693,12 @@ function AlbumCard({ album, index, layout, onOpen }: { album: Album; index: numb
   const currentCover = coverPhotos[coverIndex]
   const previousCover = coverPhotos[(coverIndex + coverPhotos.length - 1) % coverPhotos.length]
   const isCurrentCoverLoaded = loadedCoverId === currentCover.id
+  const coverSizes = layout === 'full' ? '(max-width: 760px) 100vw, min(1330px, 100vw)' : '(max-width: 760px) 100vw, 840px'
   return <article className={`album-card is-${layout}`} data-reveal="clip">
     <button className="album-card-open" onClick={onOpen} aria-label={`Abrir álbum ${album.title}, ${photos.length} fotos`}>
       <span className="album-card-image">
-        {hasRotated && <img className="album-cover-frame" src={previousCover.medium} alt="" decoding="async" />}
-        <img key={currentCover.id} className={`album-cover-frame album-cover-current${isCurrentCoverLoaded ? ' is-loaded' : ''}${hasRotated && isCurrentCoverLoaded ? ' is-transitioning' : ''}`} src={currentCover.medium} alt="" loading={index < 2 ? 'eager' : 'lazy'} decoding="async" onLoad={() => setLoadedCoverId(currentCover.id)} />
+        {hasRotated && <img className="album-cover-frame" src={previousCover.medium} srcSet={`${previousCover.medium} 960w, ${previousCover.large} 1600w`} sizes={coverSizes} alt="" decoding="async" />}
+        <img key={currentCover.id} className={`album-cover-frame album-cover-current${isCurrentCoverLoaded ? ' is-loaded' : ''}${hasRotated && isCurrentCoverLoaded ? ' is-transitioning' : ''}`} src={currentCover.medium} srcSet={`${currentCover.medium} 960w, ${currentCover.large} 1600w`} sizes={coverSizes} alt="" loading={index < 2 ? 'eager' : 'lazy'} decoding="async" onLoad={() => setLoadedCoverId(currentCover.id)} />
       </span>
       <span className="album-card-meta">
         <strong>{album.title}</strong>
@@ -668,7 +714,7 @@ function AlbumOverlay({ album, transition, onClose, onOpenPhoto }: { album: Albu
   const [view, setView] = useState<'orbit' | 'grid'>('orbit')
   const [frontPhoto, setFrontPhoto] = useState(0)
   const photos = albumPhotos(album)
-  const orbitItems = useMemo(() => photos.map((photo, index) => ({ key: photo.id, src: photo.medium, alt: `Ampliar foto ${index + 1} de ${photos.length}` })), [album.id])
+  const orbitItems = useMemo(() => photos.map((photo, index) => ({ key: photo.id, src: photo.src, srcSet: `${photo.src} 520w, ${photo.medium} 960w`, alt: `Ampliar foto ${index + 1} de ${photos.length}` })), [album.id])
   return <section className={`album-overlay transition-${transition}${isScrolled ? ' is-scrolled' : ''}`} onScroll={(event) => setIsScrolled(event.currentTarget.scrollTop > 24)} role="dialog" aria-modal="true" aria-label={`Álbum ${album.title}`}>
     <div className="album-backdrop" />
     <div className="album-bar">

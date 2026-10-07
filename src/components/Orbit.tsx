@@ -3,6 +3,7 @@ import { useEffect, useRef, useState, type ReactNode } from 'react'
 export interface OrbitItem {
   key: string
   src: string
+  srcSet?: string
   alt: string
 }
 
@@ -215,7 +216,7 @@ export function Orbit({ items, onSelect, onActiveChange, label, children }: {
         aria-label={card.alt}
         onClick={() => { if (!engine.current.wasDrag) onSelect(card.source) }}
       >
-        <img src={card.src} alt="" draggable={false} loading={index < 8 || index > count - 8 ? 'eager' : 'lazy'} decoding="async" />
+        <img src={card.src} srcSet={card.srcSet} sizes="(max-width: 760px) 180px, 240px" alt="" draggable={false} loading={index < 8 || index > count - 8 ? 'eager' : 'lazy'} decoding="async" />
       </button>)}
     </div>
     <div className="orbit-center">
