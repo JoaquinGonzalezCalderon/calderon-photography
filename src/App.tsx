@@ -3,6 +3,7 @@ import { albumCover, albumPhotos, albums, driveUrls, type Album } from './data/a
 import type { Photo } from './data/photos'
 import { site } from './config/site'
 import { albumDescriptions } from './config/album-descriptions'
+import { Narrator } from './components/Narrator'
 import { Orbit } from './components/Orbit'
 import { SplitLetters, useMagnetic, usePointerParallax } from './motion'
 
@@ -271,86 +272,8 @@ function Arrow() {
 }
 
 function HomeCover({ onNavigate, isReady }: { onNavigate: (area: PortfolioArea) => void; isReady: boolean }) {
-  const [isCharacterVisible, setIsCharacterVisible] = useState(false)
-  const [isSpeechVisible, setIsSpeechVisible] = useState(false)
-  const [isAutoTalking, setIsAutoTalking] = useState(false)
-  const [characterLook, setCharacterLook] = useState<'center' | 'left' | 'right'>('center')
-  const [speechText, setSpeechText] = useState('')
-  const [isTyping, setIsTyping] = useState(false)
   useReveal('home')
-  useEffect(() => {
-    if (!isReady) return
-    let entranceTimer = 0
-    let firstSpeechTimer = 0
-    let typingStartTimer = 0
-    let typingTimer = 0
-    let nextMessageTimer = 0
-    const messages = [
-      'Hola, ¿cómo estás?',
-      'Soy Joaquín Gonzalez Calderón, tengo 23 años. Soy analista en sistemas, y además DJ y fotógrafo amateur.',
-    ]
-    const speak = (messageIndex: number) => {
-      const message = messages[messageIndex]
-      setIsSpeechVisible(true)
-      typingStartTimer = window.setTimeout(() => {
-        setIsAutoTalking(true)
-        setSpeechText('')
-        setIsTyping(true)
-        let character = 0
-        typingTimer = window.setInterval(() => {
-          character += 1
-          setSpeechText(message.slice(0, character))
-          if (character >= message.length) {
-            window.clearInterval(typingTimer)
-            typingTimer = 0
-            setIsTyping(false)
-            setIsAutoTalking(false)
-            if (messageIndex + 1 < messages.length) {
-              nextMessageTimer = window.setTimeout(() => speak(messageIndex + 1), 900)
-            }
-          }
-        }, 34)
-      }, 320)
-    }
-    entranceTimer = window.setTimeout(() => {
-      setIsCharacterVisible(true)
-      firstSpeechTimer = window.setTimeout(() => speak(0), 900)
-    }, 1100)
-    return () => {
-      window.clearTimeout(entranceTimer)
-      window.clearTimeout(firstSpeechTimer)
-      window.clearTimeout(typingStartTimer)
-      window.clearInterval(typingTimer)
-      window.clearTimeout(nextMessageTimer)
-    }
-  }, [isReady])
-  useEffect(() => {
-    if (!isCharacterVisible || isAutoTalking) {
-      setCharacterLook('center')
-      return
-    }
-    let glanceTimer = 0
-    let returnTimer = 0
-    let nextLook: 'left' | 'right' = Math.random() < 0.5 ? 'left' : 'right'
-    const scheduleGlance = (delay = 1800 + Math.random() * 2200) => {
-      glanceTimer = window.setTimeout(() => {
-        setCharacterLook(nextLook)
-        nextLook = nextLook === 'left' ? 'right' : 'left'
-        returnTimer = window.setTimeout(() => {
-          setCharacterLook('center')
-          scheduleGlance(2800 + Math.random() * 2400)
-        }, 1050)
-      }, delay)
-    }
-    scheduleGlance()
-    return () => {
-      window.clearTimeout(glanceTimer)
-      window.clearTimeout(returnTimer)
-    }
-  }, [isCharacterVisible, isAutoTalking])
-
   const parallaxRef = usePointerParallax<HTMLElement>()
-  const look = characterLook === 'left' ? ' is-looking-left' : characterLook === 'right' ? ' is-looking-right' : ''
   const go = (area: Area) => (event: MouseEvent<HTMLAnchorElement>) => {
     if (event.metaKey || event.ctrlKey || event.shiftKey || event.button !== 0) return
     event.preventDefault()
@@ -372,18 +295,9 @@ function HomeCover({ onNavigate, isReady }: { onNavigate: (area: PortfolioArea) 
         <span className="hero-title-word" aria-hidden="true">{[...'Portfolio'].map((letter, index) => <span key={index} className={index === 3 || index === 4 ? 'is-outline' : undefined} style={{ '--i': index } as CSSProperties}>{letter}</span>)}</span>
       </h1>
       <p className="hero-corner hero-corner-tl">Analista en sistemas<br />DJ y fotógrafo amateur</p>
-      <a className="hero-corner hero-corner-tr" href="#areas" aria-label="Ver las áreas del portfolio"><svg viewBox="0 0 96 16" aria-hidden="true"><path d="M0 8h94M86 1l8 7-8 7" /></svg></a>
       <p className="hero-corner hero-corner-bl">Joaquín Gonzalez Calderón</p>
-      <a className="hero-corner hero-corner-br" href={site.instagramUrl} target="_blank" rel="noreferrer">@joaquinncalderon</a>
-      <aside className="narrator" aria-label="Presentación de Joaquín">
-        <p className={`narrator-bubble${isSpeechVisible ? ' is-visible' : ''}${isTyping ? ' is-typing' : ''}`} aria-hidden={!isSpeechVisible}>{speechText}{isTyping && <span className="narrator-caret" aria-hidden="true" />}</p>
-        <span className={`narrator-character${isCharacterVisible ? ' is-visible' : ''}${isAutoTalking ? ' is-talking' : ''}${look}`} role="img" aria-label="Personaje cartoon de Joaquín" aria-hidden={!isCharacterVisible}>
-          <img className="narrator-idle" src="/areas/joaquin-cartoon-idle.webp" alt="" />
-          <img className="narrator-open" src="/areas/joaquin-cartoon-speaking.webp" alt="" />
-          <img className="narrator-glance narrator-glance-left" src="/areas/joaquin-glance-left.webp" alt="" />
-          <img className="narrator-glance narrator-glance-right" src="/areas/joaquin-glance-right.webp" alt="" />
-        </span>
-      </aside>
+      <a className="hero-corner hero-corner-tr" href={site.instagramUrl} target="_blank" rel="noreferrer">@joaquinncalderon</a>
+      <Narrator isReady={isReady} />
     </section>
 
     <div className="case-grid" id="areas">

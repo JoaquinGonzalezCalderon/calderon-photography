@@ -2,7 +2,6 @@
 
 [data-magnetic] { transition: transform .45s var(--ease-out), background-color .2s ease, color .2s ease, border-color .2s ease; }
 
-.narrator { translate: calc(var(--px, 0) * 8px) calc(var(--py, 0) * 6px); }
 
 /* Curtain between pages */
 .curtain { position: fixed; z-index: 45; inset: 0; display: grid; place-items: center; visibility: hidden; background: var(--accent); pointer-events: none; transform: translateY(100%); }
