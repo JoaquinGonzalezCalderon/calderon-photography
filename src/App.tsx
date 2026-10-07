@@ -128,12 +128,12 @@ function App() {
 
   useEffect(() => {
     const titles: Record<PortfolioArea, string> = {
-      home: 'Joaquín Calderón · Portfolio',
-      systems: 'Sistemas · Joaquín Calderón',
-      dj: 'DJ · Joaquín Calderón',
-      photography: 'Fotografía · Joaquín Calderón',
+      home: 'Joaquín Gonzalez Calderón · Portfolio',
+      systems: 'Sistemas · Joaquín Gonzalez Calderón',
+      dj: 'DJ · Joaquín Gonzalez Calderón',
+      photography: 'Fotografía · Joaquín Gonzalez Calderón',
     }
-    document.title = activeAlbum ? `${activeAlbum.title} · Fotografía · Joaquín Calderón` : titles[activeArea]
+    document.title = activeAlbum ? `${activeAlbum.title} · Fotografía · Joaquín Gonzalez Calderón` : titles[activeArea]
   }, [activeAlbum, activeArea])
 
   useEffect(() => {
@@ -371,6 +371,7 @@ function HomeCover({ onNavigate, isReady }: { onNavigate: (area: PortfolioArea) 
       <h1 className="hero-name" id="hero-title">
         <span className="sr-only">Joaquín Gonzalez Calderón: analista en sistemas, DJ y fotógrafo</span>
         <span className="hero-script hero-script-first" aria-hidden="true">Joaquín</span>
+        <span className="hero-script hero-script-middle" aria-hidden="true">Gonzalez</span>
         <span className="hero-script hero-script-last" aria-hidden="true">Calderón</span>
       </h1>
       <p className="hero-handles"><span>ig: @joaquinncalderon</span><span>gh: JoaquinGonzalezCalderon</span></p>
@@ -668,7 +669,7 @@ function DJPage() {
           </li>)}
         </ol>
         <figure className="dj-portrait" data-reveal="clip">
-          <img src="/areas/dj-portrait.webp" alt="Joaquín Calderón mezclando música en una cabina de DJ" loading="lazy" width="960" height="1280" />
+          <img src="/areas/dj-portrait.webp" alt="Joaquín Gonzalez Calderón mezclando música en una cabina de DJ" loading="lazy" width="960" height="1280" />
         </figure>
       </div>
     </section>

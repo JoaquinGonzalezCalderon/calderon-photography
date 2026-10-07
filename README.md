@@ -1,4 +1,4 @@
-# Joaquín Calderón · Photography
+# Joaquín Gonzalez Calderón · Photography
 
 Archivo fotográfico construido con React, TypeScript, Vite y CSS moderno. La Home funciona como un índice de álbumes: cada portada abre una experiencia fullscreen con transición desde la misma imagen, galería editorial y lightbox.
 
