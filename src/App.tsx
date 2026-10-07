@@ -647,8 +647,24 @@ function Home({ albums, onOpenAlbum, onBack }: { albums: Album[]; onOpenAlbum: (
 
 function AlbumCard({ album, index, onOpen }: { album: Album; index: number; onOpen: () => void }) {
   const cover = albumCover(album)
+  const coverPhotos = [cover, ...albumPhotos(album).filter((photo) => photo.id !== cover.id)]
+  const [coverIndex, setCoverIndex] = useState(0)
+  const [hasRotated, setHasRotated] = useState(false)
+  useEffect(() => {
+    if (coverPhotos.length < 2 || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const interval = window.setInterval(() => {
+      setCoverIndex((current) => (current + 1) % coverPhotos.length)
+      setHasRotated(true)
+    }, 3600)
+    return () => window.clearInterval(interval)
+  }, [coverPhotos.length])
+  const currentCover = coverPhotos[coverIndex]
+  const previousCover = coverPhotos[(coverIndex + coverPhotos.length - 1) % coverPhotos.length]
   return <button className={`album-card album-card-${index + 1}`} style={{ animationDelay: `${index * 220}ms` }} data-album-id={album.id} onClick={onOpen} aria-label={`Abrir álbum ${album.title}`}>
-    <span className="album-card-image" style={{ aspectRatio: `${cover.width} / ${cover.height}` }}><img src={cover.medium} srcSet={`${cover.medium} 960w, ${cover.large} 1600w`} sizes="(max-width: 760px) 94vw, 46vw" alt={`Portada del álbum ${album.title}`} loading={index === 0 ? 'eager' : 'lazy'} /></span>
+    <span className="album-card-image" style={{ aspectRatio: `${cover.width} / ${cover.height}` }}>
+      {hasRotated && <img className="album-cover-frame album-cover-previous" src={previousCover.medium} alt="" aria-hidden="true" decoding="async" />}
+      <img key={currentCover.id} className={`album-cover-frame album-cover-current${hasRotated ? ' is-transitioning' : ''}`} src={currentCover.medium} alt={`Portada del álbum ${album.title}`} loading={index === 0 ? 'eager' : 'lazy'} decoding="async" />
+    </span>
     <span className="album-card-meta"><span>{album.title}</span><span>{album.year}</span></span>
     {driveUrls[album.id] && <a className="album-drive-link" href={driveUrls[album.id]} target="_blank" rel="noreferrer" onClick={(event) => event.stopPropagation()}>ABRIR EN DRIVE ↗</a>}
   </button>

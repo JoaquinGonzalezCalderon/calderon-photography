@@ -5,4 +5,5 @@ export const albumDescriptions: Record<string, string> = {
   'desafio-ciudadania': 'Una experiencia colectiva sobre creatividad, tecnología y participación.',
   scentea: 'Perfumes y decants, retratos y detalles de Scentea.',
   lossantos: 'El Staff de Los Santos tirando magia',
+  innovalab: 'Ideas, encuentros y proyectos que empiezan a tomar forma.',
 }
