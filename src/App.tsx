@@ -287,7 +287,7 @@ function HomeCover({ onNavigate, isReady }: { onNavigate: (area: PortfolioArea) 
     let nextMessageTimer = 0
     const messages = [
       'Hola, ¿cómo estás?',
-      'Soy Joaquín Gonzalez Calderón, tengo 23 años. Soy analista en sistemas, DJ y fotógrafo.',
+      'Soy Joaquín Gonzalez Calderón, tengo 23 años. Soy analista en sistemas, y además DJ y fotógrafo amateur.',
     ]
     const speak = (messageIndex: number) => {
       const message = messages[messageIndex]
@@ -364,17 +364,17 @@ function HomeCover({ onNavigate, isReady }: { onNavigate: (area: PortfolioArea) 
 
   return <main className={`home${isReady ? ' is-ready' : ''}`}>
     <section ref={parallaxRef} className="hero-card" aria-labelledby="hero-title">
-      <span className="hero-deboss" aria-hidden="true">{[...'Portfolio'].map((letter, index) => <span key={index} style={{ '--i': index } as CSSProperties}>{letter}</span>)}</span>
       <figure className="hero-portrait">
         <img src="/areas/portrait-yo2.webp" alt="Retrato de Joaquín Gonzalez Calderón con gorra" width="1239" height="1269" fetchPriority="high" />
       </figure>
-      <h1 className="hero-name" id="hero-title">
-        <span className="sr-only">Joaquín Gonzalez Calderón: analista en sistemas, DJ y fotógrafo</span>
-        <span className="hero-script hero-script-first" aria-hidden="true">Joaquín</span>
-        <span className="hero-script hero-script-middle" aria-hidden="true">Gonzalez</span>
-        <span className="hero-script hero-script-last" aria-hidden="true">Calderón</span>
+      <h1 className="hero-title" id="hero-title">
+        <span className="sr-only">Portfolio de Joaquín Gonzalez Calderón: analista en sistemas, DJ y fotógrafo amateur</span>
+        <span className="hero-title-word" aria-hidden="true">{[...'Portfolio'].map((letter, index) => <span key={index} className={index === 3 || index === 4 ? 'is-outline' : undefined} style={{ '--i': index } as CSSProperties}>{letter}</span>)}</span>
       </h1>
-      <p className="hero-handles"><span>ig: @joaquinncalderon</span><span>gh: JoaquinGonzalezCalderon</span></p>
+      <p className="hero-corner hero-corner-tl">Analista en sistemas<br />DJ y fotógrafo amateur</p>
+      <a className="hero-corner hero-corner-tr" href="#areas" aria-label="Ver las áreas del portfolio"><svg viewBox="0 0 96 16" aria-hidden="true"><path d="M0 8h94M86 1l8 7-8 7" /></svg></a>
+      <p className="hero-corner hero-corner-bl">Joaquín Gonzalez Calderón</p>
+      <a className="hero-corner hero-corner-br" href={site.instagramUrl} target="_blank" rel="noreferrer">@joaquinncalderon</a>
       <aside className="narrator" aria-label="Presentación de Joaquín">
         <p className={`narrator-bubble${isSpeechVisible ? ' is-visible' : ''}${isTyping ? ' is-typing' : ''}`} aria-hidden={!isSpeechVisible}>{speechText}{isTyping && <span className="narrator-caret" aria-hidden="true" />}</p>
         <span className={`narrator-character${isCharacterVisible ? ' is-visible' : ''}${isAutoTalking ? ' is-talking' : ''}${look}`} role="img" aria-label="Personaje cartoon de Joaquín" aria-hidden={!isCharacterVisible}>
@@ -386,7 +386,7 @@ function HomeCover({ onNavigate, isReady }: { onNavigate: (area: PortfolioArea) 
       </aside>
     </section>
 
-    <div className="case-grid">
+    <div className="case-grid" id="areas">
       <a className="case-card case-systems" href={pathForArea('systems')} onClick={go('systems')} data-reveal>
         <h2 className="case-title">Sistemas</h2>
         <p className="case-rule"><span>Apps y sitios web</span></p>
@@ -400,7 +400,7 @@ function HomeCover({ onNavigate, isReady }: { onNavigate: (area: PortfolioArea) 
 
       <a className="case-card case-photo" href={pathForArea('photography')} onClick={go('photography')} data-reveal>
         <h2 className="case-title">Fotografía</h2>
-        <p className="case-rule"><span>Eventos y marcas</span></p>
+        <p className="case-rule"><span>Amateur · eventos y marcas</span></p>
         <span className="case-thumbs case-thumbs-stacks">
           {photoStacks.map(({ album, photos }) => <span className="case-stack" key={album.id}>
             {photos.map((photo) => <img key={photo.id} src={photo.src} alt="" loading="lazy" />)}
@@ -411,7 +411,7 @@ function HomeCover({ onNavigate, isReady }: { onNavigate: (area: PortfolioArea) 
 
       <a className="case-card case-dj" href={pathForArea('dj')} onClick={go('dj')} data-reveal>
         <h2 className="case-title"><span className="case-deboss" aria-hidden="true">Mashups</span>DJ</h2>
-        <p className="case-rule"><span>Mezclas propias</span></p>
+        <p className="case-rule"><span>Amateur · mezclas propias</span></p>
         <span className="case-thumbs case-thumbs-covers">
           {djTracks.slice(0, 3).map((track) => <img key={track.number} src={track.cover} alt="" loading="lazy" />)}
         </span>
@@ -628,7 +628,7 @@ function DJPage() {
 
   return <main className="page dj">
     <audio ref={audioRef} src={activeTrack.src} preload="auto" onLoadedMetadata={(event) => setDuration(Number.isFinite(event.currentTarget.duration) ? event.currentTarget.duration : 0)} onTimeUpdate={(event) => setCurrentTime(event.currentTarget.currentTime)} onPlay={() => { setPlaying(true); setAudioError(false); fadeTrackIn() }} onPause={() => { setPlaying(false); if (trackFadeFrame.current !== null) { window.cancelAnimationFrame(trackFadeFrame.current); trackFadeFrame.current = null } }} onEnded={() => { setPlaying(false); setCurrentTime(0) }} onError={() => setAudioError(true)} />
-    <PageHead title="Mashups" lede="Me gusta mezclar canciones, probar cruces y jugar con la energía de cada tema. Voy a ir publicando mis mashups acá." />
+    <PageHead title="Mashups" lede="Soy DJ amateur: me gusta mezclar canciones, probar cruces y jugar con la energía de cada tema. Voy a ir publicando mis mashups acá." />
     <section className="dj-deck" aria-label="Reproductor de mashups">
       <div className="dj-stage">
         <div className="dj-discs" style={{ '--progress': progress } as CSSProperties}>
@@ -699,7 +699,7 @@ function PhotographyPage({ albums, onOpenAlbum }: { albums: Album[]; onOpenAlbum
   const featured = albums[activeAlbumIndex]
   useReveal('photography')
   return <main className="page photography">
-    <PageHead title="Fotografía" lede="Coberturas de eventos y sesiones para marcas y comercios. Arrastrá la órbita o tocá una foto para abrir su álbum.">
+    <PageHead title="Fotografía" lede="Fotografía amateur: coberturas de eventos y sesiones para marcas y comercios. Arrastrá la órbita o tocá una foto para abrir su álbum.">
       <p className="page-meta">{albums.length} álbumes · {totalPhotos} fotos</p>
     </PageHead>
     <Orbit items={orbitItems} label="Álbumes en órbita" onSelect={(index) => onOpenAlbum(albums[orbitAlbumIndex[index]])} onActiveChange={(index) => setActiveAlbumIndex(orbitAlbumIndex[index])}>
