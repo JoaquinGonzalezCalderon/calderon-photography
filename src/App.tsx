@@ -27,6 +27,39 @@ function pathForArea(area: PortfolioArea) {
   return { home: '/', systems: '/sistemas', dj: '/dj', photography: '/fotografia' }[area]
 }
 
+function playEntryWhoosh() {
+  if (!window.AudioContext) return
+  const context = new window.AudioContext()
+  const duration = 0.42
+  const sampleCount = Math.floor(context.sampleRate * duration)
+  const buffer = context.createBuffer(1, sampleCount, context.sampleRate)
+  const samples = buffer.getChannelData(0)
+  for (let index = 0; index < sampleCount; index += 1) {
+    const progress = index / sampleCount
+    samples[index] = (Math.random() * 2 - 1) * (1 - progress)
+  }
+
+  const whoosh = context.createBufferSource()
+  const filter = context.createBiquadFilter()
+  const gain = context.createGain()
+  const startTime = context.currentTime
+  whoosh.buffer = buffer
+  filter.type = 'bandpass'
+  filter.frequency.setValueAtTime(380, startTime)
+  filter.frequency.exponentialRampToValueAtTime(2400, startTime + duration * 0.78)
+  filter.Q.setValueAtTime(0.7, startTime)
+  gain.gain.setValueAtTime(0.0001, startTime)
+  gain.gain.exponentialRampToValueAtTime(0.16, startTime + 0.04)
+  gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration)
+  whoosh.connect(filter)
+  filter.connect(gain)
+  gain.connect(context.destination)
+  whoosh.onended = () => { void context.close() }
+  void context.resume().catch(() => {})
+  whoosh.start(startTime)
+  whoosh.stop(startTime + duration)
+}
+
 function App() {
   const [activeAlbum, setActiveAlbum] = useState<Album | null>(() => albumFromPathname(window.location.pathname))
   const [activeArea, setActiveArea] = useState<PortfolioArea>(() => areaFromPathname(window.location.pathname))
@@ -47,6 +80,7 @@ function App() {
 
   const enterPortfolio = () => {
     if (isIntroLeaving) return
+    playEntryWhoosh()
     const music = musicAudioRef.current
     if (music) {
       music.currentTime = 0
@@ -199,7 +233,7 @@ function App() {
   }
 
   return <>
-    <audio ref={musicAudioRef} src="/audio/doomsday.mp3" preload="auto" loop aria-hidden="true" onPlay={() => { setIsMusicPlaying(true); setSoundError(false) }} onPause={() => setIsMusicPlaying(false)} onError={() => setSoundError(true)} />
+    <audio ref={musicAudioRef} src="/audio/temafondo.mp3" preload="auto" loop aria-hidden="true" onPlay={() => { setIsMusicPlaying(true); setSoundError(false) }} onPause={() => setIsMusicPlaying(false)} onError={() => setSoundError(true)} />
     <audio ref={mouthAudioRef} src="/audio/sonidoboca.mp3" preload="auto" aria-hidden="true" onError={() => setSoundError(true)} />
     {showIntro && <PortfolioEntry isLeaving={isIntroLeaving} onEnter={enterPortfolio} />}
     <div className="portfolio-content-layer" inert={showIntro}>
