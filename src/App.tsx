@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState, type RefObject } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { albumCover, albumPhotos, albums, driveUrls, type Album } from './data/albums'
 import type { Photo } from './data/photos'
 import { site } from './config/site'
@@ -35,11 +35,6 @@ function App() {
   const [isReducedMotion, setIsReducedMotion] = useState(false)
   const [showIntro, setShowIntro] = useState(() => (window.location.pathname.replace(/\/+$/, '') || '/') === '/')
   const [isIntroLeaving, setIsIntroLeaving] = useState(false)
-  const [isMusicPlaying, setIsMusicPlaying] = useState(false)
-  const [soundError, setSoundError] = useState(false)
-  const musicAudioRef = useRef<HTMLAudioElement>(null)
-  const mouthAudioRef = useRef<HTMLAudioElement>(null)
-  const resumeMusicAfterDj = useRef(false)
   const scrollPosition = useRef(0)
   const albumReturnPath = useRef(activeAlbum ? '/fotografia' : '/')
   const navigationTimer = useRef<number | null>(null)
@@ -47,12 +42,6 @@ function App() {
 
   const enterPortfolio = () => {
     if (isIntroLeaving) return
-    const music = musicAudioRef.current
-    if (music) {
-      music.currentTime = 0
-      music.volume = 0.06
-      void music.play().catch(() => setSoundError(true))
-    }
     if (isReducedMotion) {
       setShowIntro(false)
       return
@@ -62,50 +51,8 @@ function App() {
       setShowIntro(false)
       setIsIntroLeaving(false)
       introTimer.current = null
-    }, 760)
+    }, 900)
   }
-
-  const toggleSound = () => {
-    const music = musicAudioRef.current
-    if (!music) return
-    if (music.paused) {
-      music.volume = 0.06
-      void music.play().catch(() => setSoundError(true))
-    } else music.pause()
-  }
-
-  useEffect(() => {
-    const music = musicAudioRef.current
-    if (!music) return
-
-    let frame = 0
-    if (activeArea === 'dj') {
-      resumeMusicAfterDj.current = !music.paused
-      if (!resumeMusicAfterDj.current) return
-      const startingVolume = music.volume
-      const startedAt = performance.now()
-      const fadeOut = (now: number) => {
-        const progress = Math.min((now - startedAt) / 750, 1)
-        music.volume = startingVolume * (1 - progress)
-        if (progress < 1) frame = window.requestAnimationFrame(fadeOut)
-        else music.pause()
-      }
-      frame = window.requestAnimationFrame(fadeOut)
-    } else if (activeArea === 'home' && resumeMusicAfterDj.current) {
-      resumeMusicAfterDj.current = false
-      music.volume = 0
-      if (music.paused) void music.play().catch(() => setSoundError(true))
-      const startedAt = performance.now()
-      const fadeIn = (now: number) => {
-        const progress = Math.min((now - startedAt) / 900, 1)
-        music.volume = 0.06 * progress
-        if (progress < 1) frame = window.requestAnimationFrame(fadeIn)
-      }
-      frame = window.requestAnimationFrame(fadeIn)
-    }
-
-    return () => window.cancelAnimationFrame(frame)
-  }, [activeArea])
 
   const navigateArea = (area: PortfolioArea) => {
     setActiveArea(area)
@@ -138,8 +85,6 @@ function App() {
   useEffect(() => () => {
     if (navigationTimer.current !== null) window.clearTimeout(navigationTimer.current)
     if (introTimer.current !== null) window.clearTimeout(introTimer.current)
-    musicAudioRef.current?.pause()
-    mouthAudioRef.current?.pause()
     document.body.classList.remove('is-navigating-back', 'is-arriving-back')
   }, [])
 
@@ -237,12 +182,9 @@ function App() {
   }
 
   return <>
-    <audio ref={musicAudioRef} src="/audio/temafondo.mp3" preload="auto" loop aria-hidden="true" onPlay={() => { setIsMusicPlaying(true); setSoundError(false) }} onPause={() => setIsMusicPlaying(false)} onError={() => setSoundError(true)} />
-    <audio ref={mouthAudioRef} src="/audio/sonidoboca.mp3" preload="auto" aria-hidden="true" onError={() => setSoundError(true)} />
     {showIntro && <PortfolioEntry isLeaving={isIntroLeaving} onEnter={enterPortfolio} />}
-    <div className={`portfolio-content-layer${isIntroLeaving ? ' is-intro-arrival' : ''}`} inert={showIntro}>
-      {!showIntro && activeArea !== 'dj' && <SiteSoundControl isMusicPlaying={isMusicPlaying} hasError={soundError} isHome={activeArea === 'home'} onToggle={toggleSound} />}
-      {activeArea === 'home' ? <HomeHub onOpenArea={navigateArea} isReducedMotion={isReducedMotion} isReady={!showIntro} mouthAudioRef={mouthAudioRef} /> : activeArea === 'systems' ? <SystemsPortfolio onBack={goHome} /> : activeArea === 'photography' ? <Home albums={albumOrder} onOpenAlbum={openAlbum} onBack={goHome} /> : <DJPortfolio onBack={goHome} />}
+    <div className="portfolio-content-layer" inert={showIntro}>
+      {activeArea === 'home' ? <HomeHub onOpenArea={navigateArea} isReducedMotion={isReducedMotion} isReady={!showIntro} /> : activeArea === 'systems' ? <SystemsPortfolio onBack={goHome} /> : activeArea === 'photography' ? <Home albums={albumOrder} onOpenAlbum={openAlbum} onBack={goHome} /> : <DJPortfolio onBack={goHome} />}
       {activeAlbum && <AlbumOverlay album={activeAlbum} transition={transition} onClose={closeAlbum} onOpenPhoto={(photos, index) => setLightbox({ photos, index })} />}
       {lightbox && <PhotoLightbox photo={lightbox.photos[lightbox.index]} index={lightbox.index} total={lightbox.photos.length} onClose={() => setLightbox(null)} onMove={moveLightbox} />}
     </div>
@@ -251,7 +193,7 @@ function App() {
 
 function Logo() { return <a className="archive-logo" href="/" aria-label="Calderón, inicio"><img src="/logo/calderon_logo.svg" alt="Calderón" /></a> }
 
-function HomeHub({ onOpenArea, isReducedMotion, isReady, mouthAudioRef }: { onOpenArea: (area: 'systems' | 'dj' | 'photography') => void; isReducedMotion: boolean; isReady: boolean; mouthAudioRef: RefObject<HTMLAudioElement | null> }) {
+function HomeHub({ onOpenArea, isReducedMotion, isReady }: { onOpenArea: (area: 'systems' | 'dj' | 'photography') => void; isReducedMotion: boolean; isReady: boolean }) {
   const [openingArea, setOpeningArea] = useState<'systems' | 'dj' | 'photography' | null>(null)
   const [isCharacterVisible, setIsCharacterVisible] = useState(false)
   const [isSpeechVisible, setIsSpeechVisible] = useState(false)
@@ -357,22 +299,6 @@ function HomeHub({ onOpenArea, isReducedMotion, isReady, mouthAudioRef }: { onOp
       window.clearTimeout(speechTimer)
     }
   }, [isReady, isMobileIntroDone])
-  useEffect(() => {
-    const audio = mouthAudioRef.current
-    if (!audio) return
-    if (!isAutoTalking) {
-      audio.pause()
-      audio.currentTime = 0
-      return
-    }
-    audio.currentTime = 0
-    audio.volume = 0.2
-    void audio.play().catch(() => {})
-    return () => {
-      audio.pause()
-      audio.currentTime = 0
-    }
-  }, [isAutoTalking, mouthAudioRef])
   useEffect(() => {
     if (!isCharacterVisible || isAutoTalking) {
       setCharacterLook('center')
@@ -771,14 +697,6 @@ function PortfolioEntry({ isLeaving, onEnter }: { isLeaving: boolean; onEnter: (
   </section>
 }
 
-function SiteSoundControl({ isMusicPlaying, hasError, isHome, onToggle }: { isMusicPlaying: boolean; hasError: boolean; isHome: boolean; onToggle: () => void }) {
-  return <aside className={`site-sound-control${isHome ? ' is-home' : ' is-subpage'}`} aria-label="Controles de sonido">
-    <button type="button" className="site-sound-toggle" onClick={onToggle} aria-pressed={!isMusicPlaying} aria-label={isMusicPlaying ? 'Pausar tema' : 'Reproducir tema'}>
-      <svg className="site-sound-icon" viewBox="0 0 16 16" aria-hidden="true">{isMusicPlaying ? <><path d="M5 3.5v9" /><path d="M11 3.5v9" /></> : <path d="m5 3.5 7 4.5-7 4.5z" />}</svg>
-    </button>
-    {hasError && <span className="site-sound-error" role="status">NO SE PUDO CARGAR EL AUDIO</span>}
-  </aside>
-}
 
 function PhotoLightbox({ photo, index, total, onClose, onMove }: { photo: Photo; index: number; total: number; onClose: () => void; onMove: (direction: 1 | -1) => void }) {
   const touchStart = useRef(0)
