@@ -71,7 +71,7 @@ export function Narrator({ isReady }: { isReady: boolean }) {
       if (pause) later(() => setFrame('idle'), 40)
       later(step, 32 + pause)
     }
-    later(step, 260)
+    later(step, 700)
   }
 
   // Entrance and intro lines
@@ -146,7 +146,10 @@ export function Narrator({ isReady }: { isReady: boolean }) {
 
   return <aside className="narrator" aria-label="Presentación de Joaquín">
     <p className="sr-only" aria-live="polite">{spoken}</p>
-    <p className={`narrator-bubble${isSpeechVisible ? ' is-visible' : ''}`} aria-hidden="true">{text}{isTalking && <span className="narrator-caret" aria-hidden="true" />}</p>
+    <p className={`narrator-bubble${isSpeechVisible ? ' is-visible' : ''}`} aria-hidden="true">
+      <span className="narrator-name">Joaquín</span>
+      <span className="narrator-text">{text === '' ? <span className="narrator-dots"><i /><i /><i /></span> : text}{isTalking && text !== '' && <span className="narrator-caret" />}</span>
+    </p>
     <button
       ref={characterRef}
       type="button"
