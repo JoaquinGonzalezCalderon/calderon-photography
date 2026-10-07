@@ -301,7 +301,7 @@ function HomeHub({ onOpenArea, isReducedMotion, isReady, hasInitialIntro }: { on
               <img className="home-narrator-glance home-narrator-glance-left" src="/areas/joaquin-glance-left.webp" alt="" aria-hidden="true" />
               <img className="home-narrator-glance home-narrator-glance-right" src="/areas/joaquin-glance-right.webp" alt="" aria-hidden="true" />
             </span>
-            <p className={`home-narrator-bubble${isSpeechVisible ? ' is-visible' : ''}`} aria-hidden={!isSpeechVisible}>{speechText}{isTyping && <span className="home-narrator-caret" aria-hidden="true">▍</span>}</p>
+            <p className={`home-narrator-bubble${isSpeechVisible ? ' is-visible' : ''}${isTyping ? ' is-typing' : ''}`} aria-hidden={!isSpeechVisible}>{speechText}{isTyping && <span className="home-narrator-caret" aria-hidden="true">▍</span>}</p>
           </aside>
         </figure>
       </section>
