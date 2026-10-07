@@ -1,8 +1,10 @@
-import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type MouseEvent, type ReactNode } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type MouseEvent, type ReactNode } from 'react'
 import { albumCover, albumPhotos, albums, driveUrls, type Album } from './data/albums'
 import type { Photo } from './data/photos'
 import { site } from './config/site'
 import { albumDescriptions } from './config/album-descriptions'
+import { Orbit } from './components/Orbit'
+import { Marquee, SplitLetters, useMagnetic, usePointerParallax } from './motion'
 
 type Transition = 'opening' | 'open' | 'closing'
 type PortfolioArea = 'home' | 'systems' | 'dj' | 'photography'
@@ -87,7 +89,7 @@ function App() {
       navigationTimer.current = window.setTimeout(() => {
         document.body.classList.remove('is-arriving')
         navigationTimer.current = null
-      }, 520)
+      }, 700)
     }
     if (navigationTimer.current !== null) window.clearTimeout(navigationTimer.current)
     document.body.classList.remove('is-arriving')
@@ -100,8 +102,10 @@ function App() {
       return
     }
     document.body.classList.add('is-leaving')
-    navigationTimer.current = window.setTimeout(show, 200)
+    navigationTimer.current = window.setTimeout(show, 480)
   }
+
+  useMagnetic(`${activeArea}-${showIntro}`)
 
   useEffect(() => () => {
     if (navigationTimer.current !== null) window.clearTimeout(navigationTimer.current)
@@ -207,6 +211,7 @@ function App() {
 
   return <>
     {showIntro && <IntroSplash />}
+    <div className="curtain" aria-hidden="true"><img src="/logo/calderon_logo.svg" alt="" /></div>
     <div className="site" inert={showIntro}>
       <SiteHeader current={activeArea} onNavigate={navigate} />
       {activeArea === 'home'
@@ -233,7 +238,7 @@ function SiteHeader({ current, onNavigate }: { current: PortfolioArea; onNavigat
     <a className="site-logo" href="/" onClick={go('home')} aria-label="Calderón, inicio"><img src="/logo/calderon_logo.svg" alt="" width="2172" height="724" /></a>
     <nav className="site-nav" aria-label="Secciones">
       {(Object.keys(areaLabels) as Area[]).map((area) => <a key={area} href={pathForArea(area)} onClick={go(area)} aria-current={current === area ? 'page' : undefined}>{areaLabels[area]}</a>)}
-      <a className="site-nav-contact" href="#contacto">Contacto</a>
+      <a className="site-nav-contact" href="#contacto" data-magnetic="0.25">Contacto</a>
     </nav>
   </header>
 }
@@ -247,7 +252,7 @@ function SiteFooter() {
   ]
   return <footer className="site-footer" id="contacto">
     <div className="contact" data-reveal>
-      <h2 className="contact-title">¿Hacemos algo<br />juntos?</h2>
+      <h2 className="contact-title"><span className="reveal-line"><span>¿Hacemos algo</span></span><span className="reveal-line"><span>juntos?</span></span></h2>
       <p className="contact-lede">Sitios, apps, fotos o música para tu evento. Escribime y lo vemos.</p>
       <ul className="contact-list">
         {contacts.map((contact) => <li key={contact.label}><a href={contact.href} target="_blank" rel="noreferrer"><span>{contact.label}</span><strong>{contact.value}</strong><Arrow /></a></li>)}
@@ -349,9 +354,11 @@ function HomeCover({ onNavigate, isReady }: { onNavigate: (area: PortfolioArea) 
     { id: 'photography', title: 'Eventos, marcas y comercios', meta: `${albums.length} álbumes`, image: '/areas/photography.webp' },
     { id: 'dj', title: 'Mashups para escuchar acá', meta: `${djTracks.length} temas`, image: '/areas/dj.webp' },
   ]
+  const parallaxRef = usePointerParallax<HTMLElement>()
   const look = characterLook === 'left' ? ' is-looking-left' : characterLook === 'right' ? ' is-looking-right' : ''
 
-  return <main className={`cover${isReady ? ' is-ready' : ''}`}>
+  return <main className="home">
+  <section ref={parallaxRef} className={`cover${isReady ? ' is-ready' : ''}`}>
     <h1 className="cover-masthead">
       <span className="sr-only">Joaquín Gonzalez Calderón: analista en sistemas, DJ y fotógrafo</span>
       <span className="cover-masthead-word" aria-hidden="true">{[...'Joaquín'].map((letter, index) => <span key={index} style={{ '--i': index } as CSSProperties}>{letter}</span>)}</span>
@@ -380,12 +387,14 @@ function HomeCover({ onNavigate, isReady }: { onNavigate: (area: PortfolioArea) 
         <img className="narrator-glance narrator-glance-right" src="/areas/joaquin-glance-right.webp" alt="" />
       </span>
     </aside>
+  </section>
+  <Marquee words={['Sistemas', 'Fotografía', 'DJ', 'Entre Ríos', 'Sitios web', 'Eventos', 'Mashups', 'Apps']} />
   </main>
 }
 
 function PageHead({ title, lede, children }: { title: string; lede: string; children?: ReactNode }) {
   return <section className="page-head">
-    <h1 className="page-title">{title}</h1>
+    <h1 className="page-title"><span className="sr-only">{title}</span><SplitLetters text={title} /></h1>
     <div className="page-head-side">
       <p className="page-lede">{lede}</p>
       {children}
@@ -405,7 +414,7 @@ function SystemsPage() {
     <FeaturedStreak />
     <FeaturedStugo />
     <section className="clients" aria-labelledby="clients-title">
-      <h2 className="section-title" id="clients-title" data-reveal>Sitios para clientes</h2>
+      <h2 className="section-title" id="clients-title" data-reveal><span className="reveal-line"><span>Sitios para clientes</span></span></h2>
       <div className="clients-grid">
         <ClientSite title="Mate Único" description="E-commerce full-stack con restricciones en base de datos y lógica avanzada de validación de stock." image="/areas/jgc-mate.webp" alt="Vista de la tienda online Mate Único" href="https://mate-unico-deployed.vercel.app/" />
         <ClientSite title="Inmobiliaria Andrea Duré" description="Sitio inmobiliario profesional y responsivo para el mercado local de Colón, Entre Ríos." image="/areas/jgc-inmobiliaria.webp" alt="Vista de la web inmobiliaria de Andrea Duré" href="https://andreadure.com/" />
@@ -452,7 +461,7 @@ function FeaturedStreak() {
         <summary>Más detalles</summary>
         <p>En Gym podés anotar entrenamientos y grupos musculares, editar el historial, crear rutinas propias y seguir objetivos semanales, mensuales y por músculo en el calendario. El perfil suma frases motivadoras, avatar, tema, color principal, hábito y recordatorios configurables. Cada cuenta guarda sus datos de forma privada.</p>
       </details>
-      <a className="button" href="https://tustreak.vercel.app/app" target="_blank" rel="noreferrer">Abrir Streak <Arrow /></a>
+      <a className="button" data-magnetic="0.2" href="https://tustreak.vercel.app/app" target="_blank" rel="noreferrer">Abrir Streak <Arrow /></a>
     </div>
     <div className="feature-phones streak-phones" aria-label="Capturas de Streak" data-reveal>
       {screens.map((screen) => <Phone key={screen.title} {...screen} />)}
@@ -491,7 +500,7 @@ function FeaturedStugo() {
 }
 
 function ClientSite({ title, description, image, alt, href }: { title: string; description: string; image: string; alt: string; href: string }) {
-  return <article className="client" data-reveal>
+  return <article className="client" data-reveal="clip">
     <a className="client-image" href={href} target="_blank" rel="noreferrer" tabIndex={-1} aria-hidden="true"><img src={image} alt={alt} loading="lazy" width="1440" height="700" /></a>
     <div className="client-info">
       <h3>{title}</h3>
@@ -580,6 +589,7 @@ function DJPage() {
     <section className="dj-deck" aria-label="Reproductor de mashups">
       <div className="dj-stage">
         <div className="dj-discs" style={{ '--progress': progress } as CSSProperties}>
+          <span className={`dj-vinyl${playing ? ' is-playing' : ''}`} aria-hidden="true"><span className="dj-vinyl-disc"><img src={activeTrack.cover} alt="" /></span></span>
           {djTracks.map((track, index) => {
             const relativeIndex = (index - activeIndex + djTracks.length) % djTracks.length
             const selected = index === activeIndex
@@ -594,7 +604,7 @@ function DJPage() {
           <p className="dj-now"><span>Mashup {activeTrack.number}</span><strong>{activeTrack.title}</strong></p>
           <div className="dj-controls">
             <button type="button" className="dj-step" onClick={() => stepTrack(-1)} aria-label="Mashup anterior"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h2v14H6zM19 5.8v12.4c0 .8-.9 1.2-1.5.7L9.6 12.7a.9.9 0 0 1 0-1.4l7.9-6.2c.6-.5 1.5-.1 1.5.7Z" /></svg></button>
-            <button type="button" className="dj-play" onClick={togglePlayback} aria-label={playing ? 'Pausar mashup' : 'Reproducir mashup'}><svg viewBox="0 0 24 24" aria-hidden="true">{playing ? <path d="M7 5h4v14H7zM14 5h4v14h-4z" /> : <path d="M8 5.3c0-.8.9-1.3 1.6-.8l9.6 6.7c.6.4.6 1.3 0 1.7l-9.6 6.7c-.7.5-1.6 0-1.6-.8V5.3Z" />}</svg></button>
+            <button type="button" className="dj-play" data-magnetic="0.35" onClick={togglePlayback} aria-label={playing ? 'Pausar mashup' : 'Reproducir mashup'}><svg viewBox="0 0 24 24" aria-hidden="true">{playing ? <path d="M7 5h4v14H7zM14 5h4v14h-4z" /> : <path d="M8 5.3c0-.8.9-1.3 1.6-.8l9.6 6.7c.6.4.6 1.3 0 1.7l-9.6 6.7c-.7.5-1.6 0-1.6-.8V5.3Z" />}</svg></button>
             <button type="button" className="dj-step" onClick={() => stepTrack(1)} aria-label="Siguiente mashup"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 5h2v14h-2zM5 5.8v12.4c0 .8.9 1.2 1.5.7l7.9-6.2a.9.9 0 0 0 0-1.4L6.5 5.1C5.9 4.6 5 5 5 5.8Z" /></svg></button>
           </div>
           <div className="dj-timeline">
@@ -615,7 +625,7 @@ function DJPage() {
             </button>
           </li>)}
         </ol>
-        <figure className="dj-portrait" data-reveal>
+        <figure className="dj-portrait" data-reveal="clip">
           <img src="/areas/dj-portrait.webp" alt="Joaquín Calderón mezclando música en una cabina de DJ" loading="lazy" width="960" height="1280" />
         </figure>
       </div>
@@ -627,11 +637,36 @@ const albumLayout = ['wide', 'tall', 'tall', 'wide', 'half', 'half', 'full'] as 
 
 function PhotographyPage({ albums, onOpenAlbum }: { albums: Album[]; onOpenAlbum: (album: Album) => void }) {
   const totalPhotos = albums.reduce((sum, album) => sum + albumPhotos(album).length, 0)
+  const [activeAlbumIndex, setActiveAlbumIndex] = useState(0)
+  const [orbitItems, orbitAlbumIndex] = useMemo(() => {
+    const items: { key: string; src: string; alt: string }[] = []
+    const owners: number[] = []
+    albums.forEach((album, albumIndex) => {
+      const photos = albumPhotos(album)
+      const cover = albumCover(album)
+      const rest = photos.filter((photo) => photo.id !== cover.id)
+      const picks = [cover, ...[1, 2, 3].map((part) => rest[Math.floor((rest.length * part) / 4)]).filter(Boolean)]
+      picks.forEach((photo) => {
+        items.push({ key: photo.id, src: photo.src, alt: `Abrir álbum ${album.title}` })
+        owners.push(albumIndex)
+      })
+    })
+    return [items, owners] as const
+  }, [albums])
+  const featured = albums[activeAlbumIndex]
   useReveal('photography')
   return <main className="page photography">
-    <PageHead title="Fotografía" lede="Coberturas de eventos y sesiones para marcas y comercios. Tocá un álbum para verlo completo.">
+    <PageHead title="Fotografía" lede="Coberturas de eventos y sesiones para marcas y comercios. Arrastrá la órbita o tocá una foto para abrir su álbum.">
       <p className="page-meta">{albums.length} álbumes · {totalPhotos} fotos</p>
     </PageHead>
+    <Orbit items={orbitItems} label="Álbumes en órbita" onSelect={(index) => onOpenAlbum(albums[orbitAlbumIndex[index]])} onActiveChange={(index) => setActiveAlbumIndex(orbitAlbumIndex[index])}>
+      <div className="orbit-info" key={featured.id}>
+        <p className="orbit-info-meta">{albumPhotos(featured).length} fotos · {featured.year}</p>
+        <h2 className="orbit-info-title">{featured.title}</h2>
+        <button type="button" className="button" data-magnetic="0.2" onClick={() => onOpenAlbum(featured)}>Ver álbum <Arrow /></button>
+      </div>
+    </Orbit>
+    <h2 className="section-title album-grid-title" data-reveal><span className="reveal-line"><span>Todos los álbumes</span></span></h2>
     <section className="album-grid" aria-label="Álbumes">
       {albums.map((album, index) => <AlbumCard key={album.id} album={album} index={index} layout={albumLayout[index % albumLayout.length]} onOpen={() => onOpenAlbum(album)} />)}
     </section>
@@ -656,7 +691,7 @@ function AlbumCard({ album, index, layout, onOpen }: { album: Album; index: numb
   const currentCover = coverPhotos[coverIndex]
   const previousCover = coverPhotos[(coverIndex + coverPhotos.length - 1) % coverPhotos.length]
   const isCurrentCoverLoaded = loadedCoverId === currentCover.id
-  return <article className={`album-card is-${layout}`} data-reveal>
+  return <article className={`album-card is-${layout}`} data-reveal="clip">
     <button className="album-card-open" onClick={onOpen} aria-label={`Abrir álbum ${album.title}, ${photos.length} fotos`}>
       <span className="album-card-image">
         {hasRotated && <img className="album-cover-frame" src={previousCover.medium} alt="" decoding="async" />}
@@ -673,7 +708,10 @@ function AlbumCard({ album, index, layout, onOpen }: { album: Album; index: numb
 
 function AlbumOverlay({ album, transition, onClose, onOpenPhoto }: { album: Album; transition: Transition; onClose: () => void; onOpenPhoto: (photos: Photo[], index: number) => void }) {
   const [isScrolled, setIsScrolled] = useState(false)
+  const [view, setView] = useState<'orbit' | 'grid'>('orbit')
+  const [frontPhoto, setFrontPhoto] = useState(0)
   const photos = albumPhotos(album)
+  const orbitItems = useMemo(() => photos.map((photo, index) => ({ key: photo.id, src: photo.medium, alt: `Ampliar foto ${index + 1} de ${photos.length}` })), [album.id])
   return <section className={`album-overlay transition-${transition}${isScrolled ? ' is-scrolled' : ''}`} onScroll={(event) => setIsScrolled(event.currentTarget.scrollTop > 24)} role="dialog" aria-modal="true" aria-label={`Álbum ${album.title}`}>
     <div className="album-backdrop" />
     <div className="album-bar">
@@ -689,7 +727,16 @@ function AlbumOverlay({ album, transition, onClose, onOpenPhoto }: { album: Albu
           <p className="album-head-meta">{photos.length} fotos · {album.year}{driveUrls[album.id] && <> · <a className="text-link" href={driveUrls[album.id]} target="_blank" rel="noreferrer">Abrir en Drive <Arrow /></a></>}</p>
         </div>
       </header>
-      <div className="album-gallery">{photos.map((photo, index) => <button className="album-photo" key={photo.id} onClick={() => onOpenPhoto(photos, index)} aria-label={`Ampliar foto ${index + 1} de ${photos.length}`}><img src={photo.large} width={photo.width} height={photo.height} alt={`${album.title}, foto ${index + 1}`} decoding="async" loading={index < 3 ? 'eager' : 'lazy'} /></button>)}</div>
+      <div className="view-toggle" role="group" aria-label="Vista del álbum">
+        <button type="button" aria-pressed={view === 'orbit'} onClick={() => setView('orbit')}>Órbita</button>
+        <button type="button" aria-pressed={view === 'grid'} onClick={() => setView('grid')}>Grilla</button>
+      </div>
+      {view === 'orbit' ? <Orbit items={orbitItems} label={`Fotos de ${album.title}`} onSelect={(index) => onOpenPhoto(photos, index)} onActiveChange={setFrontPhoto}>
+        <div className="orbit-info">
+          <p className="orbit-info-count">{pad(frontPhoto + 1)} <span>/ {pad(photos.length)}</span></p>
+          <p className="orbit-info-hint">Tocá la foto del frente para ampliarla</p>
+        </div>
+      </Orbit> : <div className="album-gallery">{photos.map((photo, index) => <button className="album-photo" key={photo.id} onClick={() => onOpenPhoto(photos, index)} aria-label={`Ampliar foto ${index + 1} de ${photos.length}`}><img src={photo.large} width={photo.width} height={photo.height} alt={`${album.title}, foto ${index + 1}`} decoding="async" loading={index < 3 ? 'eager' : 'lazy'} /></button>)}</div>}
       <div className="album-end"><span>Fin de {album.title}</span><button className="pill-link" onClick={() => onClose()}>Volver a los álbumes</button></div>
     </div>
   </section>

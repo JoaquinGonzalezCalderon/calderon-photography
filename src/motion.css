@@ -1,0 +1,125 @@
+/* Motion layer: page curtain, text masks, image wipes, marquee, orbit, vinyl and scroll-linked depth. */
+
+[data-magnetic] { transition: transform .45s var(--ease-out), background-color .2s ease, color .2s ease, border-color .2s ease; }
+
+/* Pointer parallax on the cover (uses `translate`, so it composes with entrance transforms) */
+.cover-portrait { translate: calc(var(--px, 0) * 18px) calc(var(--py, 0) * 10px); }
+.cover-masthead-word { translate: calc(var(--px, 0) * -14px) calc(var(--py, 0) * -6px); }
+.narrator { translate: calc(var(--px, 0) * 8px) calc(var(--py, 0) * 6px); }
+
+/* Curtain between pages */
+.curtain { position: fixed; z-index: 45; inset: 0; display: grid; place-items: center; visibility: hidden; background: var(--accent); pointer-events: none; transform: translateY(100%); }
+.curtain img { width: min(260px, 56vw); opacity: 0; filter: invert(1); transform: scale(.9); }
+body.is-leaving .curtain { visibility: visible; transform: translateY(0); transition: transform .48s var(--ease-in-out); }
+body.is-leaving .curtain img { opacity: 1; transform: none; transition: opacity .3s .2s ease, transform .5s .15s var(--ease-out); }
+body.is-arriving .curtain { visibility: visible; transform: translateY(-100%); transition: transform .7s .05s var(--ease-in-out); }
+body.is-arriving .curtain img { opacity: 0; transform: translateY(-30px); transition: opacity .25s ease, transform .5s var(--ease-in-out); }
+
+/* Letter-by-letter titles */
+.page-title { animation: none; transform-origin: left bottom; }
+.split { display: inline-flex; overflow: hidden; padding: .08em .02em .02em; margin: -.08em -.02em -.02em; }
+.split > span { display: block; animation: rise 1s calc(var(--d, 0ms) + 120ms + var(--i) * 45ms) var(--ease-out) both; }
+
+/* Line masks for headings inside revealed blocks */
+.reveal-line { display: block; overflow: hidden; padding-bottom: .04em; }
+.reveal-line > span { display: block; transform: translateY(105%); transition: transform 1s var(--ease-out); }
+.reveal-line + .reveal-line > span { transition-delay: .08s; }
+.is-in .reveal-line > span { transform: none; }
+.contact[data-reveal]:not(.is-in), h2[data-reveal]:not(.is-in) { opacity: 1; transform: none; }
+
+/* Image wipes */
+[data-reveal='clip']:not(.is-in) { opacity: 1; transform: none; }
+[data-reveal='clip'] .client-image, [data-reveal='clip'] .album-card-image, .dj-portrait[data-reveal='clip'] { clip-path: inset(0 0 0 0); transition: clip-path 1.2s var(--ease-in-out); }
+[data-reveal='clip']:not(.is-in) .client-image, [data-reveal='clip']:not(.is-in) .album-card-image, .dj-portrait[data-reveal='clip']:not(.is-in) { clip-path: inset(100% 0 0 0); }
+[data-reveal='clip'] .client-image img, .dj-portrait[data-reveal='clip'] img { transition: transform .8s var(--ease-out), scale 1.6s var(--ease-out); }
+.album-cover-frame { top: -7%; inset-block-end: auto; height: 114%; transition: transform 1.2s var(--ease-out), scale 1.6s var(--ease-out), filter .6s ease; }
+[data-reveal='clip']:not(.is-in) .client-image img, [data-reveal='clip']:not(.is-in) .album-cover-frame, .dj-portrait[data-reveal='clip']:not(.is-in) img { scale: 1.25; }
+[data-reveal='clip'] .album-card-meta, [data-reveal='clip'] .client-info { transition: opacity .8s .35s ease, transform .8s .35s var(--ease-out); }
+[data-reveal='clip']:not(.is-in) .album-card-meta, [data-reveal='clip']:not(.is-in) .client-info { opacity: 0; transform: translateY(14px); }
+
+/* Marquee */
+.marquee { overflow: hidden; padding: clamp(18px, 3vh, 32px) 0; border-block: 1px solid var(--line); }
+.marquee-track { display: flex; width: max-content; will-change: transform; }
+.marquee-group { display: flex; flex: none; }
+.marquee-group > span { display: inline-flex; align-items: center; gap: clamp(20px, 3vw, 44px); padding-right: clamp(20px, 3vw, 44px); font-family: var(--display); font-size: clamp(44px, 8vw, 120px); font-stretch: 75%; font-weight: 800; line-height: .9; text-transform: uppercase; white-space: nowrap; }
+.marquee-group > span.is-outline { color: var(--ink-3); }
+.marquee-group i { color: var(--accent); font-size: .42em; font-style: normal; }
+
+/* Orbit */
+.orbit {
+  --card-w: clamp(150px, 13.5vw, 220px); --card-h: calc(var(--card-w) * 1.42); --arc-top: calc(var(--card-h) / 2 + 36px);
+  position: relative; width: 100vw; height: calc(var(--arc-top) + var(--card-h) / 2 + 270px); margin-left: calc(50% - 50vw); overflow: hidden;
+  isolation: isolate; cursor: grab; touch-action: pan-y; user-select: none; -webkit-user-select: none;
+}
+.orbit.is-dragging { cursor: grabbing; }
+.orbit::before { position: absolute; top: calc(var(--arc-top) + var(--card-h) / 2); left: 50%; width: min(900px, 120vw); height: 70%; background: radial-gradient(50% 50% at 50% 30%, rgb(232 176 47 / .13), transparent 70%); content: ''; pointer-events: none; transform: translateX(-50%); }
+.orbit-stage { position: absolute; z-index: 1; top: calc(var(--arc-top) + var(--orbit-r, 800px)); left: 50%; width: 0; height: 0; }
+.orbit-card { --near: 0; position: absolute; top: calc(var(--card-h) / -2); left: calc(var(--card-w) / -2); width: var(--card-w); height: var(--card-h); overflow: hidden; border-radius: clamp(14px, 1.4vw, 22px); background: var(--bg-raised); box-shadow: 0 24px 48px -18px rgb(0 0 0 / .8); will-change: transform; }
+.orbit-card img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; -webkit-user-drag: none; }
+.orbit-card::after { position: absolute; inset: 0; background: var(--bg); content: ''; opacity: calc(.55 - var(--near) * .55); pointer-events: none; }
+.orbit-card.is-front { outline: 1px solid rgb(232 176 47 / .75); outline-offset: 5px; }
+.orbit-card:focus-visible { outline: 2px solid var(--accent); }
+.orbit-center { position: absolute; z-index: 250; top: calc(var(--arc-top) + var(--card-h) / 2 + 34px); left: 50%; display: grid; justify-items: center; gap: 18px; width: min(640px, calc(100% - 2 * var(--gutter))); text-align: center; transform: translateX(-50%); }
+.orbit-info { display: grid; justify-items: center; gap: 12px; animation: info-in .7s var(--ease-out) both; }
+@keyframes info-in { from { opacity: 0; transform: translateY(18px); filter: blur(4px); } }
+.orbit-info-meta { color: var(--accent); font-family: var(--mono); font-size: 13px; }
+.orbit-info-title { font-family: var(--display); font-size: clamp(36px, 4.6vw, 72px); font-stretch: 75%; font-weight: 800; letter-spacing: -.01em; line-height: .9; text-transform: uppercase; text-wrap: balance; }
+.orbit-info .button { margin-top: 6px; }
+.orbit-info-count { font-family: var(--display); font-size: clamp(56px, 7vw, 104px); font-stretch: 75%; font-weight: 800; line-height: .85; }
+.orbit-info-count span { color: var(--ink-3); }
+.orbit-info-hint { color: var(--ink-2); font-size: 14px; }
+.orbit-arrows { display: flex; gap: 10px; }
+.orbit-arrows button { display: grid; width: 46px; height: 46px; place-items: center; border: 1px solid var(--line-strong); border-radius: 50%; transition: background-color .2s ease, color .2s ease; }
+.orbit-arrows button:hover { background: var(--ink); color: var(--bg); }
+.orbit-arrows svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.photography .orbit { margin-top: clamp(8px, 2vh, 24px); border-bottom: 1px solid var(--line); }
+.album-grid-title { padding-top: clamp(56px, 9vh, 104px); }
+.album-grid-title + .album-grid { padding-top: clamp(32px, 5vh, 56px); }
+
+.view-toggle { display: inline-flex; gap: 4px; margin-bottom: 8px; padding: 4px; border: 1px solid var(--line-strong); border-radius: 999px; }
+.view-toggle button { padding: 7px 16px; border-radius: 999px; color: var(--ink-2); font-size: 14px; font-weight: 500; transition: background-color .25s ease, color .25s ease; }
+.view-toggle button[aria-pressed='true'] { background: var(--ink); color: var(--bg); }
+
+/* Vinyl that slides out from behind the cover and spins while a mashup plays */
+.dj-disc.is-previous, .dj-disc.is-next { z-index: 1; }
+.dj-disc.is-hidden { z-index: 0; }
+.dj-vinyl { position: absolute; z-index: 2; top: 4%; left: 50%; height: 92%; aspect-ratio: 1; transform: translateX(-50%); transition: transform 1s var(--ease-out); pointer-events: none; }
+.dj-vinyl.is-playing { transform: translateX(-10%); }
+.dj-vinyl-disc { position: relative; display: block; width: 100%; height: 100%; border-radius: 50%; background: radial-gradient(circle, transparent 0 31%, #0b0b0a 31.5% 33%, transparent 33%), repeating-radial-gradient(circle, #121211 0 1.5px, #1e1e1c 1.5px 3px); box-shadow: 0 30px 60px -20px rgb(0 0 0 / .9); animation: spin 2.4s linear infinite; animation-play-state: paused; }
+.dj-vinyl.is-playing .dj-vinyl-disc { animation-play-state: running; }
+.dj-vinyl-disc::before { position: absolute; inset: 0; border-radius: 50%; background: conic-gradient(from 30deg, transparent 0 10%, rgb(255 255 255 / .09) 14%, transparent 20% 60%, rgb(255 255 255 / .06) 65%, transparent 70%); content: ''; }
+.dj-vinyl-disc img { position: absolute; top: 32%; left: 32%; width: 36%; height: 36%; border-radius: 50%; object-fit: cover; }
+.dj-vinyl-disc::after { position: absolute; top: 50%; left: 50%; width: 3%; height: 3%; border-radius: 50%; background: var(--bg); content: ''; transform: translate(-50%, -50%); }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Scroll-linked depth where the browser supports it */
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .cover-masthead { animation: mast-away linear both; animation-timeline: scroll(root); animation-range: 0 80vh; }
+    .cover-portrait { animation: portrait-away linear both; animation-timeline: scroll(root); animation-range: 0 80vh; }
+    .page-title { animation: title-away linear both; animation-timeline: scroll(root); animation-range: 0 60vh; }
+    .phone { animation: drift linear both; animation-timeline: view(); }
+    .phone:nth-child(even) { animation-name: drift-reverse; }
+    .album-card-image .album-cover-frame, .client-image img, .dj-portrait img { animation: inner-pan linear both; animation-timeline: view(); }
+    .album-card-image .album-cover-current.is-transitioning { animation: cover-fade 1.4s var(--ease-out) both, inner-pan linear both; animation-timeline: auto, view(); }
+  }
+}
+@keyframes mast-away { to { transform: translateY(16vh) scale(.94); opacity: .2; } }
+@keyframes portrait-away { to { transform: translateY(-5vh) scale(1.05); } }
+@keyframes title-away { to { transform: translateY(10vh) scale(.9); opacity: .15; } }
+@keyframes drift { from { translate: 0 48px; } to { translate: 0 -48px; } }
+@keyframes drift-reverse { from { translate: 0 -24px; } to { translate: 0 64px; } }
+@keyframes inner-pan { from { translate: 0 -5%; } to { translate: 0 5%; } }
+
+@media (max-width: 760px) {
+  .orbit { --card-w: clamp(140px, 40vw, 180px); height: calc(var(--arc-top) + var(--card-h) / 2 + 270px); }
+  .orbit-arrows { display: none; }
+  .dj-vinyl.is-playing { transform: translateX(-22%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .split > span, .reveal-line > span { animation: none; transform: none; }
+  [data-reveal='clip'] .client-image, [data-reveal='clip'] .album-card-image, .dj-portrait[data-reveal='clip'] { clip-path: none; }
+  .curtain { display: none; }
+}
+.photography .page-head { padding-bottom: clamp(24px, 4vh, 40px); }
