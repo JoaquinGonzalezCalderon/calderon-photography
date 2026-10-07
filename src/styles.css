@@ -1063,7 +1063,7 @@ body.is-arriving-back .home-hub { animation: back-home-enter 420ms cubic-bezier(
 .portfolio-entry-button { position: relative; display: grid; width: 56px; height: 56px; place-items: center; border: 0; border-radius: 50%; background: transparent; color: var(--poster-paper, #eeece8); cursor: pointer; transition: color 180ms ease, transform 120ms ease; }
 .portfolio-entry-button::before, .portfolio-entry-button::after { position: absolute; right: calc(50% + 8px); top: 50%; width: 0; height: 1px; background: linear-gradient(90deg, transparent, currentColor); content: ''; opacity: 0; pointer-events: none; transform: translateY(-50%); }
 .portfolio-entry-button::after { top: calc(50% - 5px); height: 1px; }
-.portfolio-entry-button svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.4; animation: entry-cue-nudge 2.4s ease-in-out 900ms infinite; }
+.portfolio-entry-button svg { display: block; width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.4; animation: entry-cue-nudge 2.6s cubic-bezier(.22, .8, .24, 1) 900ms infinite; }
 .portfolio-entry-button:hover, .portfolio-entry-button:focus-visible { color: #fff; }
 .portfolio-entry-button:active { transform: scale(.96); }
 .portfolio-entry-button:focus-visible { outline: 1px solid #eeece8; outline-offset: 5px; }
@@ -1084,7 +1084,7 @@ body.is-arriving-back .home-hub { animation: back-home-enter 420ms cubic-bezier(
 .site-sound-control button:focus-visible { outline: 2px solid #d3b25e; outline-offset: 4px; }
 @keyframes entry-logo-in { from { opacity: 0; transform: translateY(20px) scale(.94); } to { opacity: 1; transform: translateY(0) scale(1); } }
 @keyframes entry-logo-aura { 0%, 100% { opacity: .62; transform: scale(.94); } 50% { opacity: 1; transform: scale(1.04); } }
-@keyframes entry-cue-nudge { 0%, 12%, 58%, 100% { transform: translateX(0); } 30%, 44% { transform: translateX(3px); } }
+@keyframes entry-cue-nudge { 0%, 72%, 100% { transform: translate3d(0, 0, 0); } 84% { transform: translate3d(4px, 0, 0); } 92% { transform: translate3d(1px, 0, 0); } }
 @keyframes entry-arrow-launch { 0% { opacity: 1; transform: translate3d(0, 0, 0) scale(1); } 12% { opacity: 1; transform: translate3d(-4px, 0, 0) scale(.94); } 100% { opacity: 0; transform: translate3d(110px, 0, 0) scale(1.2); } }
 @keyframes entry-arrow-streak { 0% { width: 0; opacity: 0; } 18% { opacity: .9; } 100% { width: 80px; opacity: 0; } }
 @keyframes portfolio-entry-exit { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(101%, 0, 0); } }
@@ -1102,6 +1102,7 @@ body.is-arriving-back .home-hub { animation: back-home-enter 420ms cubic-bezier(
 @keyframes entry-arrow-streak-mobile { 0% { width: 0; opacity: 0; } 18% { opacity: .9; } 100% { width: 58px; opacity: 0; } }
 @media (prefers-reduced-motion: reduce) {
   .portfolio-entry-logo { animation-duration: .01ms !important; }
+  .portfolio-entry-button svg { animation: none; }
   .portfolio-entry.is-leaving,
   .portfolio-entry.is-leaving .portfolio-entry-button svg,
   .portfolio-entry.is-leaving .portfolio-entry-button::before,
