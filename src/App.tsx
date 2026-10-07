@@ -211,6 +211,7 @@ function App() {
 
   return <>
     {showIntro && <IntroSplash />}
+    <SketchFilters />
     <div className="curtain" aria-hidden="true"><img src="/logo/calderon_logo.svg" alt="" /></div>
     <div className="site" inert={showIntro}>
       <SiteHeader current={activeArea} onNavigate={navigate} />
@@ -221,7 +222,7 @@ function App() {
           : activeArea === 'photography'
             ? <PhotographyPage albums={albumOrder} onOpenAlbum={openAlbum} />
             : <DJPage />}
-      <SiteFooter />
+      <SiteFooter showContact={activeArea !== 'home'} />
       {activeAlbum && <AlbumOverlay album={activeAlbum} transition={transition} onClose={closeAlbum} onOpenPhoto={(photos, index) => setLightbox({ photos, index })} />}
       {lightbox && <PhotoLightbox photo={lightbox.photos[lightbox.index]} index={lightbox.index} total={lightbox.photos.length} onClose={() => setLightbox(null)} onMove={moveLightbox} />}
     </div>
@@ -243,21 +244,21 @@ function SiteHeader({ current, onNavigate }: { current: PortfolioArea; onNavigat
   </header>
 }
 
-function SiteFooter() {
+function SiteFooter({ showContact }: { showContact: boolean }) {
   const contacts = [
     { label: 'WhatsApp', value: '11 3369-3052', href: links.whatsapp },
     { label: 'Instagram', value: '@joaquinncalderon', href: site.instagramUrl },
     { label: 'LinkedIn', value: 'Joaquín Gonzalez Calderón', href: links.linkedin },
     { label: 'GitHub', value: 'JoaquinGonzalezCalderon', href: links.github },
   ]
-  return <footer className="site-footer" id="contacto">
-    <div className="contact" data-reveal>
-      <h2 className="contact-title"><span className="reveal-line"><span>¿Hacemos algo</span></span><span className="reveal-line"><span>juntos?</span></span></h2>
+  return <footer className="site-footer" id={showContact ? 'contacto' : undefined}>
+    {showContact && <div className="contact" data-reveal>
+      <h2 className="contact-title doodle"><span className="reveal-line"><span>¿Hacemos algo</span></span><span className="reveal-line"><span>juntos?</span></span></h2>
       <p className="contact-lede">Sitios, apps, fotos o música para tu evento. Escribime y lo vemos.</p>
       <ul className="contact-list">
         {contacts.map((contact) => <li key={contact.label}><a href={contact.href} target="_blank" rel="noreferrer"><span>{contact.label}</span><strong>{contact.value}</strong><Arrow /></a></li>)}
       </ul>
-    </div>
+    </div>}
     <div className="footer-base">
       <img src="/logo/calderon_logo.svg" alt="Calderón" width="2172" height="724" />
       <span>© 2026 Joaquín Gonzalez Calderón</span>
@@ -363,6 +364,8 @@ function HomeCover({ onNavigate, isReady }: { onNavigate: (area: PortfolioArea) 
       <span className="sr-only">Joaquín Gonzalez Calderón: analista en sistemas, DJ y fotógrafo</span>
       <span className="cover-masthead-word" aria-hidden="true">{[...'Joaquín'].map((letter, index) => <span key={index} style={{ '--i': index } as CSSProperties}>{letter}</span>)}</span>
     </h1>
+    <span className="doodle cover-doodle" aria-hidden="true">Portfolio</span>
+    <span className="tag cover-tag" aria-hidden="true">Calderón</span>
     <figure className="cover-portrait">
       <img src="/areas/portrait-yo2.webp" alt="Retrato de Joaquín Gonzalez Calderón con gorra" width="1239" height="1269" fetchPriority="high" />
     </figure>
@@ -389,7 +392,80 @@ function HomeCover({ onNavigate, isReady }: { onNavigate: (area: PortfolioArea) 
     </aside>
   </section>
   <Marquee words={['Sistemas', 'Fotografía', 'DJ', 'Entre Ríos', 'Sitios web', 'Eventos', 'Mashups', 'Apps']} />
+  <AboutSection />
+  <SkillsSection />
   </main>
+}
+
+function SketchFilters() {
+  return <svg className="sketch-defs" aria-hidden="true" focusable="false">
+    <filter id="sketch"><feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="2" seed="3" /><feDisplacementMap in="SourceGraphic" scale="5" /></filter>
+    <filter id="sketch-2"><feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="2" seed="11" /><feDisplacementMap in="SourceGraphic" scale="6" /></filter>
+  </svg>
+}
+
+function CameraDrawing() {
+  const parts = <>
+    <rect x="12" y="44" width="616" height="384" rx="34" />
+    <rect x="466" y="16" width="96" height="30" rx="8" />
+    <rect x="76" y="24" width="64" height="22" rx="6" />
+    <rect x="30" y="70" width="460" height="350" rx="18" />
+    <rect x="40" y="80" width="440" height="330" rx="12" />
+    <rect x="518" y="96" width="74" height="24" rx="12" />
+    <rect x="518" y="134" width="74" height="24" rx="12" />
+    <circle cx="555" cy="252" r="50" />
+    <circle cx="555" cy="252" r="18" />
+    <path d="M555 210v10M555 284v10M513 252h10M587 252h10" />
+    <rect x="518" y="336" width="74" height="24" rx="12" />
+    <rect x="518" y="372" width="74" height="24" rx="12" />
+  </>
+  return <svg className="camera-drawing" viewBox="0 0 640 440" aria-hidden="true">
+    <g filter="url(#sketch)">{parts}</g>
+    <g filter="url(#sketch-2)" opacity=".55">{parts}</g>
+  </svg>
+}
+
+function AboutSection() {
+  return <section className="about paper" aria-labelledby="about-title">
+    <div className="about-inner">
+      <figure className="camera" data-reveal>
+        <img className="camera-photo" src="/areas/portrait-dither.png" alt="Retrato tramado de Joaquín con gorra" width="400" height="300" loading="lazy" />
+        <CameraDrawing />
+        <span className="tag camera-tag" aria-hidden="true">Calderón</span>
+      </figure>
+      <div className="about-copy" data-reveal>
+        <h2 className="doodle about-title" id="about-title">Sobre mí</h2>
+        <p className="about-text">¡Hola! Soy Joaquín Gonzalez Calderón, tengo 23 años y soy de Entre Ríos. Soy analista en sistemas: hago sitios, apps y tiendas online para negocios. Además saco fotos en eventos y para marcas, y mezclo música como DJ.</p>
+        <h3 className="doodle about-subtitle" id="contacto">Escribime</h3>
+        <ul className="about-links">
+          <li><a href={links.whatsapp} target="_blank" rel="noreferrer"><span>WhatsApp</span>11 3369-3052</a></li>
+          <li><a href={site.instagramUrl} target="_blank" rel="noreferrer"><span>Instagram</span>@joaquinncalderon</a></li>
+          <li><a href={links.linkedin} target="_blank" rel="noreferrer"><span>LinkedIn</span>Joaquín Gonzalez Calderón</a></li>
+          <li><a href={links.github} target="_blank" rel="noreferrer"><span>GitHub</span>JoaquinGonzalezCalderon</a></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+}
+
+function SkillsSection() {
+  const groups = [
+    { title: 'Sistemas', items: ['Sitios web y e-commerce', 'Apps móviles y PWA', 'Asistentes con IA y voz', 'Demos para comercios'] },
+    { title: 'Fotografía', items: ['Coberturas de eventos', 'Marcas y comercios', 'Retratos y detalles', 'Entrega por Drive'] },
+    { title: 'DJ', items: ['Mashups propios', 'Cruces de géneros', 'Música para tu evento'] },
+  ]
+  const tools = ['React', 'TypeScript', 'React Native', 'Expo', 'FastAPI', 'PostgreSQL', 'Vercel']
+  return <section className="skills" aria-labelledby="skills-title">
+    <h2 className="doodle skills-title" id="skills-title" data-reveal>Qué hago</h2>
+    <div className="skills-grid">
+      {groups.map((group) => <div className="skills-group" key={group.title} data-reveal>
+        <h3 className="doodle">{group.title}</h3>
+        <ul>{group.items.map((item) => <li key={item}>{item}</li>)}</ul>
+      </div>)}
+    </div>
+    <h3 className="doodle skills-tools-title" data-reveal>Herramientas</h3>
+    <ul className="tools" data-reveal>{tools.map((tool) => <li key={tool}>{tool}</li>)}</ul>
+  </section>
 }
 
 function PageHead({ title, lede, children }: { title: string; lede: string; children?: ReactNode }) {
