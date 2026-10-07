@@ -302,12 +302,12 @@ function HomeHub({ onOpenArea, isReducedMotion, isReady, mouthAudioRef }: { onOp
         { transform: 'translate3d(0, 0, 0) scale(1)', opacity: 1, offset: 0 },
         { transform: endTransform, opacity: 1, offset: .78 },
         { transform: endTransform, opacity: 0, offset: 1 },
-      ], { duration: 900, easing: 'cubic-bezier(.19, 1, .22, 1)', fill: 'forwards' })
+      ], { duration: 400, easing: 'cubic-bezier(.19, 1, .22, 1)', fill: 'forwards' })
       animation.onfinish = () => {
         overlay.remove()
         setIsMobileIntroDone(true)
       }
-    }, 650)
+    }, 1250)
 
     return () => {
       window.clearTimeout(holdTimer)
