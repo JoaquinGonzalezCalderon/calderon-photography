@@ -34,11 +34,13 @@ function App() {
   const [lightbox, setLightbox] = useState<{ photos: Photo[]; index: number } | null>(null)
   const [isReducedMotion, setIsReducedMotion] = useState(false)
   const [showIntro, setShowIntro] = useState(() => (window.location.pathname.replace(/\/+$/, '') || '/') === '/')
+  const [hasInitialIntro, setHasInitialIntro] = useState(() => (window.location.pathname.replace(/\/+$/, '') || '/') === '/')
   const scrollPosition = useRef(0)
   const albumReturnPath = useRef(activeAlbum ? '/fotografia' : '/')
   const navigationTimer = useRef<number | null>(null)
 
   const navigateArea = (area: PortfolioArea) => {
+    setHasInitialIntro(false)
     setActiveArea(area)
     const path = pathForArea(area)
     if (window.location.pathname !== path) window.history.pushState({}, '', path)
@@ -46,6 +48,7 @@ function App() {
 
   const goHome = () => {
     const showHome = () => {
+      setHasInitialIntro(false)
       setActiveArea('home')
       if (window.location.pathname !== '/') window.history.replaceState({}, '', '/')
       document.body.classList.remove('is-navigating-back')
@@ -173,7 +176,7 @@ function App() {
   return <>
     {showIntro && <IntroSplash />}
     <div className="portfolio-content-layer" inert={showIntro}>
-      {activeArea === 'home' ? <HomeHub onOpenArea={navigateArea} isReducedMotion={isReducedMotion} isReady={!showIntro} /> : activeArea === 'systems' ? <SystemsPortfolio onBack={goHome} /> : activeArea === 'photography' ? <Home albums={albumOrder} onOpenAlbum={openAlbum} onBack={goHome} /> : <DJPortfolio onBack={goHome} />}
+      {activeArea === 'home' ? <HomeHub onOpenArea={navigateArea} isReducedMotion={isReducedMotion} isReady={!showIntro} hasInitialIntro={hasInitialIntro} /> : activeArea === 'systems' ? <SystemsPortfolio onBack={goHome} /> : activeArea === 'photography' ? <Home albums={albumOrder} onOpenAlbum={openAlbum} onBack={goHome} /> : <DJPortfolio onBack={goHome} />}
       {activeAlbum && <AlbumOverlay album={activeAlbum} transition={transition} onClose={closeAlbum} onOpenPhoto={(photos, index) => setLightbox({ photos, index })} />}
       {lightbox && <PhotoLightbox photo={lightbox.photos[lightbox.index]} index={lightbox.index} total={lightbox.photos.length} onClose={() => setLightbox(null)} onMove={moveLightbox} />}
     </div>
@@ -182,7 +185,7 @@ function App() {
 
 function Logo() { return <a className="archive-logo" href="/" aria-label="Calderón, inicio"><img src="/logo/calderon_logo.svg" alt="Calderón" /></a> }
 
-function HomeHub({ onOpenArea, isReducedMotion, isReady }: { onOpenArea: (area: 'systems' | 'dj' | 'photography') => void; isReducedMotion: boolean; isReady: boolean }) {
+function HomeHub({ onOpenArea, isReducedMotion, isReady, hasInitialIntro }: { onOpenArea: (area: 'systems' | 'dj' | 'photography') => void; isReducedMotion: boolean; isReady: boolean; hasInitialIntro: boolean }) {
   const [openingArea, setOpeningArea] = useState<'systems' | 'dj' | 'photography' | null>(null)
   const [isCharacterVisible, setIsCharacterVisible] = useState(false)
   const [isSpeechVisible, setIsSpeechVisible] = useState(false)
@@ -323,7 +326,7 @@ function HomeHub({ onOpenArea, isReducedMotion, isReady }: { onOpenArea: (area: 
     const delay = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 260
     window.setTimeout(() => onOpenArea(area), delay)
   }
-  return <main className={`home-hub poster-home${isReady ? ' is-ready' : ''}${!isMobileIntroDone ? ' is-mobile-photo-intro' : ''}${openingArea ? ' is-leaving-up' : ''}`}>
+  return <main className={`home-hub poster-home${isReady ? ' is-ready' : ''}${hasInitialIntro ? ' is-intro-arrival' : ''}${!isMobileIntroDone ? ' is-mobile-photo-intro' : ''}${openingArea ? ' is-leaving-up' : ''}`}>
     <div className="poster-shell">
       <header className="poster-header">
         <a className="poster-brand" href="/" aria-label="Joaquín Calderón, inicio">
@@ -650,20 +653,22 @@ function AlbumCard({ album, index, onOpen }: { album: Album; index: number; onOp
   const coverPhotos = [cover, ...albumPhotos(album).filter((photo) => photo.id !== cover.id)]
   const [coverIndex, setCoverIndex] = useState(0)
   const [hasRotated, setHasRotated] = useState(false)
+  const [loadedCoverId, setLoadedCoverId] = useState<string | null>(null)
   useEffect(() => {
     if (coverPhotos.length < 2 || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
     const interval = window.setInterval(() => {
       setCoverIndex((current) => (current + 1) % coverPhotos.length)
       setHasRotated(true)
-    }, 3600)
+    }, 6200)
     return () => window.clearInterval(interval)
   }, [coverPhotos.length])
   const currentCover = coverPhotos[coverIndex]
   const previousCover = coverPhotos[(coverIndex + coverPhotos.length - 1) % coverPhotos.length]
+  const isCurrentCoverLoaded = loadedCoverId === currentCover.id
   return <button className={`album-card album-card-${index + 1}`} style={{ animationDelay: `${index * 220}ms` }} data-album-id={album.id} onClick={onOpen} aria-label={`Abrir álbum ${album.title}`}>
     <span className="album-card-image" style={{ aspectRatio: `${cover.width} / ${cover.height}` }}>
       {hasRotated && <img className="album-cover-frame album-cover-previous" src={previousCover.medium} alt="" aria-hidden="true" decoding="async" />}
-      <img key={currentCover.id} className={`album-cover-frame album-cover-current${hasRotated ? ' is-transitioning' : ''}`} src={currentCover.medium} alt={`Portada del álbum ${album.title}`} loading={index === 0 ? 'eager' : 'lazy'} decoding="async" />
+      <img key={currentCover.id} className={`album-cover-frame album-cover-current${isCurrentCoverLoaded ? ' is-loaded' : ''}${hasRotated && isCurrentCoverLoaded ? ' is-transitioning' : ''}`} src={currentCover.medium} alt={`Portada del álbum ${album.title}`} loading={index === 0 ? 'eager' : 'lazy'} decoding="async" onLoad={() => setLoadedCoverId(currentCover.id)} />
     </span>
     <span className="album-card-meta"><span>{album.title}</span><span>{album.year}</span></span>
     {driveUrls[album.id] && <a className="album-drive-link" href={driveUrls[album.id]} target="_blank" rel="noreferrer" onClick={(event) => event.stopPropagation()}>ABRIR EN DRIVE ↗</a>}
