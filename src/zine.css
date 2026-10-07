@@ -20,6 +20,9 @@
 .section-title { font-family: var(--doodle); font-size: clamp(40px, 5.4vw, 76px); font-stretch: normal; font-weight: 400; letter-spacing: 0; line-height: 1.2; text-transform: none; }
 .demos .section-title { font-size: clamp(36px, 3.6vw, 56px); }
 .contact-title { font-family: var(--doodle); font-size: clamp(44px, 5.2vw, 84px); font-stretch: normal; font-weight: 400; letter-spacing: 0; line-height: 1.22; text-transform: none; }
-.contact-title .reveal-line, .section-title .reveal-line { padding-bottom: .14em; margin-bottom: -.14em; }
+/* No clipping mask here: this font draws well below the baseline, so lines fade up instead */
+.contact-title .reveal-line, .section-title .reveal-line { overflow: visible; padding-bottom: 0; }
+.contact-title .reveal-line > span, .section-title .reveal-line > span { opacity: 0; transform: translateY(.35em); transition: opacity .8s ease, transform 1s var(--ease-out); }
+.is-in .contact-title .reveal-line > span, .is-in.section-title .reveal-line > span, .is-in .section-title .reveal-line > span { opacity: 1; transform: none; }
 
 .site-footer:not([id]) .footer-base { border-top: 0; }
