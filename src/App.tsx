@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState, type RefObject } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type RefObject } from 'react'
 import { albumCover, albumPhotos, albums, driveUrls, type Album } from './data/albums'
 import type { Photo } from './data/photos'
 import { site } from './config/site'
@@ -6,6 +6,21 @@ import { albumDescriptions } from './config/album-descriptions'
 
 type Transition = 'opening' | 'open' | 'closing'
 type PortfolioArea = 'home' | 'systems' | 'dj' | 'photography'
+type EntryTiming = { totalMs: number; attackMs: number; activeMs: number }
+
+const ENTRY_AUDIO_RATE = 1.5
+const ENTRY_AUDIO_DURATION = 4.574331
+const ENTRY_AUDIO_ATTACK = 0.229478
+const ENTRY_AUDIO_ACTIVE_END = 4.341882
+
+function entryTimingFor(duration: number): EntryTiming {
+  const audioDuration = Number.isFinite(duration) && duration > 0 ? duration : ENTRY_AUDIO_DURATION
+  return {
+    totalMs: Math.ceil(audioDuration / ENTRY_AUDIO_RATE * 1000),
+    attackMs: Math.round(ENTRY_AUDIO_ATTACK / ENTRY_AUDIO_RATE * 1000),
+    activeMs: Math.round((Math.min(ENTRY_AUDIO_ACTIVE_END, audioDuration) - ENTRY_AUDIO_ATTACK) / ENTRY_AUDIO_RATE * 1000),
+  }
+}
 
 function areaFromPathname(pathname: string): PortfolioArea {
   const path = pathname.replace(/\/+$/, '') || '/'
@@ -27,39 +42,6 @@ function pathForArea(area: PortfolioArea) {
   return { home: '/', systems: '/sistemas', dj: '/dj', photography: '/fotografia' }[area]
 }
 
-function playEntryWhoosh() {
-  if (!window.AudioContext) return
-  const context = new window.AudioContext()
-  const duration = 0.42
-  const sampleCount = Math.floor(context.sampleRate * duration)
-  const buffer = context.createBuffer(1, sampleCount, context.sampleRate)
-  const samples = buffer.getChannelData(0)
-  for (let index = 0; index < sampleCount; index += 1) {
-    const progress = index / sampleCount
-    samples[index] = (Math.random() * 2 - 1) * (1 - progress)
-  }
-
-  const whoosh = context.createBufferSource()
-  const filter = context.createBiquadFilter()
-  const gain = context.createGain()
-  const startTime = context.currentTime
-  whoosh.buffer = buffer
-  filter.type = 'bandpass'
-  filter.frequency.setValueAtTime(380, startTime)
-  filter.frequency.exponentialRampToValueAtTime(2400, startTime + duration * 0.78)
-  filter.Q.setValueAtTime(0.7, startTime)
-  gain.gain.setValueAtTime(0.0001, startTime)
-  gain.gain.exponentialRampToValueAtTime(0.16, startTime + 0.04)
-  gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration)
-  whoosh.connect(filter)
-  filter.connect(gain)
-  gain.connect(context.destination)
-  whoosh.onended = () => { void context.close() }
-  void context.resume().catch(() => {})
-  whoosh.start(startTime)
-  whoosh.stop(startTime + duration)
-}
-
 function App() {
   const [activeAlbum, setActiveAlbum] = useState<Album | null>(() => albumFromPathname(window.location.pathname))
   const [activeArea, setActiveArea] = useState<PortfolioArea>(() => areaFromPathname(window.location.pathname))
@@ -69,10 +51,12 @@ function App() {
   const [isReducedMotion, setIsReducedMotion] = useState(false)
   const [showIntro, setShowIntro] = useState(() => (window.location.pathname.replace(/\/+$/, '') || '/') === '/')
   const [isIntroLeaving, setIsIntroLeaving] = useState(false)
+  const [entryTiming, setEntryTiming] = useState<EntryTiming>(() => entryTimingFor(ENTRY_AUDIO_DURATION))
   const [isMusicPlaying, setIsMusicPlaying] = useState(false)
   const [soundError, setSoundError] = useState(false)
   const musicAudioRef = useRef<HTMLAudioElement>(null)
   const mouthAudioRef = useRef<HTMLAudioElement>(null)
+  const transitionAudioRef = useRef<HTMLAudioElement>(null)
   const scrollPosition = useRef(0)
   const albumReturnPath = useRef(activeAlbum ? '/fotografia' : '/')
   const navigationTimer = useRef<number | null>(null)
@@ -80,7 +64,17 @@ function App() {
 
   const enterPortfolio = () => {
     if (isIntroLeaving) return
-    playEntryWhoosh()
+    const transitionAudio = transitionAudioRef.current
+    let duration = ENTRY_AUDIO_DURATION
+    if (transitionAudio) {
+      transitionAudio.currentTime = 0
+      transitionAudio.playbackRate = ENTRY_AUDIO_RATE
+      transitionAudio.volume = 0.48
+      if (Number.isFinite(transitionAudio.duration) && transitionAudio.duration > 0) duration = transitionAudio.duration
+      void transitionAudio.play().catch(() => setSoundError(true))
+    }
+    const timing = entryTimingFor(duration)
+    setEntryTiming(timing)
     const music = musicAudioRef.current
     if (music) {
       music.currentTime = 0
@@ -91,7 +85,13 @@ function App() {
     introTimer.current = window.setTimeout(() => {
       setShowIntro(false)
       introTimer.current = null
-    }, isReducedMotion ? 0 : 900)
+    }, timing.totalMs + 120)
+  }
+
+  const finishEntryTransition = () => {
+    if (introTimer.current !== null) window.clearTimeout(introTimer.current)
+    introTimer.current = null
+    setShowIntro(false)
   }
 
   const toggleSound = () => {
@@ -136,6 +136,7 @@ function App() {
     if (introTimer.current !== null) window.clearTimeout(introTimer.current)
     musicAudioRef.current?.pause()
     mouthAudioRef.current?.pause()
+    transitionAudioRef.current?.pause()
     document.body.classList.remove('is-navigating-back', 'is-arriving-back')
   }, [])
 
@@ -235,7 +236,8 @@ function App() {
   return <>
     <audio ref={musicAudioRef} src="/audio/temafondo.mp3" preload="auto" loop aria-hidden="true" onPlay={() => { setIsMusicPlaying(true); setSoundError(false) }} onPause={() => setIsMusicPlaying(false)} onError={() => setSoundError(true)} />
     <audio ref={mouthAudioRef} src="/audio/sonidoboca.mp3" preload="auto" aria-hidden="true" onError={() => setSoundError(true)} />
-    {showIntro && <PortfolioEntry isLeaving={isIntroLeaving} onEnter={enterPortfolio} />}
+    <audio ref={transitionAudioRef} src="/audio/transicion.mp3" preload="auto" aria-hidden="true" onEnded={finishEntryTransition} onError={() => setSoundError(true)} />
+    {showIntro && <PortfolioEntry isLeaving={isIntroLeaving} timing={entryTiming} onEnter={enterPortfolio} />}
     <div className="portfolio-content-layer" inert={showIntro}>
       {!showIntro && <SiteSoundControl isMusicPlaying={isMusicPlaying} hasError={soundError} isHome={activeArea === 'home'} onToggle={toggleSound} />}
       {activeArea === 'home' ? <HomeHub onOpenArea={navigateArea} isReducedMotion={isReducedMotion} isReady={!showIntro} mouthAudioRef={mouthAudioRef} /> : activeArea === 'systems' ? <SystemsPortfolio onBack={goHome} /> : activeArea === 'photography' ? <Home albums={albumOrder} onOpenAlbum={openAlbum} onBack={goHome} /> : <DJPortfolio onBack={goHome} />}
@@ -680,8 +682,13 @@ function PhotoLightboxLegacy({ photo, index, total, onClose, onMove }: { photo: 
   return <div className="photo-lightbox" role="dialog" aria-modal="true" aria-label="Fotografía ampliada" onTouchStart={(event) => { touchStart.current = event.changedTouches[0].clientX }} onTouchEnd={(event) => { const delta = event.changedTouches[0].clientX - touchStart.current; if (Math.abs(delta) > 45) onMove(delta < 0 ? 1 : -1) }}><div className="lightbox-bar"><span>{String(index + 1).padStart(2, '0')} / {String(total).padStart(2, '0')}</span><button onClick={onClose}>CLOSE ×</button></div><img src={photo.large} alt={`${photo.category}, ${photo.tags.join(', ')}`} /><div className="lightbox-controls"><button onClick={() => onMove(-1)} aria-label="Fotografía anterior">←</button><span>{photo.tags.join(' / ')}</span><button onClick={() => onMove(1)} aria-label="Fotografía siguiente">→</button></div></div>
 }
 
-function PortfolioEntry({ isLeaving, onEnter }: { isLeaving: boolean; onEnter: () => void }) {
-  return <section className={`portfolio-entry${isLeaving ? ' is-leaving' : ''}`} role="dialog" aria-modal="true" aria-label="Entrar al portfolio de Joaquín Calderón">
+function PortfolioEntry({ isLeaving, timing, onEnter }: { isLeaving: boolean; timing: EntryTiming; onEnter: () => void }) {
+  const timingStyle = {
+    '--entry-total-duration': `${timing.totalMs}ms`,
+    '--entry-attack-delay': `${timing.attackMs}ms`,
+    '--entry-active-duration': `${timing.activeMs}ms`,
+  } as CSSProperties
+  return <section className={`portfolio-entry${isLeaving ? ' is-leaving' : ''}`} style={timingStyle} role="dialog" aria-modal="true" aria-label="Entrar al portfolio de Joaquín Calderón">
     <div className="portfolio-entry-lockup">
       <div className="portfolio-entry-brand">
         <img className="portfolio-entry-logo" src="/logo/calderon_logo.svg" alt="Calderón" />
