@@ -17,8 +17,9 @@
 .button:hover, .dj-play:hover { background: #ffffff; }
 
 /* Hand-drawn display type */
-.section-title { font-family: var(--doodle); font-size: clamp(40px, 5.4vw, 76px); font-stretch: normal; font-weight: 400; letter-spacing: 0; line-height: 1.05; text-transform: none; }
+.section-title { font-family: var(--doodle); font-size: clamp(40px, 5.4vw, 76px); font-stretch: normal; font-weight: 400; letter-spacing: 0; line-height: 1.2; text-transform: none; }
 .demos .section-title { font-size: clamp(36px, 3.6vw, 56px); }
-.contact-title { font-family: var(--doodle); font-size: clamp(44px, 5.2vw, 84px); font-stretch: normal; font-weight: 400; letter-spacing: 0; line-height: 1.02; text-transform: none; }
+.contact-title { font-family: var(--doodle); font-size: clamp(44px, 5.2vw, 84px); font-stretch: normal; font-weight: 400; letter-spacing: 0; line-height: 1.22; text-transform: none; }
+.contact-title .reveal-line, .section-title .reveal-line { padding-bottom: .14em; margin-bottom: -.14em; }
 
 .site-footer:not([id]) .footer-base { border-top: 0; }
