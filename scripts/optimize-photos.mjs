@@ -5,7 +5,7 @@ import sharp from 'sharp'
 const root = process.cwd()
 const sourceRoots = [path.join(root, 'fotos')]
 const outputRoot = path.join(root, 'public', 'photos', 'web')
-const sizes = { thumb: 520, medium: 960, large: 1600 }
+const sizes = { thumb: 640, medium: 1200, large: 2048 }
 
 const slugify = (value) => value
   .normalize('NFD')
@@ -42,7 +42,7 @@ for (const entry of files) {
   for (const [label, width] of Object.entries(sizes)) {
     const target = path.join(outputDir, `${outputBase}-${label}.webp`)
     const resizeWidth = Math.min(width, metadata.width ?? width)
-    await image.clone().resize({ width: resizeWidth, withoutEnlargement: true }).webp({ quality: 78, effort: 5 }).toFile(target)
+    await image.clone().resize({ width: resizeWidth, withoutEnlargement: true }).webp({ quality: 84, effort: 5 }).toFile(target)
   }
 }
 console.log(`Optimized ${files.length} source photos.`)

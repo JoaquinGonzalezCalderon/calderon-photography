@@ -219,12 +219,10 @@ export function Orbit({ items, onSelect, onActiveChange, label, children }: {
         <img src={card.src} srcSet={card.srcSet} sizes="(max-width: 760px) 180px, 240px" alt="" draggable={false} loading={index < 8 || index > count - 8 ? 'eager' : 'lazy'} decoding="async" />
       </button>)}
     </div>
-    <div className="orbit-center">
-      {children}
-      <div className="orbit-arrows">
-        <button type="button" onClick={() => engine.current.snapBy(-1)} aria-label="Anterior"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3 5 8l5 5" /></svg></button>
-        <button type="button" onClick={() => engine.current.snapBy(1)} aria-label="Siguiente"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m6 3 5 5-5 5" /></svg></button>
-      </div>
+    <div className="orbit-arrows">
+      <button type="button" onClick={() => engine.current.snapBy(-1)} aria-label="Anterior"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3 5 8l5 5" /></svg></button>
+      <button type="button" onClick={() => engine.current.snapBy(1)} aria-label="Siguiente"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m6 3 5 5-5 5" /></svg></button>
     </div>
+    <div className="orbit-center">{children}</div>
   </div>
 }

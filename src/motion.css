@@ -28,8 +28,7 @@ body.is-arriving .curtain img { opacity: 0; transform: translateY(-30px); transi
 [data-reveal='clip'] .client-image, [data-reveal='clip'] .album-card-image, .dj-portrait[data-reveal='clip'] { clip-path: inset(0 0 0 0); transition: clip-path 1.2s var(--ease-in-out); }
 [data-reveal='clip']:not(.is-in) .client-image, [data-reveal='clip']:not(.is-in) .album-card-image, .dj-portrait[data-reveal='clip']:not(.is-in) { clip-path: inset(100% 0 0 0); }
 [data-reveal='clip'] .client-image img, .dj-portrait[data-reveal='clip'] img { transition: transform .8s var(--ease-out), scale 1.6s var(--ease-out); }
-.album-cover-frame { top: -7%; inset-block-end: auto; height: 114%; transition: transform 1.2s var(--ease-out), scale 1.6s var(--ease-out), filter .6s ease; }
-[data-reveal='clip']:not(.is-in) .client-image img, [data-reveal='clip']:not(.is-in) .album-cover-frame, .dj-portrait[data-reveal='clip']:not(.is-in) img { scale: 1.25; }
+[data-reveal='clip']:not(.is-in) .client-image img, .dj-portrait[data-reveal='clip']:not(.is-in) img { scale: 1.25; }
 [data-reveal='clip'] .album-card-meta, [data-reveal='clip'] .client-info { transition: opacity .8s .35s ease, transform .8s .35s var(--ease-out); }
 [data-reveal='clip']:not(.is-in) .album-card-meta, [data-reveal='clip']:not(.is-in) .client-info { opacity: 0; transform: translateY(14px); }
 
@@ -52,13 +51,13 @@ body.is-arriving .curtain img { opacity: 0; transform: translateY(-30px); transi
 .orbit-info { display: grid; justify-items: center; gap: 12px; animation: info-in .7s var(--ease-out) both; }
 @keyframes info-in { from { opacity: 0; transform: translateY(18px); filter: blur(4px); } }
 .orbit-info-meta { color: var(--accent); font-family: var(--mono); font-size: 13px; }
-.orbit-info-title { font-family: var(--display); font-size: clamp(36px, 4.6vw, 72px); font-stretch: 75%; font-weight: 800; letter-spacing: -.01em; line-height: .9; text-transform: uppercase; text-wrap: balance; }
+.orbit-info-title { display: -webkit-box; max-width: 18ch; overflow: hidden; font-family: var(--display); font-size: clamp(28px, 3.2vw, 48px); font-stretch: 75%; font-weight: 800; letter-spacing: -.005em; line-height: .95; text-transform: uppercase; text-wrap: balance; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
 .orbit-info .button { margin-top: 6px; }
 .orbit-info-count { font-family: var(--display); font-size: clamp(56px, 7vw, 104px); font-stretch: 75%; font-weight: 800; line-height: .85; }
 .orbit-info-count span { color: var(--ink-3); }
 .orbit-info-hint { color: var(--ink-2); font-size: 14px; }
-.orbit-arrows { display: flex; gap: 10px; }
-.orbit-arrows button { display: grid; width: 46px; height: 46px; place-items: center; border: 1px solid var(--line-strong); border-radius: 50%; transition: background-color .2s ease, color .2s ease; }
+.orbit-arrows { position: absolute; z-index: 260; top: var(--arc-top); left: 50%; display: flex; justify-content: space-between; width: calc(var(--card-w) * 1.1 + 128px); transform: translate(-50%, -50%); pointer-events: none; }
+.orbit-arrows button { display: grid; width: 46px; height: 46px; place-items: center; border: 1px solid var(--line-strong); border-radius: 50%; background: rgb(13 13 12 / .55); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); pointer-events: auto; transition: background-color .2s ease, color .2s ease; }
 .orbit-arrows button:hover { background: var(--ink); color: var(--bg); }
 .orbit-arrows svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
 .photography .orbit { margin-top: clamp(8px, 2vh, 24px); border-bottom: 1px solid var(--line); }
@@ -87,8 +86,7 @@ body.is-arriving .curtain img { opacity: 0; transform: translateY(-30px); transi
     .page-title { animation: title-away linear both; animation-timeline: scroll(root); animation-range: 0 60vh; }
     .phone { animation: drift linear both; animation-timeline: view(); }
     .phone:nth-child(even) { animation-name: drift-reverse; }
-    .album-card-image .album-cover-frame, .client-image img, .dj-portrait img { animation: inner-pan linear both; animation-timeline: view(); }
-    .album-card-image .album-cover-current.is-transitioning { animation: cover-fade 1.4s var(--ease-out) both, inner-pan linear both; animation-timeline: auto, view(); }
+    .client-image img, .dj-portrait img { animation: inner-pan linear both; animation-timeline: view(); }
   }
 }
 @keyframes title-away { to { transform: translateY(10vh) scale(.9); opacity: .15; } }
@@ -98,7 +96,8 @@ body.is-arriving .curtain img { opacity: 0; transform: translateY(-30px); transi
 
 @media (max-width: 760px) {
   .orbit { --card-w: clamp(140px, 40vw, 180px); height: calc(var(--arc-top) + var(--card-h) / 2 + 270px); }
-  .orbit-arrows { display: none; }
+  .orbit-arrows { width: calc(var(--card-w) * 1.1 + 104px); }
+  .orbit-arrows button { width: 42px; height: 42px; }
   .dj-vinyl.is-playing { transform: translateX(-22%); }
 }
 
