@@ -39,6 +39,7 @@ function App() {
   const [soundError, setSoundError] = useState(false)
   const musicAudioRef = useRef<HTMLAudioElement>(null)
   const mouthAudioRef = useRef<HTMLAudioElement>(null)
+  const resumeMusicAfterDj = useRef(false)
   const scrollPosition = useRef(0)
   const albumReturnPath = useRef(activeAlbum ? '/fotografia' : '/')
   const navigationTimer = useRef<number | null>(null)
@@ -67,6 +68,39 @@ function App() {
       void music.play().catch(() => setSoundError(true))
     } else music.pause()
   }
+
+  useEffect(() => {
+    const music = musicAudioRef.current
+    if (!music) return
+
+    let frame = 0
+    if (activeArea === 'dj') {
+      resumeMusicAfterDj.current = !music.paused
+      if (!resumeMusicAfterDj.current) return
+      const startingVolume = music.volume
+      const startedAt = performance.now()
+      const fadeOut = (now: number) => {
+        const progress = Math.min((now - startedAt) / 750, 1)
+        music.volume = startingVolume * (1 - progress)
+        if (progress < 1) frame = window.requestAnimationFrame(fadeOut)
+        else music.pause()
+      }
+      frame = window.requestAnimationFrame(fadeOut)
+    } else if (activeArea === 'home' && resumeMusicAfterDj.current) {
+      resumeMusicAfterDj.current = false
+      music.volume = 0
+      if (music.paused) void music.play().catch(() => setSoundError(true))
+      const startedAt = performance.now()
+      const fadeIn = (now: number) => {
+        const progress = Math.min((now - startedAt) / 900, 1)
+        music.volume = 0.06 * progress
+        if (progress < 1) frame = window.requestAnimationFrame(fadeIn)
+      }
+      frame = window.requestAnimationFrame(fadeIn)
+    }
+
+    return () => window.cancelAnimationFrame(frame)
+  }, [activeArea])
 
   const navigateArea = (area: PortfolioArea) => {
     setActiveArea(area)
@@ -202,7 +236,7 @@ function App() {
     <audio ref={mouthAudioRef} src="/audio/sonidoboca.mp3" preload="auto" aria-hidden="true" onError={() => setSoundError(true)} />
     {showIntro && <PortfolioEntry isLeaving={isIntroLeaving} onEnter={enterPortfolio} />}
     <div className="portfolio-content-layer" inert={showIntro}>
-      {!showIntro && <SiteSoundControl isMusicPlaying={isMusicPlaying} hasError={soundError} isHome={activeArea === 'home'} onToggle={toggleSound} />}
+      {!showIntro && activeArea !== 'dj' && <SiteSoundControl isMusicPlaying={isMusicPlaying} hasError={soundError} isHome={activeArea === 'home'} onToggle={toggleSound} />}
       {activeArea === 'home' ? <HomeHub onOpenArea={navigateArea} isReducedMotion={isReducedMotion} isReady={!showIntro} mouthAudioRef={mouthAudioRef} /> : activeArea === 'systems' ? <SystemsPortfolio onBack={goHome} /> : activeArea === 'photography' ? <Home albums={albumOrder} onOpenAlbum={openAlbum} onBack={goHome} /> : <DJPortfolio onBack={goHome} />}
       {activeAlbum && <AlbumOverlay album={activeAlbum} transition={transition} onClose={closeAlbum} onOpenPhoto={(photos, index) => setLightbox({ photos, index })} />}
       {lightbox && <PhotoLightbox photo={lightbox.photos[lightbox.index]} index={lightbox.index} total={lightbox.photos.length} onClose={() => setLightbox(null)} onMove={moveLightbox} />}
@@ -542,6 +576,7 @@ function DJPortfolio({ onBack }: { onBack: () => void }) {
     { number: '04', title: 'More X La Pregunta', src: '/areas/dj-track-04.mp3', cover: '/areas/dj-cover-04.webp' },
   ]
   const audioRef = useRef<HTMLAudioElement>(null)
+  const trackFadeFrame = useRef<number | null>(null)
   const [activeIndex, setActiveIndex] = useState(0)
   const [playing, setPlaying] = useState(false)
   const [currentTime, setCurrentTime] = useState(0)
@@ -557,9 +592,26 @@ function DJPortfolio({ onBack }: { onBack: () => void }) {
   const togglePlayback = () => {
     const audio = audioRef.current
     if (!audio) return
-    if (audio.paused) void audio.play().catch(() => setAudioError(true))
+    if (audio.paused) {
+      audio.volume = 0
+      void audio.play().catch(() => setAudioError(true))
+    }
     else audio.pause()
   }
+  const fadeTrackIn = () => {
+    if (trackFadeFrame.current !== null) window.cancelAnimationFrame(trackFadeFrame.current)
+    const startedAt = performance.now()
+    const fade = (now: number) => {
+      const progress = Math.min((now - startedAt) / 700, 1)
+      if (audioRef.current) audioRef.current.volume = 0.42 * progress
+      if (progress < 1) trackFadeFrame.current = window.requestAnimationFrame(fade)
+      else trackFadeFrame.current = null
+    }
+    trackFadeFrame.current = window.requestAnimationFrame(fade)
+  }
+  useEffect(() => () => {
+    if (trackFadeFrame.current !== null) window.cancelAnimationFrame(trackFadeFrame.current)
+  }, [])
   const selectTrack = (index: number) => {
     if (index === activeIndex) return
     audioRef.current?.pause()
@@ -575,7 +627,7 @@ function DJPortfolio({ onBack }: { onBack: () => void }) {
   return <main className="dj-page dj-player-page">
     <header className="archive-header"><button className="area-back" onClick={onBack}>← VOLVER</button><span className="header-side header-side-right">02 / DJ · PRODUCCIÓN</span></header>
     <section className="dj-content dj-player-content" aria-labelledby="dj-title">
-      <audio ref={audioRef} src={activeTrack.src} preload="auto" onLoadedMetadata={(event) => setDuration(Number.isFinite(event.currentTarget.duration) ? event.currentTarget.duration : 0)} onTimeUpdate={(event) => setCurrentTime(event.currentTarget.currentTime)} onPlay={() => { setPlaying(true); setAudioError(false) }} onPause={() => setPlaying(false)} onEnded={() => { setPlaying(false); setCurrentTime(0) }} onError={() => setAudioError(true)} />
+      <audio ref={audioRef} src={activeTrack.src} preload="auto" onLoadedMetadata={(event) => setDuration(Number.isFinite(event.currentTarget.duration) ? event.currentTarget.duration : 0)} onTimeUpdate={(event) => setCurrentTime(event.currentTarget.currentTime)} onPlay={() => { setPlaying(true); setAudioError(false); fadeTrackIn() }} onPause={() => { setPlaying(false); if (trackFadeFrame.current !== null) { window.cancelAnimationFrame(trackFadeFrame.current); trackFadeFrame.current = null } }} onEnded={() => { setPlaying(false); setCurrentTime(0) }} onError={() => setAudioError(true)} />
       <div className="dj-heading dj-player-heading">
         <p className="dj-kicker"><span>02</span> MÚSICA / EN VIVO</p>
         <h1 id="dj-title"><img src="/logo/calderon_logo.svg" alt="Calderón" /><span>Mashups</span></h1>
