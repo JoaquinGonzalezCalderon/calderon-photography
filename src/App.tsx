@@ -254,8 +254,64 @@ function HomeHub({ onOpenArea, isReducedMotion, isReady, mouthAudioRef }: { onOp
   const [characterLook, setCharacterLook] = useState<'center' | 'left' | 'right'>('center')
   const [speechText, setSpeechText] = useState('')
   const [isTyping, setIsTyping] = useState(false)
-  useEffect(() => {
+  const [isMobileIntroDone, setIsMobileIntroDone] = useState(() => !window.matchMedia('(max-width: 760px)').matches)
+  useLayoutEffect(() => {
     if (!isReady) return
+    if (!window.matchMedia('(max-width: 760px)').matches || isReducedMotion) {
+      setIsMobileIntroDone(true)
+      return
+    }
+
+    const visual = document.querySelector<HTMLElement>('.poster-home .poster-visual')
+    if (!visual) {
+      setIsMobileIntroDone(true)
+      return
+    }
+
+    const target = visual.getBoundingClientRect()
+    const overlay = visual.cloneNode(true) as HTMLElement
+    overlay.setAttribute('aria-hidden', 'true')
+    overlay.querySelector('.poster-talker')?.remove()
+    Object.assign(overlay.style, {
+      position: 'fixed',
+      inset: '0 auto auto 0',
+      zIndex: '1000',
+      width: `${window.innerWidth}px`,
+      height: `${window.innerHeight}px`,
+      margin: '0',
+      opacity: '1',
+      transform: 'none',
+      transformOrigin: 'top left',
+      animation: 'none',
+      pointerEvents: 'none',
+      willChange: 'transform, opacity',
+    })
+    document.body.appendChild(overlay)
+
+    let animation: Animation | null = null
+    const holdTimer = window.setTimeout(() => {
+      const scaleX = target.width / window.innerWidth
+      const scaleY = target.height / window.innerHeight
+      const endTransform = `translate3d(${target.left}px, ${target.top}px, 0) scale(${scaleX}, ${scaleY})`
+      animation = overlay.animate([
+        { transform: 'translate3d(0, 0, 0) scale(1)', opacity: 1, offset: 0 },
+        { transform: endTransform, opacity: 1, offset: .78 },
+        { transform: endTransform, opacity: 0, offset: 1 },
+      ], { duration: 900, easing: 'cubic-bezier(.19, 1, .22, 1)', fill: 'forwards' })
+      animation.onfinish = () => {
+        overlay.remove()
+        setIsMobileIntroDone(true)
+      }
+    }, 650)
+
+    return () => {
+      window.clearTimeout(holdTimer)
+      animation?.cancel()
+      overlay.remove()
+    }
+  }, [isReady, isReducedMotion])
+  useEffect(() => {
+    if (!isReady || !isMobileIntroDone) return
     let entranceTimer = 0
     let firstSpeechTimer = 0
     let typingStartTimer = 0
@@ -295,7 +351,7 @@ function HomeHub({ onOpenArea, isReducedMotion, isReady, mouthAudioRef }: { onOp
       window.clearInterval(typingTimer)
       window.clearTimeout(speechTimer)
     }
-  }, [isReady])
+  }, [isReady, isMobileIntroDone])
   useEffect(() => {
     const audio = mouthAudioRef.current
     if (!audio) return
@@ -347,7 +403,7 @@ function HomeHub({ onOpenArea, isReducedMotion, isReady, mouthAudioRef }: { onOp
     const delay = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 260
     window.setTimeout(() => onOpenArea(area), delay)
   }
-  return <main className={`home-hub poster-home${isReady ? ' is-ready' : ''}${openingArea ? ' is-leaving-up' : ''}`}>
+  return <main className={`home-hub poster-home${isReady ? ' is-ready' : ''}${!isMobileIntroDone ? ' is-mobile-photo-intro' : ''}${openingArea ? ' is-leaving-up' : ''}`}>
     <div className="poster-shell">
       <header className="poster-header">
         <a className="poster-brand" href="/" aria-label="Joaquín Calderón, inicio">
