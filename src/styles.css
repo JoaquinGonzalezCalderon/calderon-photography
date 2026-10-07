@@ -925,7 +925,6 @@ body.is-arriving-back .home-hub { animation: back-home-enter 420ms cubic-bezier(
   .poster-hero { display: flex; width: calc(100vw - var(--poster-mobile-gutter)); min-height: 0; flex-direction: column; align-items: stretch; gap: 0; padding: 26px 0 18px; }
   .poster-visual { order: -1; }
   .poster-profile { order: 1; width: 100%; gap: 20px; }
-  .poster-home.is-mobile-photo-intro .poster-visual { animation: none !important; opacity: 0; }
   .poster-copy { width: 100%; align-self: stretch; text-align: left; }
   .poster-copy h1 { font-size: min(19vw, 108px); }
   .poster-full-name { margin: 13px 0 0 4px; font-size: 12px; }
@@ -1017,6 +1016,7 @@ body.is-arriving-back .home-hub { animation: back-home-enter 420ms cubic-bezier(
 .poster-home.is-ready:not(.is-intro-arrival) .poster-nav .poster-link:nth-child(2) { animation-delay: 300ms; }
 .poster-home.is-ready:not(.is-intro-arrival) .poster-nav .poster-link:nth-child(3) { animation-delay: 380ms; }
 .poster-home.is-ready:not(.is-intro-arrival) .home-contact { animation: poster-enter-up 520ms cubic-bezier(.16, 1, .3, 1) 420ms both; }
+@media (max-width: 760px) { .poster-home.is-ready:not(.is-intro-arrival) .poster-visual { animation: none; } }
 @media (hover: hover) and (pointer: fine) {
   .poster-portrait { transition: transform 620ms cubic-bezier(.16, 1, .3, 1); }
   .poster-visual:hover .poster-portrait { transform: translateY(-5px) scale(1.012); }
