@@ -1033,7 +1033,6 @@ body.is-arriving-back .home-hub { animation: back-home-enter 420ms cubic-bezier(
   isolation: isolate;
 }
 .portfolio-entry::before { position: absolute; z-index: -1; inset: 0; background: radial-gradient(ellipse at center, #b99a5109, transparent 50%); content: ''; pointer-events: none; }
-.portfolio-entry::after { position: absolute; z-index: 0; inset: -38% -65%; background: repeating-linear-gradient(104deg, transparent 0 72px, #ffffff0c 74px, transparent 77px 118px), linear-gradient(104deg, transparent 30%, #ffffff0b 52%, transparent 74%); content: ''; opacity: 0; pointer-events: none; transform: translateX(-34%) scaleX(.72); }
 .portfolio-entry-lockup { position: relative; z-index: 1; display: grid; justify-items: center; gap: 30px; width: min(520px, calc(100vw - 40px)); padding: 36px 20px; text-align: center; }
 .portfolio-entry-brand { position: relative; display: grid; width: min(390px, 72vw); place-items: center; isolation: isolate; }
 .portfolio-entry-brand::before { position: absolute; z-index: -1; width: 125%; aspect-ratio: 1.75; border-radius: 50%; background: radial-gradient(ellipse, #d1ad5b38 0%, #b99a511c 40%, transparent 72%); content: ''; filter: blur(18px); pointer-events: none; animation: entry-logo-aura 4.8s ease-in-out infinite; }
@@ -1045,12 +1044,11 @@ body.is-arriving-back .home-hub { animation: back-home-enter 420ms cubic-bezier(
 .portfolio-entry-button:hover, .portfolio-entry-button:focus-visible { color: #fff; }
 .portfolio-entry-button:active { transform: scale(.96); }
 .portfolio-entry-button:focus-visible { outline: 1px solid #eeece8; outline-offset: 5px; }
-.portfolio-entry.is-leaving .portfolio-entry-button svg { animation: entry-arrow-launch 460ms cubic-bezier(.15, .75, .25, 1) var(--entry-attack-delay) forwards; }
-.portfolio-entry.is-leaving .portfolio-entry-button::before { animation: entry-arrow-streak 420ms ease-out var(--entry-attack-delay) forwards; }
-.portfolio-entry.is-leaving .portfolio-entry-button::after { animation: entry-arrow-streak 360ms ease-out calc(var(--entry-attack-delay) + 35ms) forwards; }
-.portfolio-entry.is-leaving::after { animation: entry-speed-wash var(--entry-active-duration) linear var(--entry-attack-delay) both; }
+.portfolio-entry.is-leaving .portfolio-entry-button svg { animation: entry-arrow-launch 460ms cubic-bezier(.15, .75, .25, 1) forwards; }
+.portfolio-entry.is-leaving .portfolio-entry-button::before { animation: entry-arrow-streak 420ms ease-out forwards; }
+.portfolio-entry.is-leaving .portfolio-entry-button::after { animation: entry-arrow-streak 360ms ease-out 35ms forwards; }
 .portfolio-entry-button:disabled { cursor: wait; }
-.portfolio-entry.is-leaving { pointer-events: none; animation: portfolio-entry-exit var(--entry-total-duration) linear forwards; }
+.portfolio-entry.is-leaving { pointer-events: none; animation: portfolio-entry-exit 900ms cubic-bezier(.76, 0, .24, 1) forwards; }
 .site-sound-control { position: fixed; z-index: 55; display: flex; align-items: center; padding: 2px; color: var(--poster-paper, #eeece8); }
 .site-sound-control.is-home { top: clamp(14px, 2.5vw, 34px); right: max(calc((100vw - 1380px) / 2), 5vw); }
 .site-sound-control.is-subpage { right: 4vw; bottom: clamp(14px, 3vh, 28px); }
@@ -1065,40 +1063,7 @@ body.is-arriving-back .home-hub { animation: back-home-enter 420ms cubic-bezier(
 @keyframes entry-cue-nudge { 0%, 12%, 58%, 100% { transform: translateX(0); } 30%, 44% { transform: translateX(3px); } }
 @keyframes entry-arrow-launch { 0% { opacity: 1; transform: translateX(0) scale(1); } 14% { opacity: 1; transform: translateX(-3px) scale(.96); } 100% { opacity: 0; transform: translateX(150px) scale(1.25); } }
 @keyframes entry-arrow-streak { 0% { width: 0; opacity: 0; } 18% { opacity: .9; } 100% { width: 44px; opacity: 0; } }
-@keyframes entry-speed-wash {
-  0%, 4% { opacity: 0; transform: translateX(-34%) scaleX(.72); }
-  9% { opacity: .72; transform: translateX(-23%) scaleX(.9); }
-  14% { opacity: .14; transform: translateX(-12%) scaleX(1); }
-  19% { opacity: .88; transform: translateX(-7%) scaleX(1.05); }
-  23% { opacity: .16; transform: translateX(2%) scaleX(1.08); }
-  29% { opacity: .96; transform: translateX(9%) scaleX(1.12); }
-  36% { opacity: .78; transform: translateX(17%) scaleX(1.18); }
-  43% { opacity: .9; transform: translateX(24%) scaleX(1.23); }
-  50% { opacity: .82; transform: translateX(33%) scaleX(1.3); }
-  55% { opacity: .9; transform: translateX(40%) scaleX(1.35); }
-  65% { opacity: .72; transform: translateX(52%) scaleX(1.42); }
-  77% { opacity: .84; transform: translateX(66%) scaleX(1.5); }
-  84% { opacity: .72; transform: translateX(76%) scaleX(1.55); }
-  92% { opacity: .38; transform: translateX(89%) scaleX(1.62); }
-  100% { opacity: 0; transform: translateX(112%) scaleX(1.7); }
-}
-@keyframes portfolio-entry-exit {
-  0%, 4% { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
-  9% { transform: translate3d(-.8vw, 0, 0) scale(1.015) skewX(-1deg); }
-  14% { transform: translate3d(.4vw, 0, 0) scale(.995) skewX(1deg); }
-  19% { transform: translate3d(-1vw, -.3vh, 0) scale(1.02) skewX(-1.5deg); }
-  23% { transform: translate3d(1vw, .2vh, 0) scale(.99) skewX(1deg); }
-  29% { transform: translate3d(2vw, -1vh, 0) scale(1.04) skewX(-2deg); }
-  36% { transform: translate3d(1vw, -1.5vh, 0) scale(1.015) skewX(-3deg); }
-  43% { transform: translate3d(4vw, -2vh, 0) scale(1.04) skewX(-4deg); }
-  50% { transform: translate3d(7vw, -2vh, 0) scale(1.01) skewX(-5deg); }
-  55% { transform: translate3d(10vw, -3vh, 0) scale(.97) skewX(-6deg); }
-  65% { opacity: .96; transform: translate3d(19vw, -4vh, 0) scale(.86) skewX(-7deg); }
-  77% { opacity: .82; transform: translate3d(36vw, -6vh, 0) scale(.72) skewX(-8deg); }
-  84% { opacity: .68; transform: translate3d(53vw, -7vh, 0) scale(.61) skewX(-9deg); }
-  92% { opacity: .38; transform: translate3d(82vw, -9vh, 0) scale(.48) skewX(-10deg); }
-  100% { opacity: 0; transform: translate3d(126vw, -12vh, 0) scale(.36) skewX(-12deg); }
-}
+@keyframes portfolio-entry-exit { from { transform: translateY(0); } to { transform: translateY(-101%); } }
 @media (max-width: 760px) {
   .portfolio-entry-lockup { gap: 28px; padding-inline: 10px; }
   .portfolio-entry-brand { width: min(340px, 72vw); }
