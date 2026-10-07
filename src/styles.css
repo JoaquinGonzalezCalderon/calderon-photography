@@ -917,7 +917,8 @@ body.is-arriving-back .home-hub { animation: back-home-enter 420ms cubic-bezier(
   .poster-brand img { width: 78px; }
   .poster-brand span { font-size: 11px; }
   .poster-hero { display: flex; width: calc(100vw - var(--poster-mobile-gutter)); min-height: 0; flex-direction: column; align-items: stretch; gap: 0; padding: 26px 0 18px; }
-  .poster-profile { width: 100%; gap: 20px; }
+  .poster-visual { order: -1; }
+  .poster-profile { order: 1; width: 100%; gap: 20px; }
   .poster-copy { width: 100%; align-self: stretch; text-align: left; }
   .poster-copy h1 { font-size: min(19vw, 108px); }
   .poster-full-name { margin: 13px 0 0 4px; font-size: 12px; }
