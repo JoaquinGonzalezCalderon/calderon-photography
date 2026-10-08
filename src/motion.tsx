@@ -65,3 +65,35 @@ export function usePointerParallax<T extends HTMLElement>() {
   }, [])
   return ref
 }
+
+/** Cards marked `data-tilt` lean toward the pointer in 3D and get a moving glare. */
+export function useTilt(key: unknown) {
+  useEffect(() => {
+    if (reduceMotion() || !finePointer()) return
+    const cards = [...document.querySelectorAll<HTMLElement>('[data-tilt]')]
+    const cleanups = cards.map((card) => {
+      let frame = 0
+      const move = (event: PointerEvent) => {
+        cancelAnimationFrame(frame)
+        frame = requestAnimationFrame(() => {
+          const box = card.getBoundingClientRect()
+          const x = (event.clientX - box.left) / box.width
+          const y = (event.clientY - box.top) / box.height
+          card.style.setProperty('--rx', `${((0.5 - y) * 7).toFixed(2)}deg`)
+          card.style.setProperty('--ry', `${((x - 0.5) * 9).toFixed(2)}deg`)
+          card.style.setProperty('--gx', `${(x * 100).toFixed(1)}%`)
+          card.style.setProperty('--gy', `${(y * 100).toFixed(1)}%`)
+        })
+      }
+      const leave = () => {
+        cancelAnimationFrame(frame)
+        card.style.removeProperty('--rx')
+        card.style.removeProperty('--ry')
+      }
+      card.addEventListener('pointermove', move)
+      card.addEventListener('pointerleave', leave)
+      return () => { card.removeEventListener('pointermove', move); card.removeEventListener('pointerleave', leave); cancelAnimationFrame(frame) }
+    })
+    return () => cleanups.forEach((cleanup) => cleanup())
+  }, [key])
+}

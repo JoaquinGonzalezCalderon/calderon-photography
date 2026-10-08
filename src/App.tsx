@@ -5,7 +5,7 @@ import { site } from './config/site'
 import { albumDescriptions } from './config/album-descriptions'
 import { Narrator } from './components/Narrator'
 import { Orbit } from './components/Orbit'
-import { SplitLetters, useMagnetic, usePointerParallax } from './motion'
+import { SplitLetters, useMagnetic, usePointerParallax, useTilt } from './motion'
 
 type Transition = 'opening' | 'open' | 'closing'
 type PortfolioArea = 'home' | 'systems' | 'dj' | 'photography'
@@ -274,6 +274,7 @@ function Arrow() {
 function HomeCover({ onNavigate, isReady }: { onNavigate: (area: PortfolioArea) => void; isReady: boolean }) {
   useReveal('home')
   const parallaxRef = usePointerParallax<HTMLElement>()
+  useTilt('home')
   const go = (area: Area) => (event: MouseEvent<HTMLAnchorElement>) => {
     if (event.metaKey || event.ctrlKey || event.shiftKey || event.button !== 0) return
     event.preventDefault()
@@ -301,14 +302,14 @@ function HomeCover({ onNavigate, isReady }: { onNavigate: (area: PortfolioArea) 
     </section>
 
     <div className="case-grid" id="areas">
-      <a className="case-card case-systems" href={pathForArea('systems')} onClick={go('systems')} data-reveal>
+      <a className="case-card case-systems" data-tilt href={pathForArea('systems')} onClick={go('systems')} data-reveal>
         <h2 className="case-title">Sistemas</h2>
         <p className="case-rule"><span>Apps y sitios web</span></p>
         <SystemsRotator />
         <span className="case-foot"><span>5 proyectos + 3 demos</span><span className="case-cta">Ver proyectos <Arrow /></span></span>
       </a>
 
-      <a className="case-card case-photo" href={pathForArea('photography')} onClick={go('photography')} data-reveal>
+      <a className="case-card case-photo" data-tilt href={pathForArea('photography')} onClick={go('photography')} data-reveal>
         <h2 className="case-title">Fotografía</h2>
         <p className="case-rule"><span>Amateur · eventos y marcas</span></p>
         <span className="case-thumbs case-thumbs-stacks">
@@ -319,7 +320,7 @@ function HomeCover({ onNavigate, isReady }: { onNavigate: (area: PortfolioArea) 
         <span className="case-foot"><span>{albums.length} álbumes</span><span className="case-cta">Ver álbumes <Arrow /></span></span>
       </a>
 
-      <a className="case-card case-dj" href={pathForArea('dj')} onClick={go('dj')} data-reveal>
+      <a className="case-card case-dj" data-tilt href={pathForArea('dj')} onClick={go('dj')} data-reveal>
         <h2 className="case-title"><span className="case-deboss" aria-hidden="true">Mashups</span>DJ</h2>
         <p className="case-rule"><span>Amateur · mezclas propias</span></p>
         <span className="case-thumbs case-thumbs-covers">

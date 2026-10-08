@@ -130,7 +130,7 @@
   color: #fbfaff; text-align: center;
   transition: transform .5s var(--ease-out), box-shadow .5s var(--ease-out);
 }
-a.case-card:hover { transform: translateY(-4px); box-shadow: 0 30px 60px -30px rgb(74 26 134 / .7); }
+a.case-card:hover { box-shadow: 0 30px 60px -30px rgb(74 26 134 / .7); }
 .case-card[data-reveal]:not(.is-in) { transform: translateY(36px) scale(.98); }
 .case-grid > :nth-child(2) { transition-delay: .06s; }
 .case-grid > :nth-child(4) { transition-delay: .06s; }
@@ -204,6 +204,33 @@ a.case-card:hover .case-cta .arrow { transform: translate(3px, -3px); }
 .site-nav .site-nav-contact:hover { border-color: var(--violet); background: var(--violet); color: #fbfaff; }
 .curtain { background: var(--violet); }
 .curtain img { filter: none; }
+
+/* ---------- Motion ---------- */
+/* Pointer parallax: portrait and title drift in opposite directions (uses `translate`, which composes with transforms) */
+.hero-portrait { translate: calc(var(--px, 0) * 22px) calc(var(--py, 0) * 10px); transition: translate .1s linear; }
+.hero-title-word { translate: calc(var(--px, 0) * -34px) calc(var(--py, 0) * -14px); }
+.hero-corner-tl, .hero-corner-bl { translate: calc(var(--px, 0) * -8px) calc(var(--py, 0) * -6px); }
+.hero-corner-tr { translate: calc(var(--px, 0) * 8px) calc(var(--py, 0) * -6px); }
+.hero-card::before { position: absolute; z-index: 0; inset: 0; background: radial-gradient(38% 46% at calc(50% + var(--px, 0) * 24%) calc(45% + var(--py, 0) * 20%), rgb(150 90 255 / .28), transparent 70%); content: ''; pointer-events: none; }
+
+/* 3D tilt + glare on the area cards */
+.case-card[data-tilt] { transform: perspective(1100px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); transition: transform .5s var(--ease-out), box-shadow .5s var(--ease-out); }
+.case-card[data-tilt]:hover { transition: transform .12s linear, box-shadow .5s var(--ease-out); }
+.case-card[data-tilt]::before { position: absolute; z-index: 2; inset: 0; border-radius: inherit; background: radial-gradient(40% 50% at var(--gx, 50%) var(--gy, 0%), rgb(255 255 255 / .16), transparent 70%); content: ''; opacity: 0; pointer-events: none; transition: opacity .35s ease; }
+.case-card[data-tilt]:hover::before { opacity: 1; }
+.case-card[data-tilt][data-reveal]:not(.is-in) { transform: perspective(1100px) translateY(40px) rotateX(8deg) scale(.97); }
+
+/* Scroll-linked: as the hero leaves, the title spreads out and the portrait pushes in */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-title { animation: hero-title-out linear both; animation-timeline: scroll(root); animation-range: 0 75vh; }
+    .home.is-ready .hero-portrait img { animation: portrait-in 1.2s .1s var(--ease-out) both, hero-portrait-out linear both; animation-timeline: auto, scroll(root); animation-range: normal, 0 75vh; }
+    .case-thumbs, .rotator { animation: thumbs-rise linear both; animation-timeline: view(); animation-range: entry 0% cover 45%; }
+  }
+}
+@keyframes hero-title-out { to { opacity: 0; letter-spacing: .12em; filter: blur(6px); } }
+@keyframes hero-portrait-out { to { transform: translateY(-6%) scale(1.12); filter: grayscale(1) contrast(1.06) brightness(.6); } }
+@keyframes thumbs-rise { from { opacity: .2; transform: translateY(40px) scale(.94); } to { opacity: 1; transform: none; } }
 
 /* ---------- Mobile ---------- */
 @media (max-width: 760px) {
