@@ -23,6 +23,8 @@ const djTracks = [
   { number: '02', title: 'World Hold On X Stereo Love', src: '/areas/dj-track-02.mp3', cover: '/areas/dj-cover-02.webp' },
   { number: '03', title: 'Its That Time X Im Not Alone', src: '/areas/dj-track-03.mp3', cover: '/areas/dj-cover-03.webp' },
   { number: '04', title: 'More X La Pregunta', src: '/areas/dj-track-04.mp3', cover: '/areas/dj-cover-04.webp' },
+  { number: '05', title: 'Perro Negro X Koko', src: '/areas/dj-track-05.mp3', cover: '/areas/dj-cover-05.webp' },
+  { number: '06', title: 'Un Ratito X Kloufrens', src: '/areas/dj-track-06.mp3', cover: '/areas/dj-cover-06.webp' },
 ]
 
 function areaFromPathname(pathname: string): PortfolioArea {
