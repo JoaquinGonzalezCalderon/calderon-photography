@@ -179,7 +179,7 @@ body.is-arriving .site > main { animation: page-in .5s var(--ease-out) both; }
 
 .clients { padding: clamp(64px, 10vh, 120px) 0; border-bottom: 1px solid var(--line); }
 .clients .section-title { margin-bottom: clamp(32px, 5vh, 56px); }
-.clients-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(40px, 6vh, 64px) clamp(16px, 3vw, 40px); }
+.clients-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(40px, 6vh, 64px) clamp(16px, 3vw, 40px); }
 .client:first-child { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 8fr) minmax(0, 4fr); gap: clamp(20px, 3vw, 40px); align-items: end; }
 .client-image { display: block; overflow: hidden; border: 1px solid var(--line); background: var(--bg-raised); }
 .client-image img { width: 100%; height: auto; aspect-ratio: 1440 / 700; object-fit: cover; object-position: top; transition: transform .8s var(--ease-out); }
@@ -190,6 +190,8 @@ body.is-arriving .site > main { animation: page-in .5s var(--ease-out) both; }
 .client:first-child .client-info h3 { font-size: clamp(32px, 3.4vw, 48px); }
 .client-info p { max-width: 46ch; color: var(--ink-2); font-size: 15px; line-height: 1.6; }
 .client-info .text-link { margin-top: 6px; }
+.status.is-wip { border-color: rgb(255 196 74 / .55); color: #ffc44a; }
+.status.is-wip::before { width: 7px; height: 7px; border-radius: 50%; background: currentColor; content: ''; animation: live 1.6s ease-in-out infinite; }
 
 .demos { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: 32px clamp(32px, 5vw, 80px); padding: clamp(64px, 10vh, 120px) 0; }
 .demos-head p { margin-top: 16px; color: var(--ink-2); font-size: 16px; }
