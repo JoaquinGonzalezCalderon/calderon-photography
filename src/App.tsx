@@ -353,7 +353,7 @@ const systemsShowcase = [
   { name: 'STUGO', image: '/areas/stugo1.webp', phone: true },
   { name: 'Mate Único', image: '/areas/jgc-mate.webp' },
   { name: 'Inmobiliaria Andrea Duré', image: '/areas/jgc-inmobiliaria.webp' },
-  { name: 'Barbería Los Santos', image: '/areas/jgc-barberia.webp' },
+  { name: 'Barbería Los Santos (en desarrollo)', image: '/areas/jgc-barberia.webp' },
   { name: 'Analía Calderón (en desarrollo)', image: '/areas/jgc-amelia.webp' },
   { name: 'Demo Cafetería', image: '/areas/jgc-demo-cafeteria.webp' },
   { name: 'Demo Bazar', image: '/areas/jgc-demo-bazar.webp' },
@@ -424,7 +424,7 @@ function SystemsPage() {
       <div className="clients-grid">
         <ClientSite title="Mate Único" description="E-commerce full-stack con restricciones en base de datos y lógica avanzada de validación de stock." image="/areas/jgc-mate.webp" alt="Vista de la tienda online Mate Único" href="https://mate-unico-deployed.vercel.app/" />
         <ClientSite title="Inmobiliaria Andrea Duré" description="Sitio inmobiliario profesional y responsivo para el mercado local de Colón, Entre Ríos." image="/areas/jgc-inmobiliaria.webp" alt="Vista de la web inmobiliaria de Andrea Duré" href="https://andreadure.com/" />
-        <ClientSite title="Barbería Los Santos" description="Plataforma web para presentar servicios, catálogo de cortes y reserva de turnos online." image="/areas/jgc-barberia.webp" alt="Vista del proyecto web Barbería Los Santos" href="https://lossantos-coral.vercel.app/" />
+        <ClientSite title="Barbería Los Santos" description="Plataforma web para presentar servicios, catálogo de cortes y reserva de turnos online." image="/areas/jgc-barberia.webp" alt="Vista del proyecto web Barbería Los Santos" href="https://lossantos-coral.vercel.app/" inProgress />
         <ClientSite title="Analía Calderón · Artista visual" description="Portfolio para una ilustradora, ceramista y docente: su obra de dibujo, pintura y cerámica, y su personaje Amelia. Todavía lo estamos terminando, pero ya se puede recorrer." image="/areas/jgc-amelia.webp" alt="Vista del portfolio de Analía Calderón, artista visual" href="https://amelia-theta-seven.vercel.app/" inProgress />
       </div>
     </section>
