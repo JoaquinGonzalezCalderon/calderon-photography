@@ -308,7 +308,7 @@ function HomeCover({ onNavigate, isReady }: { onNavigate: (area: PortfolioArea) 
         <h2 className="case-title">Sistemas</h2>
         <p className="case-rule"><span>Apps y sitios web</span></p>
         <SystemsRotator />
-        <span className="case-foot"><span>6 proyectos + 3 demos</span><span className="case-cta">Ver proyectos <Arrow /></span></span>
+        <span className="case-foot"><span>6 proyectos + 5 demos</span><span className="case-cta">Ver proyectos <Arrow /></span></span>
       </a>
 
       <a className="case-card case-photo" data-tilt href={pathForArea('photography')} onClick={go('photography')} data-reveal>
@@ -355,9 +355,11 @@ const systemsShowcase = [
   { name: 'Inmobiliaria Andrea Duré', image: '/areas/jgc-inmobiliaria.webp' },
   { name: 'Barbería Los Santos (en desarrollo)', image: '/areas/jgc-barberia.webp' },
   { name: 'Analía Calderón (en desarrollo)', image: '/areas/jgc-amelia.webp' },
-  { name: 'Demo Cafetería', image: '/areas/jgc-demo-cafeteria.webp' },
-  { name: 'Demo Bazar', image: '/areas/jgc-demo-bazar.webp' },
-  { name: 'Demo Tienda', image: '/areas/jgc-demo-tienda.webp' },
+  { name: 'Demo Cafetería', image: '/areas/demo-cafeteria.webp' },
+  { name: 'Demo Bazar', image: '/areas/demo-bazar.webp' },
+  { name: 'Demo Tienda de ropa', image: '/areas/demo-tienda.webp' },
+  { name: 'Demo Barbería', image: '/areas/demo-barberia.webp' },
+  { name: 'Demo Gimnasio', image: '/areas/demo-gimnasio.webp' },
 ]
 
 /** Cycles through every systems project, one in front and its neighbours tilted to the sides. */
@@ -428,17 +430,7 @@ function SystemsPage() {
         <ClientSite title="Analía Calderón · Artista visual" description="Portfolio para una ilustradora, ceramista y docente: su obra de dibujo, pintura y cerámica, y su personaje Amelia. Todavía lo estamos terminando, pero ya se puede recorrer." image="/areas/jgc-amelia.webp" alt="Vista del portfolio de Analía Calderón, artista visual" href="https://amelia-theta-seven.vercel.app/" inProgress />
       </div>
     </section>
-    <section className="demos" aria-labelledby="demos-title">
-      <div className="demos-head" data-reveal>
-        <h2 className="section-title" id="demos-title">Demos para comercios</h2>
-        <p>Plantillas listas para adaptar a tu local.</p>
-      </div>
-      <ul className="demo-list">
-        <DemoRow title="Cafetería" description="Diseño para cafeterías, pastelerías y locales gastronómicos." image="/areas/jgc-demo-cafeteria.webp" href="https://tu-cafeteria.vercel.app/" />
-        <DemoRow title="Bazar" description="Catálogo interactivo para artículos del hogar, decoración y regalos." image="/areas/jgc-demo-bazar.webp" href="https://tu-bazar.vercel.app/" />
-        <DemoRow title="Tienda" description="Estética visual para marcas de indumentaria y diseño de autor." image="/areas/jgc-demo-tienda.webp" href="https://tu-tienda-de-ropa.vercel.app/" />
-      </ul>
-    </section>
+    <DemoShowcase />
   </main>
 }
 
@@ -518,15 +510,60 @@ function ClientSite({ title, description, image, alt, href, inProgress = false }
   </article>
 }
 
-function DemoRow({ title, description, image, href }: { title: string; description: string; image: string; href: string }) {
-  return <li data-reveal>
-    <a className="demo-row" href={href} target="_blank" rel="noreferrer">
-      <span className="demo-thumb"><img src={image} alt="" loading="lazy" width="1024" height="497" /></span>
-      <strong>{title}</strong>
-      <span className="demo-desc">{description}</span>
-      <span className="demo-cta">Ver demo <Arrow /></span>
-    </a>
-  </li>
+const demos = [
+  { id: 'cafeteria', name: 'Cafetería', domain: 'tu-cafeteria.vercel.app', accent: '#d39a5c', tagline: 'Café de especialidad, sin apuro.', style: 'Oscuro tipo espresso, con sello giratorio y vapor animado.', features: ['Menú con pestañas y precios', 'Reservas de mesa por WhatsApp', 'Reseñas que rotan', 'Abierto o cerrado en vivo'] },
+  { id: 'bazar', name: 'Bazar', domain: 'tu-bazar.vercel.app', accent: '#c8643c', tagline: 'Objetos que hacen hogar.', style: 'Editorial cálido, con serif elegante y tonos terracota.', features: ['Tienda con filtros y favoritos', 'Carrito que cierra el pedido por WhatsApp', 'Ambientes en bento y mapa', 'Indicador de abierto ahora'] },
+  { id: 'tienda', name: 'Tienda de ropa', domain: 'tu-tienda-de-ropa.vercel.app', accent: '#c8ff2e', tagline: 'Dominá la calle.', style: 'Streetwear brutalista en negro y verde ácido.', features: ['Cuenta regresiva al próximo drop', 'Talles, agotados y bolsa de compras', 'Lookbook deslizable', 'Newsletter con código de descuento'] },
+  { id: 'barberia', name: 'Barbería', domain: 'tu-barberia-ten.vercel.app', accent: '#c9a24a', tagline: 'Cortes con oficio.', style: 'Negro y dorado, con poste de barbero animado.', features: ['Turnos en 4 pasos: servicio, barbero, día y hora', 'Confirmación por WhatsApp', 'Carta de precios y equipo', 'Galería de cortes'] },
+  { id: 'gimnasio', name: 'Gimnasio', domain: 'tu-gimnasio-seven.vercel.app', accent: '#ff5a1f', tagline: 'Entrená sin excusas.', style: 'Alto impacto en naranja.', features: ['Grilla semanal de clases', 'Planes que recalculan el ahorro', 'Calculadora de IMC', 'Clase gratis por WhatsApp'] },
+] as const
+
+/** Tabs for each business type; the stage shows the desktop and phone versions of the selected demo. */
+function DemoShowcase() {
+  const [active, setActive] = useState(0)
+  const demo = demos[active]
+  const tabsRef = useRef<HTMLDivElement>(null)
+  const select = (index: number) => {
+    setActive(index)
+    const tabs = tabsRef.current
+    const tab = tabs?.querySelectorAll('button')[index]
+    if (tabs && tab && tabs.scrollWidth > tabs.clientWidth) tabs.scrollTo({ left: tab.offsetLeft - (tabs.clientWidth - tab.offsetWidth) / 2, behavior: prefersReducedMotion() ? 'auto' : 'smooth' })
+  }
+  return <section className="demos" aria-labelledby="demos-title" style={{ '--demo': demo.accent } as CSSProperties}>
+    <div className="demos-head" data-reveal>
+      <h2 className="section-title" id="demos-title">Demos para comercios</h2>
+      <p>Cinco sitios de ejemplo, cada uno con su propia estética y funciones reales. Elegí un rubro, probalo y lo adaptamos a tu local.</p>
+    </div>
+    <div className="demo-tabs" role="tablist" aria-label="Rubros" ref={tabsRef} onKeyDown={(event) => {
+      const forward = event.key === 'ArrowRight' || event.key === 'ArrowDown'
+      if (!forward && event.key !== 'ArrowLeft' && event.key !== 'ArrowUp') return
+      event.preventDefault()
+      const next = (active + (forward ? 1 : -1) + demos.length) % demos.length
+      select(next)
+      tabsRef.current?.querySelectorAll('button')[next]?.focus()
+    }}>
+      {demos.map((item, index) => <button key={item.id} type="button" role="tab" id={`demo-tab-${item.id}`} aria-selected={index === active} aria-controls="demo-panel" tabIndex={index === active ? 0 : -1} style={{ '--tab': item.accent } as CSSProperties} onClick={() => select(index)}>
+        <span className="demo-tab-dot" aria-hidden="true" />
+        <span className="demo-tab-name">{item.name}</span>
+        <span className="demo-tab-line">{item.tagline}</span>
+      </button>)}
+    </div>
+    <div className="demo-panel" id="demo-panel" role="tabpanel" aria-labelledby={`demo-tab-${demo.id}`}>
+      <a className="demo-stage" href={`https://${demo.domain}`} target="_blank" rel="noreferrer" aria-label={`Abrir la demo de ${demo.name}`} key={demo.id}>
+        <span className="demo-browser">
+          <span className="demo-browser-bar" aria-hidden="true"><i /><i /><i /><span>{demo.domain}</span></span>
+          <img src={`/areas/demo-${demo.id}.webp`} alt="" width="1280" height="800" />
+        </span>
+        <span className="demo-phone" aria-hidden="true"><img src={`/areas/demo-${demo.id}-m.webp`} alt="" width="400" height="800" /></span>
+      </a>
+      <div className="demo-info" key={`${demo.id}-info`}>
+        <p className="demo-style">{demo.style}</p>
+        <ul className="demo-features">{demo.features.map((feature) => <li key={feature}>{feature}</li>)}</ul>
+        <a className="button demo-cta" href={`https://${demo.domain}`} target="_blank" rel="noreferrer">Probar la demo <Arrow /></a>
+      </div>
+    </div>
+    <span className="demo-preload" aria-hidden="true">{demos.map((item) => <img key={item.id} src={`/areas/demo-${item.id}.webp`} alt="" loading="lazy" />)}</span>
+  </section>
 }
 
 function DJPage() {
