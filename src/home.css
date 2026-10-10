@@ -24,7 +24,7 @@
 /* ---------- Hero card ---------- */
 .hero-card {
   position: relative; isolation: isolate; container-type: size;
-  height: clamp(520px, calc(100svh - var(--header-h) - 96px), 860px); overflow: hidden; border-radius: var(--card-radius);
+  height: clamp(520px, calc(100svh - var(--header-h) - 112px), 860px); overflow: hidden; border-radius: var(--card-radius);
   background: radial-gradient(85% 75% at 50% 45%, #3a1468 0%, #240b45 55%, #14061f 100%);
   color: var(--cream);
 }
@@ -238,7 +238,7 @@ a.case-card:hover .case-cta .arrow { transform: translate(3px, -3px); }
 
 /* ---------- Mobile ---------- */
 @media (max-width: 760px) {
-  .hero-card { height: min(calc(100svh - var(--header-h) - 80px), 700px); min-height: 520px; }
+  .hero-card { height: min(calc(100svh - var(--header-h) - 150px), 700px); min-height: 500px; }
   .hero-portrait { height: 78%; }
   .hero-title { top: 40%; }
   .hero-title-word { font-size: min(25.5cqw, 40cqh); }
@@ -256,32 +256,39 @@ a.case-card:hover .case-cta .arrow { transform: translate(3px, -3px); }
   .narrator-body, .narrator-shadow { animation: none; }
 }
 
-/* ---------- News ticker ---------- */
-.news { position: relative; display: flex; align-items: stretch; height: 48px; overflow: hidden; border: 1px solid rgb(155 100 255 / .28); border-radius: 999px; background: linear-gradient(90deg, rgb(74 26 134 / .55), rgb(30 10 60 / .55)); }
-.news-label { position: relative; z-index: 2; display: inline-flex; flex: none; align-items: center; gap: 10px; padding: 0 22px 0 18px; border-radius: 999px; background: var(--violet-hi); color: #fbfaff; font-size: 13px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; box-shadow: 10px 0 24px rgb(20 6 40 / .6); }
-.news-pulse { position: relative; width: 8px; height: 8px; border-radius: 50%; background: #fbfaff; }
-.news-pulse::after { position: absolute; inset: -4px; border: 2px solid #fbfaff; border-radius: 50%; content: ''; animation: news-ping 1.8s ease-out infinite; }
-@keyframes news-ping { from { opacity: .8; transform: scale(.6); } to { opacity: 0; transform: scale(1.8); } }
-.news-viewport { flex: 1; min-width: 0; overflow: hidden; mask-image: linear-gradient(90deg, transparent, #000 4%, #000 92%, transparent); -webkit-mask-image: linear-gradient(90deg, transparent, #000 4%, #000 92%, transparent); }
-.news-track { display: flex; width: max-content; height: 100%; animation: news-scroll 38s linear infinite; }
-.news:hover .news-track, .news:focus-within .news-track { animation-play-state: paused; }
-.news-group { display: flex; flex: none; align-items: center; }
-.news-item { display: inline-flex; align-items: center; gap: 10px; padding: 0 30px; color: var(--cream); font-size: 14.5px; white-space: nowrap; }
-.news-item + .news-item { border-left: 1px solid rgb(239 228 210 / .18); }
-.news-where { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 999px; background: rgb(239 228 210 / .12); color: #d9c8ff; font-size: 12.5px; font-weight: 600; transition: background-color .2s ease, color .2s ease; }
-a.news-item:hover .news-text { text-decoration: underline; text-underline-offset: 4px; }
-a.news-item:hover .news-where { background: var(--cream); color: var(--steel-ink); }
-@keyframes news-scroll { to { transform: translateX(-50%); } }
+/* ---------- News board: one novelty at a time, flipping like a departures board ---------- */
+.board { display: flex; align-items: center; gap: clamp(12px, 2vw, 24px); min-height: 64px; padding: 8px 10px 8px 8px; border-radius: 18px; background: var(--cream); color: var(--steel-ink); box-shadow: 0 18px 40px -24px rgb(74 26 134 / .8); }
+.board-label { display: grid; flex: none; place-items: center; align-self: stretch; padding: 0 18px; border-radius: 12px; background: var(--violet-deep); color: var(--cream); font-family: 'Bebas Neue', var(--display); font-size: 26px; letter-spacing: .06em; line-height: 1; }
+.board-item { display: flex; flex: 1; align-items: center; gap: 16px; min-width: 0; overflow: hidden; }
+.board-roll { display: flex; align-items: baseline; gap: 14px; min-width: 0; animation: board-flip .6s cubic-bezier(.2, .9, .3, 1.2) both; transform-origin: 50% 0; }
+@keyframes board-flip { from { opacity: 0; transform: perspective(500px) rotateX(-80deg) translateY(-6px); } to { opacity: 1; transform: none; } }
+.board-where { flex: none; padding: 4px 10px; border-radius: 8px; background: var(--violet-text); color: var(--cream); font-family: var(--mono); font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase; }
+.board-text { overflow: hidden; font-family: var(--display); font-size: clamp(17px, 1.5vw, 21px); font-stretch: 85%; font-weight: 700; letter-spacing: -.005em; text-overflow: ellipsis; white-space: nowrap; }
+.board-go { display: grid; flex: none; width: 34px; height: 34px; place-items: center; border-radius: 50%; background: rgb(21 17 43 / .08); font-size: 15px; transition: background-color .2s ease, color .2s ease, transform .3s var(--ease-out); }
+.board-item:hover .board-text { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 4px; }
+.board-item:hover .board-go { background: var(--violet-text); color: var(--cream); transform: translate(2px, -2px); }
+.board-controls { display: flex; flex: none; align-items: center; gap: 8px; padding-left: clamp(8px, 1.6vw, 18px); border-left: 1px solid rgb(21 17 43 / .15); }
+.board-count { font-family: 'Bebas Neue', var(--display); font-size: 24px; line-height: 1; }
+.board-count i { color: rgb(21 17 43 / .45); font-style: normal; }
+.board-dots { display: flex; gap: 4px; margin: 0 6px; }
+.board-dots i { position: relative; width: 18px; height: 4px; overflow: hidden; border-radius: 4px; background: rgb(21 17 43 / .15); }
+.board-dots i.is-on::after { position: absolute; inset: 0; background: var(--violet-text); content: ''; transform-origin: left; animation: board-progress 4.2s linear both; animation-play-state: var(--t, running); }
+@keyframes board-progress { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+.board-controls button { display: grid; width: 34px; height: 34px; place-items: center; border: 1px solid rgb(21 17 43 / .2); border-radius: 50%; transition: background-color .2s ease, color .2s ease; }
+.board-controls button:hover { background: var(--steel-ink); color: var(--cream); }
+.board-controls svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.board :focus-visible { outline-color: var(--violet-text); }
 @media (max-width: 760px) {
-  .news { height: 44px; }
-  .news-label { padding: 0 14px; font-size: 12px; }
-  .news-item { padding: 0 20px; font-size: 13.5px; }
+  .board { flex-wrap: wrap; gap: 8px 12px; padding: 8px; }
+  .board-label { align-self: auto; padding: 8px 12px; font-size: 20px; }
+  .board-controls { order: 3; width: 100%; justify-content: flex-end; padding: 6px 0 0; border-top: 1px solid rgb(21 17 43 / .12); border-left: 0; }
+  .board-dots { margin-right: auto; }
+  .board-item { flex: 1 1 0; }
+  .board-roll { flex-direction: column; align-items: flex-start; gap: 4px; }
+  .board-text { font-size: 16px; white-space: normal; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+  .board-go { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .news { height: auto; border-radius: 22px; }
-  .news-label { border-radius: 22px 0 0 22px; }
-  .news-track { width: auto; animation: none; }
-  .news-group { flex-wrap: wrap; row-gap: 8px; padding: 8px 0; }
-  .news-group[aria-hidden] { display: none; }
-  .news-viewport { mask-image: none; -webkit-mask-image: none; }
+  .board-roll, .board-dots i.is-on::after { animation: none; }
+  .board-dots i.is-on { background: var(--violet-text); }
 }

@@ -282,7 +282,16 @@ const news: { text: string; area: Area; anchor: string }[] = [
 ]
 
 function NewsTicker({ onNavigate }: { onNavigate: (area: PortfolioArea) => void }) {
-  const open = (item: typeof news[number]) => (event: MouseEvent<HTMLAnchorElement>) => {
+  const [index, setIndex] = useState(0)
+  const [paused, setPaused] = useState(false)
+  const item = news[index]
+  const step = (direction: 1 | -1) => setIndex((current) => (current + direction + news.length) % news.length)
+  useEffect(() => {
+    if (paused || prefersReducedMotion()) return
+    const timer = window.setInterval(() => { if (!document.hidden) step(1) }, 4200)
+    return () => window.clearInterval(timer)
+  }, [paused])
+  const open = (event: MouseEvent<HTMLAnchorElement>) => {
     if (event.metaKey || event.ctrlKey || event.shiftKey || event.button !== 0) return
     event.preventDefault()
     onNavigate(item.area)
@@ -295,21 +304,21 @@ function NewsTicker({ onNavigate }: { onNavigate: (area: PortfolioArea) => void 
     }
     window.setTimeout(find, 650)
   }
-  const items = news.map((item) => <a key={item.anchor + item.text} className="news-item" href={`${pathForArea(item.area)}#${item.anchor}`} onClick={open(item)}>
-    <span className="news-text">{item.text}</span>
-    <span className="news-where">en {areaLabels[item.area]} <Arrow /></span>
-  </a>)
-  return <aside className="news" aria-label="Novedades del portfolio">
-    <span className="news-label"><span className="news-pulse" aria-hidden="true" />Novedades</span>
-    <div className="news-viewport">
-      <div className="news-track">
-        <div className="news-group">{items}</div>
-        <div className="news-group" aria-hidden="true">{news.map((item) => <span key={item.anchor + item.text} className="news-item">
-          <span className="news-text">{item.text}</span>
-          <span className="news-where">en {areaLabels[item.area]} <Arrow /></span>
-        </span>)}</div>
-      </div>
-    </div>
+  return <aside className="board" aria-label="Novedades del portfolio" onPointerEnter={() => setPaused(true)} onPointerLeave={() => setPaused(false)} onFocus={() => setPaused(true)} onBlur={() => setPaused(false)}>
+    <span className="board-label">Nuevo</span>
+    <a className="board-item" href={`${pathForArea(item.area)}#${item.anchor}`} onClick={open} aria-live="polite">
+      <span className="board-roll" key={index}>
+        <span className="board-where">{areaLabels[item.area]}</span>
+        <span className="board-text">{item.text}</span>
+      </span>
+      <span className="board-go" aria-hidden="true"><Arrow /></span>
+    </a>
+    <span className="board-controls">
+      <span className="board-count" aria-hidden="true">{pad(index + 1)}<i>/{pad(news.length)}</i></span>
+      <span className="board-dots" aria-hidden="true">{news.map((entry, dot) => <i key={entry.anchor + entry.text} className={dot === index ? 'is-on' : ''} style={{ '--t': paused ? 'paused' : 'running' } as CSSProperties} />)}</span>
+      <button type="button" onClick={() => step(-1)} aria-label="Novedad anterior"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3 5 8l5 5" /></svg></button>
+      <button type="button" onClick={() => step(1)} aria-label="Novedad siguiente"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m6 3 5 5-5 5" /></svg></button>
+    </span>
   </aside>
 }
 
