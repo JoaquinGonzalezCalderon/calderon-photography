@@ -112,12 +112,16 @@
 @keyframes talk-bob { 0%, 100% { transform: rotate(-2.5deg) translateY(0); } 50% { transform: rotate(2.5deg) translateY(-3px); } }
 .narrator-character.look-left .narrator-body { rotate: -8deg; translate: -4px 0; }
 .narrator-character.look-right .narrator-body { rotate: 8deg; translate: 4px 0; }
+.narrator-character.look-up .narrator-body { rotate: 0deg; translate: 0 -5px; }
+.narrator-character.look-down .narrator-body { rotate: 0deg; translate: 0 4px; }
 .narrator-body img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; opacity: 0; filter: drop-shadow(0 10px 16px rgb(10 2 24 / .55)); pointer-events: none; user-select: none; }
 .narrator-character[data-frame='idle'] .f-idle,
 .narrator-character[data-frame='open'] .f-open,
 .narrator-character[data-frame='blink'] .f-blink,
 .narrator-character[data-frame='left'] .f-left,
-.narrator-character[data-frame='right'] .f-right { opacity: 1; }
+.narrator-character[data-frame='right'] .f-right,
+.narrator-character[data-frame='up'] .f-up,
+.narrator-character[data-frame='down'] .f-down { opacity: 1; }
 .narrator-shadow { position: absolute; right: 20%; bottom: -8px; left: 20%; height: 10px; border-radius: 50%; background: rgb(6 1 14 / .55); filter: blur(4px); animation: shadow-breathe 3.4s ease-in-out infinite; }
 @keyframes shadow-breathe { 50% { transform: scaleX(.9); opacity: .75; } }
 

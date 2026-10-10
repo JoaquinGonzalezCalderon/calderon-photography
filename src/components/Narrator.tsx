@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 
-type Frame = 'idle' | 'open' | 'blink' | 'left' | 'right'
+type Look = 'center' | 'left' | 'right' | 'up' | 'down'
+type Frame = 'idle' | 'open' | 'blink' | Exclude<Look, 'center'>
 
 const intro = [
   'Hola, ¿cómo estás?',
@@ -22,7 +23,7 @@ const pauses: Record<string, number> = { ',': 220, '.': 320, '?': 320, '!': 320,
 export function Narrator({ isReady }: { isReady: boolean }) {
   const [isVisible, setIsVisible] = useState(false)
   const [frame, setFrame] = useState<Frame>('idle')
-  const [look, setLook] = useState<'center' | 'left' | 'right'>('center')
+  const [look, setLook] = useState<Look>('center')
   const [text, setText] = useState('')
   const [isSpeechVisible, setIsSpeechVisible] = useState(false)
   const [isTalking, setIsTalking] = useState(false)
@@ -115,7 +116,9 @@ export function Narrator({ isReady }: { isReady: boolean }) {
           const dx = event.clientX - (box.left + box.width / 2)
           const dy = event.clientY - (box.top + box.height / 2)
           const near = Math.hypot(dx, dy) < 1100
-          setLook(!near || Math.abs(dx) < 70 ? 'center' : dx < 0 ? 'left' : 'right')
+          if (!near || Math.hypot(dx, dy) < 80) setLook('center')
+          else if (Math.abs(dy) > Math.abs(dx) * 1.2) setLook(dy < 0 ? 'up' : 'down')
+          else setLook(dx < 0 ? 'left' : 'right')
         })
       }
       window.addEventListener('pointermove', onMove)
@@ -125,7 +128,8 @@ export function Narrator({ isReady }: { isReady: boolean }) {
     let back = 0
     const schedule = () => {
       glance = window.setTimeout(() => {
-        if (!talking.current) setLook(Math.random() < 0.5 ? 'left' : 'right')
+        const options: Look[] = ['left', 'right', 'up', 'down']
+        if (!talking.current) setLook(options[Math.floor(Math.random() * options.length)])
         back = window.setTimeout(() => { setLook('center'); schedule() }, 1100)
       }, 2600 + Math.random() * 2600)
     }
@@ -166,6 +170,8 @@ export function Narrator({ isReady }: { isReady: boolean }) {
           <img className="f-blink" src="/areas/joaquin-blink.webp" alt="" draggable={false} />
           <img className="f-left" src="/areas/joaquin-glance-left.webp" alt="" draggable={false} />
           <img className="f-right" src="/areas/joaquin-glance-right.webp" alt="" draggable={false} />
+          <img className="f-up" src="/areas/joaquin-glance-up.webp" alt="" draggable={false} />
+          <img className="f-down" src="/areas/joaquin-glance-down.webp" alt="" draggable={false} />
         </span>
       </span>
       <span className="narrator-shadow" aria-hidden="true" />
