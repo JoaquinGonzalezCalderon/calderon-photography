@@ -273,6 +273,46 @@ function Arrow() {
   return <svg className="arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 11.5 11.5 4.5M5.5 4.5h6v6" /></svg>
 }
 
+/** Latest additions to the portfolio, newest first. Each one links to where it lives. */
+const news: { text: string; area: Area; anchor: string }[] = [
+  { text: 'Voider Goat, el reproductor de música de mi hermano', area: 'systems', anchor: 'voider' },
+  { text: 'Dos mashups nuevos: Perro Negro X Koko y Un Ratito X Kloufrens', area: 'dj', anchor: 'mashups' },
+  { text: 'Demos nuevas de barbería y gimnasio', area: 'systems', anchor: 'demos' },
+  { text: 'Portfolio de Analía Calderón (en desarrollo)', area: 'systems', anchor: 'clientes' },
+]
+
+function NewsTicker({ onNavigate }: { onNavigate: (area: PortfolioArea) => void }) {
+  const open = (item: typeof news[number]) => (event: MouseEvent<HTMLAnchorElement>) => {
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.button !== 0) return
+    event.preventDefault()
+    onNavigate(item.area)
+    // Wait for the page curtain, then bring the new item into view
+    let tries = 0
+    const find = () => {
+      const target = document.getElementById(item.anchor)
+      if (target && window.location.pathname === pathForArea(item.area)) target.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth', block: 'start' })
+      else if (tries++ < 30) window.setTimeout(find, 100)
+    }
+    window.setTimeout(find, 650)
+  }
+  const items = news.map((item) => <a key={item.anchor + item.text} className="news-item" href={`${pathForArea(item.area)}#${item.anchor}`} onClick={open(item)}>
+    <span className="news-text">{item.text}</span>
+    <span className="news-where">en {areaLabels[item.area]} <Arrow /></span>
+  </a>)
+  return <aside className="news" aria-label="Novedades del portfolio">
+    <span className="news-label"><span className="news-pulse" aria-hidden="true" />Novedades</span>
+    <div className="news-viewport">
+      <div className="news-track">
+        <div className="news-group">{items}</div>
+        <div className="news-group" aria-hidden="true">{news.map((item) => <span key={item.anchor + item.text} className="news-item">
+          <span className="news-text">{item.text}</span>
+          <span className="news-where">en {areaLabels[item.area]} <Arrow /></span>
+        </span>)}</div>
+      </div>
+    </div>
+  </aside>
+}
+
 function HomeCover({ onNavigate, isReady }: { onNavigate: (area: PortfolioArea) => void; isReady: boolean }) {
   useReveal('home')
   const parallaxRef = usePointerParallax<HTMLElement>()
@@ -289,6 +329,7 @@ function HomeCover({ onNavigate, isReady }: { onNavigate: (area: PortfolioArea) 
   })
 
   return <main className={`home${isReady ? ' is-ready' : ''}`}>
+    <NewsTicker onNavigate={onNavigate} />
     <section ref={parallaxRef} className="hero-card" aria-labelledby="hero-title">
       <figure className="hero-portrait">
         <img src="/areas/portrait-yo2.webp" alt="Retrato de Joaquín Gonzalez Calderón con gorra" width="1239" height="1269" fetchPriority="high" />
@@ -423,7 +464,7 @@ function SystemsPage() {
     <FeaturedStreak />
     <FeaturedStugo />
     <FeaturedVoider />
-    <section className="clients" aria-labelledby="clients-title">
+    <section className="clients" id="clientes" aria-labelledby="clients-title">
       <h2 className="section-title" id="clients-title" data-reveal><span className="reveal-line"><span>Sitios para clientes</span></span></h2>
       <div className="clients-grid">
         <ClientSite title="Mate Único" description="E-commerce full-stack con restricciones en base de datos y lógica avanzada de validación de stock." image="/areas/jgc-mate.webp" alt="Vista de la tienda online Mate Único" href="https://mate-unico-deployed.vercel.app/" />
@@ -471,7 +512,7 @@ function FeaturedStreak() {
 }
 
 function FeaturedVoider() {
-  return <article className="feature feature-voider" aria-labelledby="voider-title">
+  return <article className="feature feature-voider" id="voider" aria-labelledby="voider-title">
     <div className="voider-stage" data-reveal>
       <a className="voider-window voider-window-back" href="https://voidergoat-player.vercel.app/" target="_blank" rel="noreferrer" tabIndex={-1} aria-hidden="true">
         <span className="demo-browser-bar"><i /><i /><i /><span>voidergoat-player.vercel.app</span></span>
@@ -557,7 +598,7 @@ function DemoShowcase() {
     const tab = tabs?.querySelectorAll('button')[index]
     if (tabs && tab && tabs.scrollWidth > tabs.clientWidth) tabs.scrollTo({ left: tab.offsetLeft - (tabs.clientWidth - tab.offsetWidth) / 2, behavior: prefersReducedMotion() ? 'auto' : 'smooth' })
   }
-  return <section className="demos" aria-labelledby="demos-title" style={{ '--demo': demo.accent } as CSSProperties}>
+  return <section className="demos" id="demos" aria-labelledby="demos-title" style={{ '--demo': demo.accent } as CSSProperties}>
     <div className="demos-head" data-reveal>
       <h2 className="section-title" id="demos-title">Demos para comercios</h2>
       <p>Cinco sitios de ejemplo, cada uno con su propia estética y funciones reales. Elegí un rubro, probalo y lo adaptamos a tu local.</p>
@@ -656,7 +697,7 @@ function DJPage() {
   const stepTrack = (direction: -1 | 1) => selectTrack((activeIndex + direction + djTracks.length) % djTracks.length, playing)
   const progress = duration ? Math.min(currentTime / duration, 1) : 0
 
-  return <main className="page dj">
+  return <main className="page dj" id="mashups">
     <audio ref={audioRef} src={activeTrack.src} preload="auto" onLoadedMetadata={(event) => setDuration(Number.isFinite(event.currentTarget.duration) ? event.currentTarget.duration : 0)} onTimeUpdate={(event) => setCurrentTime(event.currentTarget.currentTime)} onPlay={() => { setPlaying(true); setAudioError(false); fadeTrackIn() }} onPause={() => { setPlaying(false); if (trackFadeFrame.current !== null) { window.cancelAnimationFrame(trackFadeFrame.current); trackFadeFrame.current = null } }} onEnded={() => { setPlaying(false); setCurrentTime(0) }} onError={() => setAudioError(true)} />
     <PageHead title="Mashups" lede="Soy DJ amateur: me gusta mezclar canciones, probar cruces y jugar con la energía de cada tema. Voy a ir publicando mis mashups acá." />
     <section className="dj-deck" aria-label="Reproductor de mashups">
