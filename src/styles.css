@@ -169,6 +169,23 @@ body.is-arriving .site > main { animation: page-in .5s var(--ease-out) both; }
 .streak-phones .phone:nth-child(even) { margin-top: 22%; }
 .streak-phones .phone:nth-child(3) { margin-top: -22%; }
 
+/* Voider Goat: two overlapping browser windows plus a phone, in the project's red */
+.feature-voider { --voider: #e3170a; display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: clamp(32px, 5vw, 80px); align-items: center; }
+.voider-stage { position: relative; isolation: isolate; aspect-ratio: 16 / 12; }
+.voider-stage::before { position: absolute; z-index: -1; inset: 10% 6% 4% 8%; border-radius: 50%; background: radial-gradient(closest-side, rgb(227 23 10 / .32), transparent); content: ''; filter: blur(40px); }
+.voider-window { position: absolute; display: block; overflow: hidden; border: 1px solid var(--line-strong); border-radius: 14px; background: #1a1a18; box-shadow: 0 40px 80px -30px rgb(0 0 0 / .85); transition: transform .7s var(--ease-out); }
+.voider-window img { width: 100%; height: auto; aspect-ratio: 1280 / 800; object-fit: cover; object-position: top; }
+.voider-window-back { top: 0; left: 0; width: 74%; transform: rotate(-2.5deg); }
+.voider-window-front { right: 6%; bottom: 4%; width: 74%; transform: rotate(1.5deg); }
+.voider-phone { position: absolute; right: 0; bottom: 0; z-index: 2; width: 22%; overflow: hidden; border: 5px solid #121210; border-radius: 24px; background: #121210; box-shadow: 0 0 0 1px var(--line-strong), 0 30px 60px -20px rgb(0 0 0 / .9); transform: rotate(4deg); transition: transform .7s var(--ease-out); }
+.voider-phone img { width: 100%; height: auto; aspect-ratio: 1 / 2; border-radius: 18px; object-fit: cover; object-position: top; }
+.voider-stage:hover .voider-window-back { transform: rotate(-4deg) translate(-10px, -8px); }
+.voider-stage:hover .voider-window-front { transform: rotate(0deg) translate(8px, 6px) scale(1.02); }
+.voider-stage:hover .voider-phone { transform: rotate(7deg) translate(6px, -12px); }
+.feature-voider .feature-points li::before { background: var(--voider); }
+.feature-voider .status.is-live { border-color: rgb(227 23 10 / .55); color: #ff5a4a; }
+.voider-cta { background: var(--voider); color: #fff; }
+.voider-cta:hover { background: #fff; color: #0d0d0c; }
 .feature-stugo .feature-title-row { justify-content: space-between; }
 .stugo-phones { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(12px, 2vw, 28px); margin: 8px 0 clamp(40px, 6vh, 64px); }
 .stugo-phones .phone:nth-child(odd) { transform: translateY(-14px); }
@@ -356,6 +373,7 @@ body.album-is-open { position: fixed; inset: 0; width: 100%; overflow: hidden; }
 @media (max-width: 1080px) {
   .feature-streak { grid-template-columns: 1fr; }
   .feature-streak .feature-copy { position: static; }
+  .feature-voider { grid-template-columns: 1fr; }
   .streak-phones { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .streak-phones .phone:nth-child(n) { margin-top: 0; }
   .streak-phones .phone:nth-child(even) { transform: translateY(24px); }

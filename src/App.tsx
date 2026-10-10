@@ -308,7 +308,7 @@ function HomeCover({ onNavigate, isReady }: { onNavigate: (area: PortfolioArea) 
         <h2 className="case-title">Sistemas</h2>
         <p className="case-rule"><span>Apps y sitios web</span></p>
         <SystemsRotator />
-        <span className="case-foot"><span>6 proyectos + 5 demos</span><span className="case-cta">Ver proyectos <Arrow /></span></span>
+        <span className="case-foot"><span>7 proyectos + 5 demos</span><span className="case-cta">Ver proyectos <Arrow /></span></span>
       </a>
 
       <a className="case-card case-photo" data-tilt href={pathForArea('photography')} onClick={go('photography')} data-reveal>
@@ -351,6 +351,7 @@ function HomeCover({ onNavigate, isReady }: { onNavigate: (area: PortfolioArea) 
 const systemsShowcase = [
   { name: 'Streak', image: '/areas/tustreak-desktop.webp' },
   { name: 'STUGO', image: '/areas/stugo1.webp', phone: true },
+  { name: 'Voider Goat', image: '/areas/voidergoat-album.webp' },
   { name: 'Mate Único', image: '/areas/jgc-mate.webp' },
   { name: 'Inmobiliaria Andrea Duré', image: '/areas/jgc-inmobiliaria.webp' },
   { name: 'Barbería Los Santos (en desarrollo)', image: '/areas/jgc-barberia.webp' },
@@ -421,6 +422,7 @@ function SystemsPage() {
     </PageHead>
     <FeaturedStreak />
     <FeaturedStugo />
+    <FeaturedVoider />
     <section className="clients" aria-labelledby="clients-title">
       <h2 className="section-title" id="clients-title" data-reveal><span className="reveal-line"><span>Sitios para clientes</span></span></h2>
       <div className="clients-grid">
@@ -464,6 +466,32 @@ function FeaturedStreak() {
     </div>
     <div className="feature-phones streak-phones" aria-label="Capturas de Streak" data-reveal>
       {screens.map((screen) => <Phone key={screen.title} {...screen} />)}
+    </div>
+  </article>
+}
+
+function FeaturedVoider() {
+  return <article className="feature feature-voider" aria-labelledby="voider-title">
+    <div className="voider-stage" data-reveal>
+      <a className="voider-window voider-window-back" href="https://voidergoat-player.vercel.app/" target="_blank" rel="noreferrer" tabIndex={-1} aria-hidden="true">
+        <span className="demo-browser-bar"><i /><i /><i /><span>voidergoat-player.vercel.app</span></span>
+        <img src="/areas/voidergoat-home.webp" alt="" loading="lazy" width="1280" height="800" />
+      </a>
+      <a className="voider-window voider-window-front" href="https://voidergoat-player.vercel.app/album/winner-takes-it-all-wolv" target="_blank" rel="noreferrer" tabIndex={-1} aria-hidden="true">
+        <span className="demo-browser-bar"><i /><i /><i /><span>voidergoat-player.vercel.app/album</span></span>
+        <img src="/areas/voidergoat-album.webp" alt="" loading="lazy" width="1280" height="800" />
+      </a>
+      <span className="voider-phone" aria-hidden="true"><img src="/areas/voidergoat-m.webp" alt="" loading="lazy" width="400" height="800" /></span>
+    </div>
+    <div className="voider-copy" data-reveal>
+      <p className="feature-kind">Reproductor web · Música</p>
+      <div className="feature-title-row"><h2 id="voider-title">Voider Goat</h2><span className="status is-live">En vivo</span></div>
+      <p className="feature-text feature-text-lead">Un reproductor para la música de mi hermano, Voider Goat: todos sus álbumes, temas y beats en un solo lugar.</p>
+      <p className="feature-text">Los álbumes se ordenan por categoría (4 Fun, Free 4 Profit, Collabs y 4 Sale) y cada uno tiene su página con la lista de temas. El reproductor queda fijo abajo mientras navegás, con controles, progreso y volumen.</p>
+      <ul className="feature-points">
+        <li>Portada con los álbumes flotando alrededor del logo</li><li>Filtros por categoría e índice de álbumes</li><li>Reproductor persistente entre páginas</li><li>Español e inglés, modo claro y oscuro</li><li>Contacto directo por Instagram para pedir beats</li>
+      </ul>
+      <a className="button voider-cta" data-magnetic="0.2" href="https://voidergoat-player.vercel.app/" target="_blank" rel="noreferrer">Abrir Voider Goat <Arrow /></a>
     </div>
   </article>
 }
