@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 
-type Look = 'center' | 'left' | 'right' | 'up' | 'down'
+type Look = 'center' | 'left' | 'right' | 'up' | 'down' | 'up-left' | 'up-right' | 'down-left' | 'down-right'
+// Eight compass sectors starting at "right" and going clockwise (screen y grows downward)
+const sectors: Look[] = ['right', 'down-right', 'down', 'down-left', 'left', 'up-left', 'up', 'up-right']
 type Frame = 'idle' | 'open' | 'blink' | Exclude<Look, 'center'>
 
 const intro = [
@@ -117,8 +119,7 @@ export function Narrator({ isReady }: { isReady: boolean }) {
           const dy = event.clientY - (box.top + box.height / 2)
           const near = Math.hypot(dx, dy) < 1100
           if (!near || Math.hypot(dx, dy) < 80) setLook('center')
-          else if (Math.abs(dy) > Math.abs(dx) * 1.2) setLook(dy < 0 ? 'up' : 'down')
-          else setLook(dx < 0 ? 'left' : 'right')
+          else setLook(sectors[(Math.round(Math.atan2(dy, dx) / (Math.PI / 4)) + 8) % 8])
         })
       }
       window.addEventListener('pointermove', onMove)
@@ -128,8 +129,7 @@ export function Narrator({ isReady }: { isReady: boolean }) {
     let back = 0
     const schedule = () => {
       glance = window.setTimeout(() => {
-        const options: Look[] = ['left', 'right', 'up', 'down']
-        if (!talking.current) setLook(options[Math.floor(Math.random() * options.length)])
+        if (!talking.current) setLook(sectors[Math.floor(Math.random() * sectors.length)])
         back = window.setTimeout(() => { setLook('center'); schedule() }, 1100)
       }, 2600 + Math.random() * 2600)
     }
@@ -172,6 +172,10 @@ export function Narrator({ isReady }: { isReady: boolean }) {
           <img className="f-right" src="/areas/joaquin-glance-right.webp" alt="" draggable={false} />
           <img className="f-up" src="/areas/joaquin-glance-up.webp" alt="" draggable={false} />
           <img className="f-down" src="/areas/joaquin-glance-down.webp" alt="" draggable={false} />
+          <img className="f-up-left" src="/areas/joaquin-glance-up-left.webp" alt="" draggable={false} />
+          <img className="f-up-right" src="/areas/joaquin-glance-up-right.webp" alt="" draggable={false} />
+          <img className="f-down-left" src="/areas/joaquin-glance-down-left.webp" alt="" draggable={false} />
+          <img className="f-down-right" src="/areas/joaquin-glance-down-right.webp" alt="" draggable={false} />
         </span>
       </span>
       <span className="narrator-shadow" aria-hidden="true" />
