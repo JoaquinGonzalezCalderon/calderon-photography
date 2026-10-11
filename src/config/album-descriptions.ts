@@ -6,4 +6,5 @@ export const albumDescriptions: Record<string, string> = {
   scentea: 'Perfumes y decants, retratos y detalles de Scentea.',
   lossantos: 'El Staff de Los Santos tirando magia',
   innovalab: 'Ideas, encuentros y proyectos que empiezan a tomar forma.',
+  'docentes-e': 'Fútbol en cancha abierta: jugadas, festejos y la tarde entera al costado del campo.',
 }

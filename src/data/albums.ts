@@ -17,6 +17,7 @@ export const driveUrls: Record<string, string> = {
   scentea: 'https://drive.google.com/drive/u/1/folders/1N7iPyQVrwzDpUguv07yhMY49Lp5L2PEl',
   lossantos: 'https://drive.google.com/drive/folders/1Kj2s15P81QRqUbpzC6N9pR2NjkeopuN6?usp=sharing',
   innovalab: 'https://drive.google.com/drive/folders/1KKI1kgFs92uu02jxd-vqLDdV4UKX1cYd?usp=sharing',
+  'docentes-e': 'https://drive.google.com/drive/folders/1PXEWhDTwDLHeXizLaiN20-SA3nYzWE60?usp=sharing',
 }
 
 export const albums: Album[] = [
@@ -27,7 +28,11 @@ export const albums: Album[] = [
   { id: "scentea", title: "Scentea", year: '2026', coverPhoto: "scentea-dscn6114", photoIds: ["scentea-dscn6012","scentea-dscn6014","scentea-dscn6021","scentea-dscn6022","scentea-dscn6037","scentea-dscn6041","scentea-dscn6043","scentea-dscn6048","scentea-dscn6049","scentea-dscn6058","scentea-dscn6065","scentea-dscn6082","scentea-dscn6083","scentea-dscn6086","scentea-dscn6088","scentea-dscn6092","scentea-dscn6094","scentea-dscn6099","scentea-dscn6109","scentea-dscn6110","scentea-dscn6112","scentea-dscn6113","scentea-dscn6114","scentea-dscn6116","scentea-dscn6120","scentea-dscn6121","scentea-dscn6125","scentea-dscn6131"], association: 'unconfirmed' },
   { id: "lossantos", title: "Los Santos", year: '2026', coverPhoto: "lossantos-dscn6493-01", photoIds: ["lossantos-dscn6313","lossantos-dscn6316-01","lossantos-dscn6326-01","lossantos-dscn6331-01","lossantos-dscn6336-01","lossantos-dscn6350","lossantos-dscn6356","lossantos-dscn6369","lossantos-dscn6377","lossantos-dscn6378-01","lossantos-dscn6389","lossantos-dscn6399","lossantos-dscn6414","lossantos-dscn6416","lossantos-dscn6430","lossantos-dscn6452","lossantos-dscn6464","lossantos-dscn6465","lossantos-dscn6467","lossantos-dscn6473","lossantos-dscn6493-01","lossantos-dscn6497","lossantos-dscn6502","lossantos-dscn6531","lossantos-dscn6532","lossantos-dscn6537","lossantos-dscn6541-01"], association: 'unconfirmed' },
   { id: "innovalab", title: "Innova Lab", year: '2026', coverPhoto: "innovalab-dscn7300", photoIds: ["innovalab-dscn70331","innovalab-dscn7035","innovalab-dscn7048","innovalab-dscn7066","innovalab-dscn7076","innovalab-dscn7099","innovalab-dscn7106","innovalab-dscn71232","innovalab-dscn7225","innovalab-dscn7240","innovalab-dscn7300","innovalab-dscn7378","innovalab-dscn7406","innovalab-dscn7419","innovalab-dscn7466","innovalab-dscn7489","innovalab-dscn7514","innovalab-dscn7519","innovalab-dscn7524","innovalab-dscn7545","innovalab-dscn7551","innovalab-dscn7576"], association: 'unconfirmed' },
+  { id: "docentes-e", title: "Docentes E", year: '2026', coverPhoto: "docentes-e-dscn7708-01", photoIds: ["docentes-e-dscn7687","docentes-e-dscn7702-01","docentes-e-dscn7708-01","docentes-e-dscn7718","docentes-e-dscn7735","docentes-e-dscn7736-01","docentes-e-dscn7738","docentes-e-dscn7743","docentes-e-dscn7752","docentes-e-dscn7753","docentes-e-dscn7754","docentes-e-dscn7755","docentes-e-dscn7757","docentes-e-dscn7758","docentes-e-dscn7793-01","docentes-e-dscn7801-01","docentes-e-dscn7818","docentes-e-dscn7825","docentes-e-dscn7829","docentes-e-dscn7832","docentes-e-dscn7836","docentes-e-dscn7837","docentes-e-dscn7841","docentes-e-dscn7842","docentes-e-dscn7847-01","docentes-e-dscn7848","docentes-e-dscn7861","docentes-e-dscn7867","docentes-e-dscn7868","docentes-e-dscn7871-01"], association: 'unconfirmed' },
 ]
 
 export const albumPhotos = (album: Album): Photo[] => album.photoIds.map((id) => photos.find((photo) => photo.id === id)).filter((photo): photo is Photo => Boolean(photo))
 export const albumCover = (album: Album): Photo => photos.find((photo) => photo.id === album.coverPhoto) ?? albumPhotos(album)[0]
+
+/** Loose photos that don't belong to any album; shown on their own in Fotografía. */
+export const loosePhotoIds = ["sueltas-dscn7618","sueltas-dscn7625","sueltas-dscn7642","sueltas-dscn7649","sueltas-dscn7653","sueltas-dscn7660","sueltas-dscn7662"]

@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type MouseEvent, type ReactNode } from 'react'
-import { albumCover, albumPhotos, albums, driveUrls, type Album } from './data/albums'
-import type { Photo } from './data/photos'
+import { albumCover, albumPhotos, albums, driveUrls, loosePhotoIds, type Album } from './data/albums'
+import { photos as allPhotos, type Photo } from './data/photos'
 import { site } from './config/site'
 import { albumDescriptions } from './config/album-descriptions'
 import { Narrator } from './components/Narrator'
@@ -222,7 +222,7 @@ function App() {
         : activeArea === 'systems'
           ? <SystemsPage />
           : activeArea === 'photography'
-            ? <PhotographyPage albums={albumOrder} onOpenAlbum={openAlbum} />
+            ? <PhotographyPage albums={albumOrder} onOpenAlbum={openAlbum} onOpenPhoto={(photos, index) => setLightbox({ photos, index })} />
             : <DJPage />}
       <SiteFooter showContact={activeArea !== 'home'} />
       {activeAlbum && <AlbumOverlay album={activeAlbum} transition={transition} onClose={closeAlbum} onOpenPhoto={(photos, index) => setLightbox({ photos, index })} />}
@@ -275,6 +275,8 @@ function Arrow() {
 
 /** Latest additions to the portfolio, newest first. Each one links to where it lives. */
 const news: { text: string; area: Area; anchor: string }[] = [
+  { text: 'Álbum nuevo: Docentes E, fútbol en cancha abierta', area: 'photography', anchor: 'albumes' },
+  { text: 'Fotos sueltas: autos clásicos y una tienda de ropa', area: 'photography', anchor: 'sueltas' },
   { text: 'Voider Goat, el reproductor de música de mi hermano', area: 'systems', anchor: 'voider' },
   { text: 'Dos mashups nuevos: Perro Negro X Koko y Un Ratito X Kloufrens', area: 'dj', anchor: 'mashups' },
   { text: 'Demos nuevas de barbería y gimnasio', area: 'systems', anchor: 'demos' },
@@ -758,9 +760,11 @@ function DJPage() {
 }
 
 /** Rows of 2 · 3 · 2 cards keep every album the same height. */
-const albumLayout = ['pair', 'pair', 'trio', 'trio', 'trio', 'pair', 'pair'] as const
+const albumLayout = ['pair', 'pair', 'trio', 'trio', 'trio', 'trio', 'trio', 'trio'] as const
 
-function PhotographyPage({ albums, onOpenAlbum }: { albums: Album[]; onOpenAlbum: (album: Album) => void }) {
+const loosePhotos = loosePhotoIds.map((id) => allPhotos.find((photo) => photo.id === id)).filter((photo): photo is Photo => Boolean(photo))
+
+function PhotographyPage({ albums, onOpenAlbum, onOpenPhoto }: { albums: Album[]; onOpenAlbum: (album: Album) => void; onOpenPhoto: (photos: Photo[], index: number) => void }) {
   const totalPhotos = albums.reduce((sum, album) => sum + albumPhotos(album).length, 0)
   const [activeAlbumIndex, setActiveAlbumIndex] = useState(0)
   const [orbitItems, orbitAlbumIndex] = useMemo(() => {
@@ -792,8 +796,19 @@ function PhotographyPage({ albums, onOpenAlbum }: { albums: Album[]; onOpenAlbum
       </div>
     </Orbit>
     <h2 className="section-title album-grid-title" data-reveal><span className="reveal-line"><span>Todos los álbumes</span></span></h2>
-    <section className="album-grid" aria-label="Álbumes">
+    <section className="album-grid" id="albumes" aria-label="Álbumes">
       {albums.map((album, index) => <AlbumCard key={album.id} album={album} index={index} layout={albumLayout[index % albumLayout.length]} onOpen={() => onOpenAlbum(album)} />)}
+    </section>
+    <section className="loose" id="sueltas" aria-labelledby="loose-title">
+      <div className="loose-head" data-reveal>
+        <h2 className="section-title" id="loose-title"><span className="reveal-line"><span>Sueltas</span></span></h2>
+        <p>Fotos que no son de ningún álbum, sacadas por ahí. Tocá una para verla grande.</p>
+      </div>
+      <div className="loose-board">
+        {loosePhotos.map((photo, index) => <button key={photo.id} type="button" className="loose-print" style={{ '--r': `${[-3, 2.5, -1.5, 3.5, -2.5, 1.5, -3.5][index % 7]}deg` } as CSSProperties} onClick={() => onOpenPhoto(loosePhotos, index)} aria-label={`Ampliar foto suelta ${index + 1} de ${loosePhotos.length}`} data-reveal>
+          <img src={photo.src} srcSet={`${photo.src} 640w, ${photo.medium} 1200w`} sizes="(max-width: 760px) 70vw, 360px" alt="" loading="lazy" width={photo.width} height={photo.height} />
+        </button>)}
+      </div>
     </section>
   </main>
 }

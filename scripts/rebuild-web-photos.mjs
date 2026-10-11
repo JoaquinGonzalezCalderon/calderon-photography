@@ -1,12 +1,15 @@
 // Re-encodes the web versions of every catalogued photo from the camera originals
-// at higher quality. Only regenerates files that already exist in public/photos/web.
+// at higher quality. Only regenerates files that already exist in public/photos/web,
+// unless folders are passed as arguments: then every photo in them is (re)generated.
+// Usage: node scripts/rebuild-web-photos.mjs ["NEW FOLDER" ...]
 import fs from 'node:fs/promises'
 import { existsSync } from 'node:fs'
 import path from 'node:path'
 import sharp from 'sharp'
 
 const root = process.cwd()
-const sourceRoots = ['fotos', 'INNOVALAB', 'desafio ciudadania', 'lossantos', 'scentea'].map((dir) => path.join(root, dir))
+const requested = process.argv.slice(2)
+const sourceRoots = (requested.length ? requested : ['fotos', 'INNOVALAB', 'desafio ciudadania', 'lossantos', 'scentea', 'DOCENTES E', 'SUELTAS']).map((dir) => path.join(root, dir))
 const outputRoot = path.join(root, 'public', 'photos', 'web')
 const sizes = { thumb: [640, 80], medium: [1200, 82], large: [2048, 84] }
 const slugify = (value) => value.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-zA-Z0-9]+/g, '-').replace(/^-|-$/g, '').toLowerCase()
@@ -27,7 +30,8 @@ for (const sourceRoot of sourceRoots.filter((dir) => existsSync(dir))) {
     const folder = slugify(parts.length > 1 ? parts[0] : path.basename(sourceRoot))
     const base = `${folder}-${slugify(path.parse(file).name)}`
     const outDir = path.join(outputRoot, folder)
-    if (!existsSync(path.join(outDir, `${base}-large.webp`))) continue
+    if (!requested.length && !existsSync(path.join(outDir, `${base}-large.webp`))) continue
+    await fs.mkdir(outDir, { recursive: true })
     const image = sharp(file, { failOn: 'none' }).rotate()
     for (const [label, [width, quality]] of Object.entries(sizes)) {
       await image.clone().resize({ width, withoutEnlargement: true }).webp({ quality, effort: 5, smartSubsample: true }).toFile(path.join(outDir, `${base}-${label}.webp`))
