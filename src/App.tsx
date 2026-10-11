@@ -764,6 +764,47 @@ const albumLayout = ['pair', 'pair', 'trio', 'trio', 'trio', 'trio', 'trio', 'tr
 
 const loosePhotos = loosePhotoIds.map((id) => allPhotos.find((photo) => photo.id === id)).filter((photo): photo is Photo => Boolean(photo))
 
+const tilts = [-3, 2.5, -1.5, 3.5, -2.5, 1.5, -3.5]
+
+/** Loose prints in a random order that keeps rotating: the first print moves to the end and the rest slide over (FLIP). */
+function LooseBoard({ onOpenPhoto }: { onOpenPhoto: (photos: Photo[], index: number) => void }) {
+  const [order, setOrder] = useState(() => [...loosePhotos].sort(() => Math.random() - 0.5))
+  const boardRef = useRef<HTMLDivElement>(null)
+  const before = useRef(new Map<string, DOMRect>())
+  const paused = useRef(false)
+  useEffect(() => {
+    if (prefersReducedMotion() || order.length < 2) return
+    let visible = false
+    const observer = new IntersectionObserver(([entry]) => { visible = entry.isIntersecting })
+    if (boardRef.current) observer.observe(boardRef.current)
+    const timer = window.setInterval(() => {
+      if (paused.current || !visible || document.hidden) return
+      boardRef.current?.querySelectorAll<HTMLElement>('.loose-print').forEach((print) => before.current.set(print.dataset.id!, print.getBoundingClientRect()))
+      setOrder((current) => [...current.slice(1), current[0]])
+    }, 3200)
+    return () => { window.clearInterval(timer); observer.disconnect() }
+  }, [order.length])
+  useLayoutEffect(() => {
+    const board = boardRef.current
+    if (!board || !before.current.size) return
+    board.querySelectorAll<HTMLElement>('.loose-print').forEach((print) => {
+      const previous = before.current.get(print.dataset.id!)
+      if (!previous) return
+      const now = print.getBoundingClientRect()
+      const dx = previous.left - now.left
+      const dy = previous.top - now.top
+      if (!dx && !dy) return
+      print.animate([{ transform: `translate(${dx}px, ${dy}px)` }, { transform: 'translate(0, 0)' }], { duration: 900, easing: 'cubic-bezier(.16, 1, .3, 1)' })
+    })
+    before.current.clear()
+  }, [order])
+  return <div className="loose-board" ref={boardRef} onPointerEnter={() => { paused.current = true }} onPointerLeave={() => { paused.current = false }} onFocus={() => { paused.current = true }} onBlur={() => { paused.current = false }}>
+    {order.map((photo, index) => <button key={photo.id} data-id={photo.id} type="button" className="loose-print" style={{ '--r': `${tilts[index % tilts.length]}deg` } as CSSProperties} onClick={() => onOpenPhoto(order, index)} aria-label={`Ampliar foto suelta ${index + 1} de ${order.length}`} data-reveal>
+      <img src={photo.src} srcSet={`${photo.src} 640w, ${photo.medium} 1200w`} sizes="(max-width: 760px) 70vw, 360px" alt="" loading="lazy" width={photo.width} height={photo.height} />
+    </button>)}
+  </div>
+}
+
 function PhotographyPage({ albums, onOpenAlbum, onOpenPhoto }: { albums: Album[]; onOpenAlbum: (album: Album) => void; onOpenPhoto: (photos: Photo[], index: number) => void }) {
   const totalPhotos = albums.reduce((sum, album) => sum + albumPhotos(album).length, 0)
   const [activeAlbumIndex, setActiveAlbumIndex] = useState(0)
@@ -804,11 +845,7 @@ function PhotographyPage({ albums, onOpenAlbum, onOpenPhoto }: { albums: Album[]
         <h2 className="section-title" id="loose-title"><span className="reveal-line"><span>Sueltas</span></span></h2>
         <p>Fotos que no son de ningún álbum, sacadas por ahí. Tocá una para verla grande.</p>
       </div>
-      <div className="loose-board">
-        {loosePhotos.map((photo, index) => <button key={photo.id} type="button" className="loose-print" style={{ '--r': `${[-3, 2.5, -1.5, 3.5, -2.5, 1.5, -3.5][index % 7]}deg` } as CSSProperties} onClick={() => onOpenPhoto(loosePhotos, index)} aria-label={`Ampliar foto suelta ${index + 1} de ${loosePhotos.length}`} data-reveal>
-          <img src={photo.src} srcSet={`${photo.src} 640w, ${photo.medium} 1200w`} sizes="(max-width: 760px) 70vw, 360px" alt="" loading="lazy" width={photo.width} height={photo.height} />
-        </button>)}
-      </div>
+      <LooseBoard onOpenPhoto={onOpenPhoto} />
     </section>
   </main>
 }
