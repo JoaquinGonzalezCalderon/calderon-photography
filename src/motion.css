@@ -25,11 +25,10 @@ body.is-arriving .curtain img { opacity: 0; transform: translateY(-30px); transi
 
 /* Image wipes */
 [data-reveal='clip']:not(.is-in) { opacity: 1; transform: none; }
-[data-reveal='clip'] .client-image, [data-reveal='clip'] .album-card-image, .dj-portrait[data-reveal='clip'] img { clip-path: inset(0 0 0 0); transition: clip-path 1.2s var(--ease-in-out); }
-[data-reveal='clip']:not(.is-in) .client-image, [data-reveal='clip']:not(.is-in) .album-card-image, .dj-portrait[data-reveal='clip']:not(.is-in) img { clip-path: inset(100% 0 0 0); }
+[data-reveal='clip'] .client-image, [data-reveal='clip'] .album-card-image { clip-path: inset(0 0 0 0); transition: clip-path 1.2s var(--ease-in-out); }
+[data-reveal='clip']:not(.is-in) .client-image, [data-reveal='clip']:not(.is-in) .album-card-image { clip-path: inset(100% 0 0 0); }
 [data-reveal='clip'] .client-image img { transition: transform .8s var(--ease-out), scale 1.6s var(--ease-out); }
-.dj-portrait[data-reveal='clip'] img { transition: clip-path 1.2s var(--ease-in-out), scale 1.6s var(--ease-out); }
-[data-reveal='clip']:not(.is-in) .client-image img, .dj-portrait[data-reveal='clip']:not(.is-in) img { scale: 1.25; }
+[data-reveal='clip']:not(.is-in) .client-image img { scale: 1.25; }
 [data-reveal='clip'] .album-card-meta, [data-reveal='clip'] .client-info { transition: opacity .8s .35s ease, transform .8s .35s var(--ease-out); }
 [data-reveal='clip']:not(.is-in) .album-card-meta, [data-reveal='clip']:not(.is-in) .client-info { opacity: 0; transform: translateY(14px); }
 
@@ -87,7 +86,7 @@ body.is-arriving .curtain img { opacity: 0; transform: translateY(-30px); transi
     .page-title { animation: title-away linear both; animation-timeline: scroll(root); animation-range: 0 60vh; }
     .phone { animation: drift linear both; animation-timeline: view(); }
     .phone:nth-child(even) { animation-name: drift-reverse; }
-    .client-image img, .dj-portrait img { animation: inner-pan linear both; animation-timeline: view(); }
+    .client-image img { animation: inner-pan linear both; animation-timeline: view(); }
   }
 }
 @keyframes title-away { to { transform: translateY(10vh) scale(.9); opacity: .15; } }
@@ -105,7 +104,7 @@ body.is-arriving .curtain img { opacity: 0; transform: translateY(-30px); transi
 
 @media (prefers-reduced-motion: reduce) {
   .split > span, .reveal-line > span { animation: none; transform: none; }
-  [data-reveal='clip'] .client-image, [data-reveal='clip'] .album-card-image, .dj-portrait[data-reveal='clip'] img { clip-path: none; }
+  [data-reveal='clip'] .client-image, [data-reveal='clip'] .album-card-image { clip-path: none; }
   .curtain { display: none; }
 }
 .photography .page-head { padding-bottom: clamp(24px, 4vh, 40px); }

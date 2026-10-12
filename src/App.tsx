@@ -751,9 +751,6 @@ function DJPage() {
             </button>
           </li>)}
         </ol>
-        <figure className="dj-portrait" data-reveal="clip">
-          <img src="/areas/dj-portrait.webp" alt="Joaquín Gonzalez Calderón mezclando música en una cabina de DJ" loading="lazy" width="960" height="1280" />
-        </figure>
       </div>
     </section>
   </main>

@@ -369,8 +369,6 @@ body.album-is-open { position: fixed; inset: 0; width: 100%; overflow: hidden; }
 .eq i:nth-child(2) { animation-delay: -.3s; }
 .eq i:nth-child(3) { animation-delay: -.6s; }
 @keyframes eq { 0%, 100% { transform: scaleY(.3); } 50% { transform: scaleY(1); } }
-.dj-portrait { overflow: hidden; }
-.dj-portrait img { width: 100%; height: auto; aspect-ratio: 5 / 4; object-position: 50% 30%; object-fit: cover; filter: grayscale(1) contrast(1.05); }
 
 /* ---------- Footer / contact ---------- */
 .site-footer { width: 100%; max-width: var(--max); margin: 0 auto; padding: 0 var(--gutter); }
@@ -398,7 +396,6 @@ body.album-is-open { position: fixed; inset: 0; width: 100%; overflow: hidden; }
   .streak-phones .phone:nth-child(n) { margin-top: 0; }
   .streak-phones .phone:nth-child(even) { transform: translateY(24px); }
   .dj-deck { grid-template-columns: 1fr; }
-  .dj-side { grid-template-columns: minmax(0, 1fr) minmax(0, 220px); align-items: start; }
 }
 
 /* ---------- Mobile ---------- */
