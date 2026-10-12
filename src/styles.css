@@ -274,7 +274,9 @@ body.is-arriving .site > main { animation: page-in .5s var(--ease-out) both; }
 .loose-print img { width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; }
 .loose-print::after { position: absolute; top: -9px; left: 50%; width: 64px; height: 20px; background: rgb(239 228 210 / .55); content: ''; transform: translateX(-50%) rotate(-3deg); backdrop-filter: blur(2px); }
 .loose-print:hover, .loose-print:focus-visible { z-index: 2; rotate: 0deg; translate: 0 -10px; box-shadow: 0 34px 60px -20px rgb(0 0 0 / .95); }
-.loose-print[data-reveal]:not(.is-in) { opacity: 0; transform: translateY(40px) scale(.94); }
+.loose-board[data-reveal] .loose-print { transition: rotate .5s cubic-bezier(.34, 1.56, .64, 1), translate .5s var(--ease-out), box-shadow .5s ease, opacity .7s ease; }
+.loose-board[data-reveal]:not(.is-in) { opacity: 1; transform: none; }
+.loose-board[data-reveal]:not(.is-in) .loose-print { opacity: 0; }
 @media (max-width: 760px) {
   .loose-head { grid-template-columns: 1fr; }
   .loose-board { flex-wrap: nowrap; justify-content: flex-start; margin-inline: calc(var(--gutter) * -1); padding: 20px var(--gutter) 36px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }

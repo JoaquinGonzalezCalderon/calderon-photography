@@ -773,16 +773,41 @@ function LooseBoard({ onOpenPhoto }: { onOpenPhoto: (photos: Photo[], index: num
   const before = useRef(new Map<string, DOMRect>())
   const paused = useRef(false)
   useEffect(() => {
-    if (prefersReducedMotion() || order.length < 2) return
+    const board = boardRef.current
+    if (!board || prefersReducedMotion() || order.length < 2) return
     let visible = false
+    let touchedAt = 0
+    let autoAt = 0
     const observer = new IntersectionObserver(([entry]) => { visible = entry.isIntersecting })
-    if (boardRef.current) observer.observe(boardRef.current)
+    observer.observe(board)
+    const onTouch = (event: Event) => { if (event.type === 'scroll' && performance.now() - autoAt < 1200) return; touchedAt = performance.now() }
+    board.addEventListener('touchstart', onTouch, { passive: true })
+    board.addEventListener('scroll', onTouch, { passive: true })
     const timer = window.setInterval(() => {
       if (paused.current || !visible || document.hidden) return
-      boardRef.current?.querySelectorAll<HTMLElement>('.loose-print').forEach((print) => before.current.set(print.dataset.id!, print.getBoundingClientRect()))
+      if (board.scrollWidth > board.clientWidth + 4) {
+        // Swipe strip: glide to the next print, back to the start at the end; never fight the user's finger
+        if (performance.now() - touchedAt < 4000) return
+        const boardBox = board.getBoundingClientRect()
+        const center = boardBox.left + boardBox.width / 2
+        const prints = [...board.children] as HTMLElement[]
+        const next = prints.find((print) => { const box = print.getBoundingClientRect(); return box.left + box.width / 2 > center + 8 })
+        const atEnd = board.scrollLeft + board.clientWidth >= board.scrollWidth - 4
+        autoAt = performance.now()
+        if (!next || atEnd) board.scrollTo({ left: 0, behavior: 'smooth' })
+        else { const box = next.getBoundingClientRect(); board.scrollBy({ left: box.left + box.width / 2 - center, behavior: 'smooth' }) }
+        touchedAt = 0
+        return
+      }
+      board.querySelectorAll<HTMLElement>('.loose-print').forEach((print) => before.current.set(print.dataset.id!, print.getBoundingClientRect()))
       setOrder((current) => [...current.slice(1), current[0]])
     }, 3200)
-    return () => { window.clearInterval(timer); observer.disconnect() }
+    return () => {
+      window.clearInterval(timer)
+      observer.disconnect()
+      board.removeEventListener('touchstart', onTouch)
+      board.removeEventListener('scroll', onTouch)
+    }
   }, [order.length])
   useLayoutEffect(() => {
     const board = boardRef.current
@@ -798,8 +823,8 @@ function LooseBoard({ onOpenPhoto }: { onOpenPhoto: (photos: Photo[], index: num
     })
     before.current.clear()
   }, [order])
-  return <div className="loose-board" ref={boardRef} onPointerEnter={() => { paused.current = true }} onPointerLeave={() => { paused.current = false }} onFocus={() => { paused.current = true }} onBlur={() => { paused.current = false }}>
-    {order.map((photo, index) => <button key={photo.id} data-id={photo.id} type="button" className="loose-print" style={{ '--r': `${tilts[index % tilts.length]}deg` } as CSSProperties} onClick={() => onOpenPhoto(order, index)} aria-label={`Ampliar foto suelta ${index + 1} de ${order.length}`} data-reveal>
+  return <div className="loose-board" ref={boardRef} data-reveal onPointerEnter={() => { paused.current = true }} onPointerLeave={() => { paused.current = false }} onFocus={() => { paused.current = true }} onBlur={() => { paused.current = false }}>
+    {order.map((photo, index) => <button key={photo.id} data-id={photo.id} type="button" className="loose-print" style={{ '--r': `${tilts[index % tilts.length]}deg` } as CSSProperties} onClick={() => onOpenPhoto(order, index)} aria-label={`Ampliar foto suelta ${index + 1} de ${order.length}`}>
       <img src={photo.src} srcSet={`${photo.src} 640w, ${photo.medium} 1200w`} sizes="(max-width: 760px) 70vw, 360px" alt="" loading="lazy" width={photo.width} height={photo.height} />
     </button>)}
   </div>

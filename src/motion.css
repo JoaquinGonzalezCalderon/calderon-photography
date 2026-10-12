@@ -25,9 +25,10 @@ body.is-arriving .curtain img { opacity: 0; transform: translateY(-30px); transi
 
 /* Image wipes */
 [data-reveal='clip']:not(.is-in) { opacity: 1; transform: none; }
-[data-reveal='clip'] .client-image, [data-reveal='clip'] .album-card-image, .dj-portrait[data-reveal='clip'] { clip-path: inset(0 0 0 0); transition: clip-path 1.2s var(--ease-in-out); }
-[data-reveal='clip']:not(.is-in) .client-image, [data-reveal='clip']:not(.is-in) .album-card-image, .dj-portrait[data-reveal='clip']:not(.is-in) { clip-path: inset(100% 0 0 0); }
-[data-reveal='clip'] .client-image img, .dj-portrait[data-reveal='clip'] img { transition: transform .8s var(--ease-out), scale 1.6s var(--ease-out); }
+[data-reveal='clip'] .client-image, [data-reveal='clip'] .album-card-image, .dj-portrait[data-reveal='clip'] img { clip-path: inset(0 0 0 0); transition: clip-path 1.2s var(--ease-in-out); }
+[data-reveal='clip']:not(.is-in) .client-image, [data-reveal='clip']:not(.is-in) .album-card-image, .dj-portrait[data-reveal='clip']:not(.is-in) img { clip-path: inset(100% 0 0 0); }
+[data-reveal='clip'] .client-image img { transition: transform .8s var(--ease-out), scale 1.6s var(--ease-out); }
+.dj-portrait[data-reveal='clip'] img { transition: clip-path 1.2s var(--ease-in-out), scale 1.6s var(--ease-out); }
 [data-reveal='clip']:not(.is-in) .client-image img, .dj-portrait[data-reveal='clip']:not(.is-in) img { scale: 1.25; }
 [data-reveal='clip'] .album-card-meta, [data-reveal='clip'] .client-info { transition: opacity .8s .35s ease, transform .8s .35s var(--ease-out); }
 [data-reveal='clip']:not(.is-in) .album-card-meta, [data-reveal='clip']:not(.is-in) .client-info { opacity: 0; transform: translateY(14px); }
@@ -95,6 +96,7 @@ body.is-arriving .curtain img { opacity: 0; transform: translateY(-30px); transi
 @keyframes inner-pan { from { translate: 0 -5%; } to { translate: 0 5%; } }
 
 @media (max-width: 760px) {
+  .streak-phones .phone, .stugo-phones .phone { animation: none; translate: none; }
   .orbit { --card-w: clamp(140px, 40vw, 180px); height: calc(var(--arc-top) + var(--card-h) / 2 + 270px); }
   .orbit-arrows { width: calc(var(--card-w) * 1.1 + 104px); }
   .orbit-arrows button { width: 42px; height: 42px; }
@@ -103,7 +105,7 @@ body.is-arriving .curtain img { opacity: 0; transform: translateY(-30px); transi
 
 @media (prefers-reduced-motion: reduce) {
   .split > span, .reveal-line > span { animation: none; transform: none; }
-  [data-reveal='clip'] .client-image, [data-reveal='clip'] .album-card-image, .dj-portrait[data-reveal='clip'] { clip-path: none; }
+  [data-reveal='clip'] .client-image, [data-reveal='clip'] .album-card-image, .dj-portrait[data-reveal='clip'] img { clip-path: none; }
   .curtain { display: none; }
 }
 .photography .page-head { padding-bottom: clamp(24px, 4vh, 40px); }
