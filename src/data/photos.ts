@@ -260,6 +260,13 @@ export const photos: Photo[] = [
   photo("sueltas-dscn7653", "sueltas", "OTHER", ['calle','suelta'], "landscape", 4608, 3456, false),
   photo("sueltas-dscn7660", "sueltas", "OTHER", ['calle','suelta'], "landscape", 4608, 3456, false),
   photo("sueltas-dscn7662", "sueltas", "OTHER", ['calle','suelta'], "landscape", 4608, 3456, false),
+  photo("sueltas-dscn7907", "sueltas", "OTHER", ['calle', 'suelta'], "landscape", 4608, 3456, false),
+  photo("sueltas-dscn7932", "sueltas", "OTHER", ['calle', 'suelta'], "landscape", 4608, 3456, false),
+  photo("sueltas-dscn7937", "sueltas", "OTHER", ['calle', 'suelta'], "landscape", 4608, 3456, false),
+  photo("sueltas-dscn7943", "sueltas", "OTHER", ['calle', 'suelta'], "landscape", 4608, 3456, false),
+  photo("sueltas-dscn7953", "sueltas", "OTHER", ['calle', 'suelta'], "landscape", 4608, 3456, false),
+  photo("sueltas-dscn7958", "sueltas", "OTHER", ['calle', 'suelta'], "portrait", 3456, 4608, false),
+  photo("sueltas-dscn7960", "sueltas", "OTHER", ['calle', 'suelta'], "portrait", 3456, 4608, false),
 ]
 
 export const featuredPhotos = photos.filter((item) => item.featured)

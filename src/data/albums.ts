@@ -35,4 +35,4 @@ export const albumPhotos = (album: Album): Photo[] => album.photoIds.map((id) =>
 export const albumCover = (album: Album): Photo => photos.find((photo) => photo.id === album.coverPhoto) ?? albumPhotos(album)[0]
 
 /** Loose photos that don't belong to any album; shown on their own in Fotografía. */
-export const loosePhotoIds = ["sueltas-dscn7618","sueltas-dscn7625","sueltas-dscn7642","sueltas-dscn7649","sueltas-dscn7653","sueltas-dscn7660","sueltas-dscn7662"]
+export const loosePhotoIds = ["sueltas-dscn7618","sueltas-dscn7625","sueltas-dscn7642","sueltas-dscn7649","sueltas-dscn7653","sueltas-dscn7660","sueltas-dscn7662","sueltas-dscn7907","sueltas-dscn7932","sueltas-dscn7937","sueltas-dscn7943","sueltas-dscn7953","sueltas-dscn7958","sueltas-dscn7960"]

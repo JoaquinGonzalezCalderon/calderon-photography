@@ -28,7 +28,7 @@ for (const sourceRoot of sourceRoots.filter((dir) => existsSync(dir))) {
     const relative = path.relative(sourceRoot, file)
     const parts = relative.split(path.sep)
     const folder = slugify(parts.length > 1 ? parts[0] : path.basename(sourceRoot))
-    const base = `${folder}-${slugify(path.parse(file).name)}`
+    const base = `${folder}-${slugify(path.basename(file).replace(/(\.(jpe?g|png|webp))+$/i, ''))}`
     const outDir = path.join(outputRoot, folder)
     if (!requested.length && !existsSync(path.join(outDir, `${base}-large.webp`))) continue
     await fs.mkdir(outDir, { recursive: true })

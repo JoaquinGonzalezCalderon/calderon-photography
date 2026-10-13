@@ -276,7 +276,7 @@ function Arrow() {
 /** Latest additions to the portfolio, newest first. Each one links to where it lives. */
 const news: { text: string; area: Area; anchor: string }[] = [
   { text: 'Álbum nuevo: Docentes E, fútbol en cancha abierta', area: 'photography', anchor: 'albumes' },
-  { text: 'Fotos sueltas: autos clásicos y una tienda de ropa', area: 'photography', anchor: 'sueltas' },
+  { text: 'Más fotos sueltas: un músico callejero, la tienda Kloven y más autos clásicos', area: 'photography', anchor: 'sueltas' },
   { text: 'Voider Goat, el reproductor de música de mi hermano', area: 'systems', anchor: 'voider' },
   { text: 'Dos mashups nuevos: Perro Negro X Koko y Un Ratito X Kloufrens', area: 'dj', anchor: 'mashups' },
   { text: 'Demos nuevas de barbería y gimnasio', area: 'systems', anchor: 'demos' },
@@ -821,7 +821,7 @@ function LooseBoard({ onOpenPhoto }: { onOpenPhoto: (photos: Photo[], index: num
     before.current.clear()
   }, [order])
   return <div className="loose-board" ref={boardRef} data-reveal onPointerEnter={() => { paused.current = true }} onPointerLeave={() => { paused.current = false }} onFocus={() => { paused.current = true }} onBlur={() => { paused.current = false }}>
-    {order.map((photo, index) => <button key={photo.id} data-id={photo.id} type="button" className="loose-print" style={{ '--r': `${tilts[index % tilts.length]}deg` } as CSSProperties} onClick={() => onOpenPhoto(order, index)} aria-label={`Ampliar foto suelta ${index + 1} de ${order.length}`}>
+    {order.map((photo, index) => <button key={photo.id} data-id={photo.id} type="button" className={`loose-print${photo.orientation === 'portrait' ? ' is-portrait' : ''}`} style={{ '--r': `${tilts[index % tilts.length]}deg` } as CSSProperties} onClick={() => onOpenPhoto(order, index)} aria-label={`Ampliar foto suelta ${index + 1} de ${order.length}`}>
       <img src={photo.src} srcSet={`${photo.src} 640w, ${photo.medium} 1200w`} sizes="(max-width: 760px) 70vw, 360px" alt="" loading="lazy" width={photo.width} height={photo.height} />
     </button>)}
   </div>
