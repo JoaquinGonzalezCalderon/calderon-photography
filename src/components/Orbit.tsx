@@ -148,11 +148,12 @@ export function Orbit({ items, onSelect, onActiveChange, label, children }: {
         root.setPointerCapture(event.pointerId)
       }
     }
-    const onPointerUp = () => {
+    const onPointerUp = (event: PointerEvent) => {
       if (!dragging) return
       dragging = false
       root.classList.remove('is-dragging')
-      if (performance.now() - lastMoveAt > 90) dragVelocity = 0
+      // A cancel means the browser took the touch as a page scroll: no flick
+      if (event.type === 'pointercancel' || performance.now() - lastMoveAt > 90) dragVelocity = 0
       velocity = Math.max(-240, Math.min(240, dragVelocity))
       idleUntil = performance.now() + 2500
     }
