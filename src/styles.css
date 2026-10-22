@@ -186,9 +186,14 @@ body.is-arriving .site > main { animation: page-in .5s var(--ease-out) both; }
 .feature-voider .status.is-live { border-color: rgb(227 23 10 / .55); color: #ff5a4a; }
 .voider-cta { background: var(--voider); color: #fff; }
 .voider-cta:hover { background: #fff; color: #0d0d0c; }
+/* Copy on the left on wide screens, so it alternates with MAY above it */
+@media (min-width: 1081px) {
+  .feature-voider { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }
+  .voider-copy { order: -1; }
+}
 
-/* MAY: copy first, the landing and the audio mixer stacked as windows, in the sun's yellow */
-.feature-may { --may: #f7b500; display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(32px, 5vw, 80px); align-items: center; }
+/* MAY: the landing and the audio mixer stacked as windows, then the copy, in the sun's yellow */
+.feature-may { --may: #f7b500; display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: clamp(32px, 5vw, 80px); align-items: center; }
 .may-stage { position: relative; isolation: isolate; aspect-ratio: 16 / 12; }
 .may-stage::before { position: absolute; z-index: -1; inset: 8% 4% 6% 10%; border-radius: 50%; background: radial-gradient(closest-side, rgb(247 181 0 / .3), transparent); content: ''; filter: blur(40px); }
 .may-window { position: absolute; display: block; overflow: hidden; border: 1px solid var(--line-strong); border-radius: 14px; background: #1a1a18; box-shadow: 0 40px 80px -30px rgb(0 0 0 / .85); transition: transform .7s var(--ease-out); }
