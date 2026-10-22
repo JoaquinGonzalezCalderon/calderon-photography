@@ -361,7 +361,7 @@ function HomeCover({ onNavigate, isReady }: { onNavigate: (area: PortfolioArea) 
         <h2 className="case-title">Sistemas</h2>
         <p className="case-rule"><span>Apps y sitios web</span></p>
         <SystemsRotator />
-        <span className="case-foot"><span>7 proyectos + 5 demos</span><span className="case-cta">Ver proyectos <Arrow /></span></span>
+        <span className="case-foot"><span>8 proyectos + 5 demos</span><span className="case-cta">Ver proyectos <Arrow /></span></span>
       </a>
 
       <a className="case-card case-photo" data-tilt href={pathForArea('photography')} onClick={go('photography')} data-reveal>
