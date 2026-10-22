@@ -275,6 +275,7 @@ function Arrow() {
 
 /** Latest additions to the portfolio, newest first. Each one links to where it lives. */
 const news: { text: string; area: Area; anchor: string }[] = [
+  { text: 'MAY, mi editor de videos argentino, gratis y sin cuenta', area: 'systems', anchor: 'may' },
   { text: 'Álbum nuevo: Docentes E, fútbol en cancha abierta', area: 'photography', anchor: 'albumes' },
   { text: 'Más fotos sueltas: un músico callejero, la tienda Kloven y más autos clásicos', area: 'photography', anchor: 'sueltas' },
   { text: 'Voider Goat, el reproductor de música de mi hermano', area: 'systems', anchor: 'voider' },
@@ -404,6 +405,7 @@ const systemsShowcase = [
   { name: 'Streak', image: '/areas/tustreak-desktop.webp' },
   { name: 'STUGO', image: '/areas/stugo1.webp', phone: true },
   { name: 'Voider Goat', image: '/areas/voidergoat-album.webp' },
+  { name: 'MAY', image: '/areas/may-home.webp' },
   { name: 'Mate Único', image: '/areas/jgc-mate.webp' },
   { name: 'Inmobiliaria Andrea Duré', image: '/areas/jgc-inmobiliaria.webp' },
   { name: 'Barbería Los Santos (en desarrollo)', image: '/areas/jgc-barberia.webp' },
@@ -475,6 +477,7 @@ function SystemsPage() {
     <FeaturedStreak />
     <FeaturedStugo />
     <FeaturedVoider />
+    <FeaturedMay />
     <section className="clients" id="clientes" aria-labelledby="clients-title">
       <h2 className="section-title" id="clients-title" data-reveal><span className="reveal-line"><span>Sitios para clientes</span></span></h2>
       <div className="clients-grid">
@@ -544,6 +547,31 @@ function FeaturedVoider() {
         <li>Portada con los álbumes flotando alrededor del logo</li><li>Filtros por categoría e índice de álbumes</li><li>Reproductor persistente entre páginas</li><li>Español e inglés, modo claro y oscuro</li><li>Contacto directo por Instagram para pedir beats</li>
       </ul>
       <a className="button voider-cta" data-magnetic="0.2" href="https://voidergoat-player.vercel.app/" target="_blank" rel="noreferrer">Abrir Voider Goat <Arrow /></a>
+    </div>
+  </article>
+}
+
+function FeaturedMay() {
+  return <article className="feature feature-may" id="may" aria-labelledby="may-title">
+    <div className="may-copy" data-reveal>
+      <p className="feature-kind">Editor de video · Web + escritorio</p>
+      <div className="feature-title-row"><h2 id="may-title">MAY</h2><span className="status is-live">En vivo</span></div>
+      <p className="feature-text feature-text-lead">El editor de videos argentino: cortá, sumá texto, fotos, música y efectos, mezclá el sonido y exportá en MP4. Gratis y sin cuenta.</p>
+      <p className="feature-text">Un mismo proyecto tiene dos espacios: VIDEO para editar la imagen y AUDIO para el sonido, con un mixer de buses, envíos y medidores. Está pensado para andar bien en compus comunes y todo se procesa en tu equipo: no se sube nada, sin telemetría ni cookies.</p>
+      <ul className="feature-points">
+        <li>Cortes, keyframes con curvas, transiciones y subtítulos SRT</li><li>Velocidad, reverse y efectos acelerados por GPU</li><li>Mixer con buses, automatización y medición LUFS</li><li>Exportación local en MP4, WAV y stems</li><li>Versión web y app de escritorio para Windows (próximamente)</li>
+      </ul>
+      <a className="button may-cta" data-magnetic="0.2" href="https://may-editor.vercel.app/" target="_blank" rel="noreferrer">Abrir MAY <Arrow /></a>
+    </div>
+    <div className="may-stage" data-reveal>
+      <a className="may-window may-window-back" href="https://may-editor.vercel.app/" target="_blank" rel="noreferrer" tabIndex={-1} aria-hidden="true">
+        <span className="demo-browser-bar"><i /><i /><i /><span>may-editor.vercel.app</span></span>
+        <img src="/areas/may-home.webp" alt="" loading="lazy" width="1280" height="800" />
+      </a>
+      <a className="may-window may-window-front" href="https://may-editor.vercel.app/espacios" target="_blank" rel="noreferrer" tabIndex={-1} aria-hidden="true">
+        <span className="demo-browser-bar"><i /><i /><i /><span>MAY · AUDIO</span></span>
+        <img src="/areas/may-mixer.webp" alt="" loading="lazy" width="1280" height="686" />
+      </a>
     </div>
   </article>
 }
