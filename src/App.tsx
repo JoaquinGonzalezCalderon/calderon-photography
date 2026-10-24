@@ -280,7 +280,7 @@ const news: { text: string; area: Area; anchor: string }[] = ([
   { text: 'Álbum nuevo: Docentes E, fútbol en cancha abierta', area: 'photography', anchor: 'albumes' },
   { text: 'Más fotos sueltas: un músico callejero, la tienda Kloven y más autos clásicos', area: 'photography', anchor: 'sueltas' },
   { text: 'Voider Goat, el reproductor de música de mi hermano', area: 'systems', anchor: 'voider' },
-]).slice(0, 5)
+] satisfies { text: string; area: Area; anchor: string }[]).slice(0, 5)
 
 function NewsTicker({ onNavigate }: { onNavigate: (area: PortfolioArea) => void }) {
   const [index, setIndex] = useState(0)
