@@ -273,17 +273,14 @@ function Arrow() {
   return <svg className="arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 11.5 11.5 4.5M5.5 4.5h6v6" /></svg>
 }
 
-/** Latest additions to the portfolio, newest first. Each one links to where it lives. */
-const news: { text: string; area: Area; anchor: string }[] = [
+/** Latest additions to the portfolio, newest first. Each one links to where it lives. Only the newest five show, so adding one on top drops the oldest. */
+const news: { text: string; area: Area; anchor: string }[] = ([
   { text: 'ENJAMBRE, drones en red para emergencias, nuestro proyecto para el rally internacional', area: 'systems', anchor: 'enjambre' },
   { text: 'MAY, mi editor de videos argentino, gratis y sin cuenta', area: 'systems', anchor: 'may' },
   { text: 'Álbum nuevo: Docentes E, fútbol en cancha abierta', area: 'photography', anchor: 'albumes' },
   { text: 'Más fotos sueltas: un músico callejero, la tienda Kloven y más autos clásicos', area: 'photography', anchor: 'sueltas' },
   { text: 'Voider Goat, el reproductor de música de mi hermano', area: 'systems', anchor: 'voider' },
-  { text: 'Dos mashups nuevos: Perro Negro X Koko y Un Ratito X Kloufrens', area: 'dj', anchor: 'mashups' },
-  { text: 'Demos nuevas de barbería y gimnasio', area: 'systems', anchor: 'demos' },
-  { text: 'Portfolio de Analía Calderón (en desarrollo)', area: 'systems', anchor: 'clientes' },
-]
+]).slice(0, 5)
 
 function NewsTicker({ onNavigate }: { onNavigate: (area: PortfolioArea) => void }) {
   const [index, setIndex] = useState(0)
