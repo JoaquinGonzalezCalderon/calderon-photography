@@ -192,20 +192,27 @@ body.is-arriving .site > main { animation: page-in .5s var(--ease-out) both; }
   .voider-copy { order: -1; }
 }
 
-/* MAY: the landing and the audio mixer stacked as windows, then the copy, in the sun's yellow */
-.feature-may { --may: #f7b500; display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: clamp(32px, 5vw, 80px); align-items: center; }
-.may-stage { position: relative; isolation: isolate; aspect-ratio: 16 / 12; }
-.may-stage::before { position: absolute; z-index: -1; inset: 8% 4% 6% 10%; border-radius: 50%; background: radial-gradient(closest-side, rgb(247 181 0 / .3), transparent); content: ''; filter: blur(40px); }
-.may-window { position: absolute; display: block; overflow: hidden; border: 1px solid var(--line-strong); border-radius: 14px; background: #1a1a18; box-shadow: 0 40px 80px -30px rgb(0 0 0 / .85); transition: transform .7s var(--ease-out); }
-.may-window img { width: 100%; height: auto; }
-.may-window-back { top: 0; right: 0; width: 78%; transform: rotate(2deg); }
-.may-window-front { bottom: 2%; left: 0; width: 80%; transform: rotate(-1.5deg); }
-@media (hover: hover) { .may-stage:hover .may-window-back { transform: rotate(3.5deg) translate(10px, -8px); } }
-@media (hover: hover) { .may-stage:hover .may-window-front { transform: rotate(0deg) translate(-8px, 6px) scale(1.02); } }
-.feature-may .feature-points li::before { background: var(--may); }
-.feature-may .status.is-live { border-color: rgb(247 181 0 / .55); color: var(--may); }
-.may-cta { background: var(--may); color: #0d0d0c; }
-.may-cta:hover { background: #fff; color: #0d0d0c; }
+/* Two stacked browser windows beside the copy, tinted with each project's --tone (MAY, ENJAMBRE) */
+.feature-shots { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: clamp(32px, 5vw, 80px); align-items: center; }
+.shots-stage { position: relative; isolation: isolate; aspect-ratio: 16 / 12; }
+.shots-stage::before { position: absolute; z-index: -1; inset: 8% 4% 6% 10%; border-radius: 50%; background: radial-gradient(closest-side, color-mix(in srgb, var(--tone) 30%, transparent), transparent); content: ''; filter: blur(40px); }
+.shots-window { position: absolute; display: block; overflow: hidden; border: 1px solid var(--line-strong); border-radius: 14px; background: #1a1a18; box-shadow: 0 40px 80px -30px rgb(0 0 0 / .85); transition: transform .7s var(--ease-out); }
+.shots-window img { width: 100%; height: auto; }
+.shots-window-back { top: 0; right: 0; width: 78%; transform: rotate(2deg); }
+.shots-window-front { bottom: 2%; left: 0; width: 80%; transform: rotate(-1.5deg); }
+@media (hover: hover) { .shots-stage:hover .shots-window-back { transform: rotate(3.5deg) translate(10px, -8px); } }
+@media (hover: hover) { .shots-stage:hover .shots-window-front { transform: rotate(0deg) translate(-8px, 6px) scale(1.02); } }
+.feature-shots .feature-points li::before { background: var(--tone); }
+.feature-shots .status.is-live { border-color: color-mix(in srgb, var(--tone) 55%, transparent); color: var(--tone); }
+.shots-cta { background: var(--tone); color: #0d0d0c; }
+.shots-cta:hover { background: #fff; color: #0d0d0c; }
+.feature-may { --tone: #f7b500; }
+.feature-enjambre { --tone: #f26b1d; }
+/* Copy on the left on wide screens; the stage stays first in the DOM so phones show it first */
+@media (min-width: 1081px) {
+  .feature-shots.is-reversed { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }
+  .feature-shots.is-reversed .shots-copy { order: -1; }
+}
 .feature-stugo .feature-title-row { justify-content: space-between; }
 .stugo-phones { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(12px, 2vw, 28px); margin: 8px 0 clamp(40px, 6vh, 64px); }
 .stugo-phones .phone:nth-child(odd) { transform: translateY(-14px); }
@@ -415,7 +422,7 @@ body.album-is-open { position: fixed; inset: 0; width: 100%; overflow: hidden; }
   .feature-streak { grid-template-columns: 1fr; }
   .feature-streak .feature-copy { position: static; }
   .feature-voider { grid-template-columns: 1fr; }
-  .feature-may { grid-template-columns: 1fr; }
+  .feature-shots { grid-template-columns: 1fr; }
   .streak-phones { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .streak-phones .phone:nth-child(n) { margin-top: 0; }
   .streak-phones .phone:nth-child(even) { transform: translateY(24px); }

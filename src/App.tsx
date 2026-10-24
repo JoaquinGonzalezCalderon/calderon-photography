@@ -275,6 +275,7 @@ function Arrow() {
 
 /** Latest additions to the portfolio, newest first. Each one links to where it lives. */
 const news: { text: string; area: Area; anchor: string }[] = [
+  { text: 'ENJAMBRE, drones en red para emergencias, nuestro proyecto para el rally internacional', area: 'systems', anchor: 'enjambre' },
   { text: 'MAY, mi editor de videos argentino, gratis y sin cuenta', area: 'systems', anchor: 'may' },
   { text: 'Álbum nuevo: Docentes E, fútbol en cancha abierta', area: 'photography', anchor: 'albumes' },
   { text: 'Más fotos sueltas: un músico callejero, la tienda Kloven y más autos clásicos', area: 'photography', anchor: 'sueltas' },
@@ -361,7 +362,7 @@ function HomeCover({ onNavigate, isReady }: { onNavigate: (area: PortfolioArea) 
         <h2 className="case-title">Sistemas</h2>
         <p className="case-rule"><span>Apps y sitios web</span></p>
         <SystemsRotator />
-        <span className="case-foot"><span>8 proyectos + 5 demos</span><span className="case-cta">Ver proyectos <Arrow /></span></span>
+        <span className="case-foot"><span>9 proyectos + 5 demos</span><span className="case-cta">Ver proyectos <Arrow /></span></span>
       </a>
 
       <a className="case-card case-photo" data-tilt href={pathForArea('photography')} onClick={go('photography')} data-reveal>
@@ -406,6 +407,7 @@ const systemsShowcase = [
   { name: 'MAY', image: '/areas/may-home.webp' },
   { name: 'Voider Goat', image: '/areas/voidergoat-album.webp' },
   { name: 'STUGO', image: '/areas/stugo1.webp', phone: true },
+  { name: 'ENJAMBRE', image: '/areas/enjambre-coe.webp' },
   { name: 'Mate Único', image: '/areas/jgc-mate.webp' },
   { name: 'Inmobiliaria Andrea Duré', image: '/areas/jgc-inmobiliaria.webp' },
   { name: 'Barbería Los Santos (en desarrollo)', image: '/areas/jgc-barberia.webp' },
@@ -478,6 +480,7 @@ function SystemsPage() {
     <FeaturedMay />
     <FeaturedVoider />
     <FeaturedStugo />
+    <FeaturedEnjambre />
     <section className="clients" id="clientes" aria-labelledby="clients-title">
       <h2 className="section-title" id="clients-title" data-reveal><span className="reveal-line"><span>Sitios para clientes</span></span></h2>
       <div className="clients-grid">
@@ -552,18 +555,18 @@ function FeaturedVoider() {
 }
 
 function FeaturedMay() {
-  return <article className="feature feature-may" id="may" aria-labelledby="may-title">
-    <div className="may-stage" data-reveal>
-      <a className="may-window may-window-back" href="https://may-editor.vercel.app/" target="_blank" rel="noreferrer" tabIndex={-1} aria-hidden="true">
+  return <article className="feature feature-shots feature-may" id="may" aria-labelledby="may-title">
+    <div className="shots-stage" data-reveal>
+      <a className="shots-window shots-window-back" href="https://may-editor.vercel.app/" target="_blank" rel="noreferrer" tabIndex={-1} aria-hidden="true">
         <span className="demo-browser-bar"><i /><i /><i /><span>may-editor.vercel.app</span></span>
         <img src="/areas/may-home.webp" alt="" loading="lazy" width="1280" height="800" />
       </a>
-      <a className="may-window may-window-front" href="https://may-editor.vercel.app/espacios" target="_blank" rel="noreferrer" tabIndex={-1} aria-hidden="true">
+      <a className="shots-window shots-window-front" href="https://may-editor.vercel.app/espacios" target="_blank" rel="noreferrer" tabIndex={-1} aria-hidden="true">
         <span className="demo-browser-bar"><i /><i /><i /><span>MAY · AUDIO</span></span>
         <img src="/areas/may-mixer.webp" alt="" loading="lazy" width="1280" height="686" />
       </a>
     </div>
-    <div className="may-copy" data-reveal>
+    <div className="shots-copy" data-reveal>
       <p className="feature-kind">Editor de video · Web + escritorio</p>
       <div className="feature-title-row"><h2 id="may-title">MAY</h2><span className="status is-live">En vivo</span></div>
       <p className="feature-text feature-text-lead">El editor de videos argentino: cortá, sumá texto, fotos, música y efectos, mezclá el sonido y exportá en MP4. Gratis y sin cuenta.</p>
@@ -571,7 +574,32 @@ function FeaturedMay() {
       <ul className="feature-points">
         <li>Cortes, keyframes con curvas, transiciones y subtítulos SRT</li><li>Velocidad, reverse y efectos acelerados por GPU</li><li>Mixer con buses, automatización y medición LUFS</li><li>Exportación local en MP4, WAV y stems</li><li>Versión web y app de escritorio para Windows (próximamente)</li>
       </ul>
-      <a className="button may-cta" data-magnetic="0.2" href="https://may-editor.vercel.app/" target="_blank" rel="noreferrer">Abrir MAY <Arrow /></a>
+      <a className="button shots-cta" data-magnetic="0.2" href="https://may-editor.vercel.app/" target="_blank" rel="noreferrer">Abrir MAY <Arrow /></a>
+    </div>
+  </article>
+}
+
+function FeaturedEnjambre() {
+  return <article className="feature feature-shots feature-enjambre is-reversed" id="enjambre" aria-labelledby="enjambre-title">
+    <div className="shots-stage" data-reveal>
+      <a className="shots-window shots-window-back" href="https://enjambreer.vercel.app/drones/" target="_blank" rel="noreferrer" tabIndex={-1} aria-hidden="true">
+        <span className="demo-browser-bar"><i /><i /><i /><span>enjambreer.vercel.app/drones</span></span>
+        <img src="/areas/enjambre-drones.webp" alt="" loading="lazy" width="1280" height="800" />
+      </a>
+      <a className="shots-window shots-window-front" href="https://enjambreer.vercel.app/coe/" target="_blank" rel="noreferrer" tabIndex={-1} aria-hidden="true">
+        <span className="demo-browser-bar"><i /><i /><i /><span>ENJAMBRE · Panel COE</span></span>
+        <img src="/areas/enjambre-coe.webp" alt="" loading="lazy" width="1280" height="742" />
+      </a>
+    </div>
+    <div className="shots-copy" data-reveal>
+      <p className="feature-kind">Rally internacional de innovación · En equipo</p>
+      <div className="feature-title-row"><h2 id="enjambre-title">Enjambre</h2><span className="status">Proyecto en equipo</span></div>
+      <p className="feature-text feature-text-lead">Un sistema de apoyo a las decisiones en emergencias y desastres naturales: drones en red, inteligencia artificial y unidades móviles que le acercan información en tiempo real a Defensa Civil y a los equipos de rescate.</p>
+      <p className="feature-text">Lo ideamos con LOISIS, un equipo de diez estudiantes y egresados de Sistemas y Organización Industrial de la UADER y la UTN. El sitio presenta la propuesta: cómo trabaja la red, las unidades y la flota, y una simulación del panel COE donde el enjambre reorganiza sus recorridos cuando encuentra algo.</p>
+      <ul className="feature-points">
+        <li>Simulación del panel COE con prioridades sugeridas</li><li>Hangar 3D: girá cada drone y encendé los motores</li><li>Drones que adaptan sus rutas según lo que encuentran</li><li>Pensado para Defensa Civil y equipos de rescate</li>
+      </ul>
+      <a className="button shots-cta" data-magnetic="0.2" href="https://enjambreer.vercel.app/" target="_blank" rel="noreferrer">Ver ENJAMBRE <Arrow /></a>
     </div>
   </article>
 }
