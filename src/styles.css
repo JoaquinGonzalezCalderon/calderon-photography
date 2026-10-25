@@ -158,7 +158,7 @@ body.is-arriving .site > main { animation: page-in .5s var(--ease-out) both; }
 .feature-more[open] summary::after { transform: rotate(45deg); }
 .feature-more p { max-width: 60ch; margin-top: 12px; font-size: 15px; line-height: 1.65; }
 
-.phone { display: grid; gap: 10px; }
+.phone { display: grid; align-content: start; gap: 10px; }
 .phone-screen { overflow: hidden; border: 1px solid var(--line-strong); border-radius: clamp(18px, 2vw, 30px); background: var(--bg-sunk); box-shadow: 0 30px 60px -20px rgb(0 0 0 / .7); }
 .phone-screen img { width: 100%; height: auto; aspect-ratio: 736 / 1594; object-fit: cover; }
 .phone figcaption { color: var(--ink-3); font-size: 13px; text-align: center; }
