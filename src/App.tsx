@@ -274,20 +274,23 @@ function Arrow() {
 }
 
 /** Latest additions to the portfolio, newest first. Each one links to where it lives. Only the newest five show, so adding one on top drops the oldest. */
-const news: { text: string; area: Area; anchor: string }[] = ([
-  { text: 'CUAD, mi cuaderno virtual de páginas y bloques (en desarrollo)', area: 'systems', anchor: 'cuad' },
-  { text: 'ENJAMBRE, drones en red para emergencias, nuestro proyecto para el rally internacional', area: 'systems', anchor: 'enjambre' },
-  { text: 'MAY, mi editor de videos argentino, gratis y sin cuenta', area: 'systems', anchor: 'may' },
-  { text: 'Álbum nuevo: Docentes E, fútbol en cancha abierta', area: 'photography', anchor: 'albumes' },
-  { text: 'Más fotos sueltas: un músico callejero, la tienda Kloven y más autos clásicos', area: 'photography', anchor: 'sueltas' },
-  { text: 'Voider Goat, el reproductor de música de mi hermano', area: 'systems', anchor: 'voider' },
-] satisfies { text: string; area: Area; anchor: string }[]).slice(0, 5)
+type NewsItem = { title: string; text: string; note: string; image: string; area: Area; anchor: string }
+const news: NewsItem[] = ([
+  { title: 'CUAD', text: 'Mi cuaderno virtual de páginas y bloques', note: 'En desarrollo', image: '/areas/news/cuad.webp', area: 'systems', anchor: 'cuad' },
+  { title: 'ENJAMBRE', text: 'Drones en red para emergencias, nuestro proyecto para el rally internacional', note: 'Proyecto en equipo', image: '/areas/news/enjambre.webp', area: 'systems', anchor: 'enjambre' },
+  { title: 'MAY', text: 'Mi editor de videos argentino, gratis y sin cuenta', note: 'En desarrollo', image: '/areas/news/may.webp', area: 'systems', anchor: 'may' },
+  { title: 'Docentes E', text: 'Fútbol en cancha abierta', note: 'Álbum nuevo', image: '/areas/news/docentes-e.webp', area: 'photography', anchor: 'albumes' },
+  { title: 'Fotos sueltas', text: 'Un músico callejero, la tienda Kloven y más autos clásicos', note: 'Fotos nuevas', image: '/areas/news/sueltas.webp', area: 'photography', anchor: 'sueltas' },
+  { title: 'Voider Goat', text: 'El reproductor de música de mi hermano', note: 'En vivo', image: '/areas/news/voider.webp', area: 'systems', anchor: 'voider' },
+] satisfies NewsItem[]).slice(0, 5)
 
 function NewsTicker({ onNavigate }: { onNavigate: (area: PortfolioArea) => void }) {
   // `from` keeps the outgoing item on screen while it slides away; `dir` says which way both move
   const [slide, setSlide] = useState<{ index: number; from: number; dir: 1 | -1 }>({ index: 0, from: -1, dir: 1 })
   const [paused, setPaused] = useState(false)
   const swipe = useRef<{ x: number; y: number; moved: boolean } | null>(null)
+  // Warm the thumbnails so a slide never lands on an empty frame
+  useEffect(() => { news.forEach((entry) => { new Image().src = entry.image }) }, [])
   const { index, from, dir } = slide
   const item = news[index]
   const goTo = (next: number, direction: 1 | -1) => setSlide((current) => next === current.index ? current : { index: next, from: current.index, dir: direction })
@@ -320,12 +323,15 @@ function NewsTicker({ onNavigate }: { onNavigate: (area: PortfolioArea) => void 
     if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(event.clientY - start.y)) { start.moved = true; step(dx < 0 ? 1 : -1) }
     window.setTimeout(() => { swipe.current = null }, 0)
   }
-  const roll = (entry: (typeof news)[number]) => <>
-    <span className="board-where">{areaLabels[entry.area]}</span>
-    <span className="board-text">{entry.text}</span>
+  const roll = (entry: NewsItem) => <>
+    <span className="board-thumb"><img src={entry.image} alt="" width="144" height="96" /></span>
+    <span className="board-copy">
+      <span className="board-meta">{areaLabels[entry.area]}<i>{entry.note}</i></span>
+      <span className="board-text"><strong>{entry.title}</strong> {entry.text}</span>
+    </span>
   </>
   return <aside className="board" aria-label="Novedades del portfolio" onPointerEnter={() => setPaused(true)} onPointerLeave={() => setPaused(false)} onFocus={() => setPaused(true)} onBlur={() => setPaused(false)} onPointerDown={onPointerDown} onPointerUp={onPointerUp}>
-    <span className="board-label">Nuevo</span>
+    <span className="board-label"><i className="board-pulse" aria-hidden="true" />Nuevo</span>
     <a className="board-item" href={`${pathForArea(item.area)}#${item.anchor}`} onClick={open}>
       <span className="board-stage" style={{ '--dir': dir } as CSSProperties} aria-live="polite">
         {from >= 0 && <span className="board-roll is-out" key={`out-${from}-${index}`} aria-hidden="true" onAnimationEnd={(event) => { if (event.target === event.currentTarget) setSlide((current) => ({ ...current, from: -1 })) }}>{roll(news[from])}</span>}
