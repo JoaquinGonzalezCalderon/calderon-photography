@@ -503,24 +503,24 @@ function Phone({ src, alt, title }: { src: string; alt: string; title: string })
 
 function FeaturedStreak() {
   const screens = [
-    { src: '/areas/tustreak-home.webp', title: 'Inicio', alt: 'Inicio de Streak con racha diaria, hábito y botón de registro' },
-    { src: '/areas/tustreak-progress.webp', title: 'Progreso', alt: 'Progreso de nivel, racha, consistencia e historial de Streak' },
-    { src: '/areas/tustreak-gym.webp', title: 'Gym', alt: 'Objetivo semanal, rutina y estadísticas de entrenamiento en Streak' },
-    { src: '/areas/tustreak-profile.webp', title: 'Perfil', alt: 'Perfil de Streak con avatar, hábito y opciones de personalización' },
+    { src: '/areas/tustreak-home.webp', title: 'Inicio', alt: 'Inicio de Streak con la racha, la semana marcada día por día y el registro de gym' },
+    { src: '/areas/tustreak-progress.webp', title: 'Progreso', alt: 'Progreso de Streak con XP, nivel, racha actual y mejor racha, consistencia e historial' },
+    { src: '/areas/tustreak-gym.webp', title: 'Gym', alt: 'Gym en Streak con los entrenamientos de la semana, objetivo, rutina y estadísticas' },
+    { src: '/areas/tustreak-profile.webp', title: 'Perfil', alt: 'Perfil de Streak con avatar, nivel, frase motivadora, hábito y personalización' },
   ]
   return <article className="feature feature-streak" aria-labelledby="streak-title">
     <div className="feature-copy" data-reveal>
       <p className="feature-kind">Producto digital · App web</p>
       <div className="feature-title-row"><h2 id="streak-title">Streak</h2><span className="status is-live">En vivo</span></div>
-      <p className="feature-text">Streak reúne seguimiento de hábitos, entrenamiento y progreso en una app pensada para el celular e instalable como PWA. Registrá tu hábito diario y la toma de creatina, consultá la última vez que la marcaste y revisá un resumen semanal de actividad. La XP y los niveles reconocen la constancia sin perder lo acumulado cuando se corta una racha.</p>
+      <p className="feature-text">Streak reúne seguimiento de hábitos, entrenamiento y progreso en una app pensada para el celular e instalable como PWA. Registrá tu hábito diario y la toma de creatina, seguí la semana día por día y sumá a tus amigos para entrenar en desafíos. La XP y los niveles reconocen la constancia sin perder lo acumulado cuando se corta una racha.</p>
       <ul className="feature-points">
-        <li>Hábito diario, creatina y recordatorios</li><li>XP, niveles, rachas e historial</li><li>Rutinas, calendario y estadísticas de gym</li><li>Perfil personalizable y PWA instalable</li>
+        <li>Hábito diario, creatina y recordatorios</li><li>XP, niveles, rachas e historial</li><li>Rutinas, calendario y estadísticas de gym</li><li>Amigos, desafíos y códigos de invitación</li><li>Perfil personalizable y PWA instalable</li>
       </ul>
       <details className="feature-more">
         <summary>Más detalles</summary>
-        <p>En Gym podés anotar entrenamientos y grupos musculares, editar el historial, crear rutinas propias y seguir objetivos semanales, mensuales y por músculo en el calendario. El perfil suma frases motivadoras, avatar, tema, color principal, hábito y recordatorios configurables. Cada cuenta guarda sus datos de forma privada.</p>
+        <p>En Gym podés anotar entrenamientos y grupos musculares, editar el historial, crear rutinas propias y seguir objetivos semanales, mensuales y por músculo en el calendario. En Amigos sumás gente con un código, ves cómo viene cada uno y creás desafíos, como 20 entrenamientos en el mes. El perfil suma frases motivadoras, avatar, tema, color principal, hábito y recordatorios configurables. Cada cuenta guarda sus datos de forma privada.</p>
       </details>
-      <a className="button" data-magnetic="0.2" href="https://tustreak.vercel.app/app" target="_blank" rel="noreferrer">Abrir Streak <Arrow /></a>
+      <a className="button" data-magnetic="0.2" href="https://www.streak.com.ar/app" target="_blank" rel="noreferrer">Abrir Streak <Arrow /></a>
     </div>
     <div className="feature-phones streak-phones" aria-label="Capturas de Streak" data-reveal>
       {screens.map((screen) => <Phone key={screen.title} {...screen} />)}
