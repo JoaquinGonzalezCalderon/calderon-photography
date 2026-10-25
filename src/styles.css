@@ -208,6 +208,7 @@ body.is-arriving .site > main { animation: page-in .5s var(--ease-out) both; }
 .shots-cta:hover { background: #fff; color: #0d0d0c; }
 .feature-may { --tone: #f7b500; }
 .feature-enjambre { --tone: #f26b1d; }
+.feature-cuad { --tone: #cec8b0; }
 /* Copy on the left on wide screens; the stage stays first in the DOM so phones show it first */
 @media (min-width: 1081px) {
   .feature-shots.is-reversed { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }

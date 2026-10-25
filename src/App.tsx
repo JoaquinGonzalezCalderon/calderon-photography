@@ -275,6 +275,7 @@ function Arrow() {
 
 /** Latest additions to the portfolio, newest first. Each one links to where it lives. Only the newest five show, so adding one on top drops the oldest. */
 const news: { text: string; area: Area; anchor: string }[] = ([
+  { text: 'CUAD, mi cuaderno virtual de páginas y bloques (en desarrollo)', area: 'systems', anchor: 'cuad' },
   { text: 'ENJAMBRE, drones en red para emergencias, nuestro proyecto para el rally internacional', area: 'systems', anchor: 'enjambre' },
   { text: 'MAY, mi editor de videos argentino, gratis y sin cuenta', area: 'systems', anchor: 'may' },
   { text: 'Álbum nuevo: Docentes E, fútbol en cancha abierta', area: 'photography', anchor: 'albumes' },
@@ -359,7 +360,7 @@ function HomeCover({ onNavigate, isReady }: { onNavigate: (area: PortfolioArea) 
         <h2 className="case-title">Sistemas</h2>
         <p className="case-rule"><span>Apps y sitios web</span></p>
         <SystemsRotator />
-        <span className="case-foot"><span>9 proyectos + 5 demos</span><span className="case-cta">Ver proyectos <Arrow /></span></span>
+        <span className="case-foot"><span>10 proyectos + 5 demos</span><span className="case-cta">Ver proyectos <Arrow /></span></span>
       </a>
 
       <a className="case-card case-photo" data-tilt href={pathForArea('photography')} onClick={go('photography')} data-reveal>
@@ -401,10 +402,11 @@ function HomeCover({ onNavigate, isReady }: { onNavigate: (area: PortfolioArea) 
 
 const systemsShowcase = [
   { name: 'Streak', image: '/areas/tustreak-desktop.webp' },
-  { name: 'MAY', image: '/areas/may-home.webp' },
+  { name: 'MAY (en desarrollo)', image: '/areas/may-home.webp' },
   { name: 'Voider Goat', image: '/areas/voidergoat-album.webp' },
   { name: 'STUGO', image: '/areas/stugo1.webp', phone: true },
   { name: 'ENJAMBRE', image: '/areas/enjambre-coe.webp' },
+  { name: 'CUAD (en desarrollo)', image: '/areas/cuad-home.webp' },
   { name: 'Mate Único', image: '/areas/jgc-mate.webp' },
   { name: 'Inmobiliaria Andrea Duré', image: '/areas/jgc-inmobiliaria.webp' },
   { name: 'Barbería Los Santos (en desarrollo)', image: '/areas/jgc-barberia.webp' },
@@ -478,6 +480,7 @@ function SystemsPage() {
     <FeaturedVoider />
     <FeaturedStugo />
     <FeaturedEnjambre />
+    <FeaturedCuad />
     <section className="clients" id="clientes" aria-labelledby="clients-title">
       <h2 className="section-title" id="clients-title" data-reveal><span className="reveal-line"><span>Sitios para clientes</span></span></h2>
       <div className="clients-grid">
@@ -565,7 +568,7 @@ function FeaturedMay() {
     </div>
     <div className="shots-copy" data-reveal>
       <p className="feature-kind">Editor de video · Web + escritorio</p>
-      <div className="feature-title-row"><h2 id="may-title">MAY</h2><span className="status is-live">En vivo</span></div>
+      <div className="feature-title-row"><h2 id="may-title">MAY</h2><span className="status is-wip">En desarrollo</span></div>
       <p className="feature-text feature-text-lead">El editor de videos argentino: cortá, sumá texto, fotos, música y efectos, mezclá el sonido y exportá en MP4. Gratis y sin cuenta.</p>
       <p className="feature-text">Un mismo proyecto tiene dos espacios: VIDEO para editar la imagen y AUDIO para el sonido, con un mixer de buses, envíos y medidores. Está pensado para andar bien en compus comunes y todo se procesa en tu equipo: no se sube nada, sin telemetría ni cookies.</p>
       <ul className="feature-points">
@@ -597,6 +600,31 @@ function FeaturedEnjambre() {
         <li>Simulación del panel COE con prioridades sugeridas</li><li>Hangar 3D: girá cada drone y encendé los motores</li><li>Drones que adaptan sus rutas según lo que encuentran</li><li>Pensado para Defensa Civil y equipos de rescate</li>
       </ul>
       <a className="button shots-cta" data-magnetic="0.2" href="https://enjambreer.vercel.app/" target="_blank" rel="noreferrer">Ver ENJAMBRE <Arrow /></a>
+    </div>
+  </article>
+}
+
+function FeaturedCuad() {
+  return <article className="feature feature-shots feature-cuad" id="cuad" aria-labelledby="cuad-title">
+    <div className="shots-stage" data-reveal>
+      <a className="shots-window shots-window-back" href="https://cuad-eight.vercel.app/" target="_blank" rel="noreferrer" tabIndex={-1} aria-hidden="true">
+        <span className="demo-browser-bar"><i /><i /><i /><span>cuad-eight.vercel.app</span></span>
+        <img src="/areas/cuad-home.webp" alt="" loading="lazy" width="1280" height="800" />
+      </a>
+      <a className="shots-window shots-window-front" href="https://cuad-eight.vercel.app/" target="_blank" rel="noreferrer" tabIndex={-1} aria-hidden="true">
+        <span className="demo-browser-bar"><i /><i /><i /><span>CUAD · Apuntes de clase</span></span>
+        <img src="/areas/cuad-apuntes.webp" alt="" loading="lazy" width="1280" height="800" />
+      </a>
+    </div>
+    <div className="shots-copy" data-reveal>
+      <p className="feature-kind">Cuaderno virtual · App web</p>
+      <div className="feature-title-row"><h2 id="cuad-title">CUAD</h2><span className="status is-wip">En desarrollo</span></div>
+      <p className="feature-text feature-text-lead">Mi cuaderno virtual, en la línea de Notion: páginas y bloques para tomar apuntes, ordenar ideas y llevar tareas, a tu estilo.</p>
+      <p className="feature-text">Cada página tiene portada, subpáginas y bloques de texto, títulos, listas, tareas, desplegables, citas y código. Se insertan escribiendo / o desde el panel de estado, se reordenan arrastrando y todo se guarda solo mientras escribís.</p>
+      <ul className="feature-points">
+        <li>Bloques con atajos tipo Markdown y comandos con /</li><li>Subpáginas, favoritos, recientes y papelera</li><li>Búsqueda rápida con Ctrl + K</li><li>Panel de estado con bloques, palabras y tareas</li>
+      </ul>
+      <a className="button shots-cta" data-magnetic="0.2" href="https://cuad-eight.vercel.app/" target="_blank" rel="noreferrer">Probar CUAD <Arrow /></a>
     </div>
   </article>
 }
