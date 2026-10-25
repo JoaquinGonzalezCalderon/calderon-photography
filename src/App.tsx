@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type MouseEvent, type ReactNode } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type MouseEvent, type PointerEvent, type ReactNode } from 'react'
 import { albumCover, albumPhotos, albums, driveUrls, loosePhotoIds, type Album } from './data/albums'
 import { photos as allPhotos, type Photo } from './data/photos'
 import { site } from './config/site'
@@ -284,16 +284,22 @@ const news: { text: string; area: Area; anchor: string }[] = ([
 ] satisfies { text: string; area: Area; anchor: string }[]).slice(0, 5)
 
 function NewsTicker({ onNavigate }: { onNavigate: (area: PortfolioArea) => void }) {
-  const [index, setIndex] = useState(0)
+  // `from` keeps the outgoing item on screen while it slides away; `dir` says which way both move
+  const [slide, setSlide] = useState<{ index: number; from: number; dir: 1 | -1 }>({ index: 0, from: -1, dir: 1 })
   const [paused, setPaused] = useState(false)
+  const swipe = useRef<{ x: number; y: number; moved: boolean } | null>(null)
+  const { index, from, dir } = slide
   const item = news[index]
-  const step = (direction: 1 | -1) => setIndex((current) => (current + direction + news.length) % news.length)
+  const goTo = (next: number, direction: 1 | -1) => setSlide((current) => next === current.index ? current : { index: next, from: current.index, dir: direction })
+  const step = (direction: 1 | -1) => goTo((index + direction + news.length) % news.length, direction)
   useEffect(() => {
     if (paused || prefersReducedMotion()) return
-    const timer = window.setInterval(() => { if (!document.hidden) step(1) }, 4200)
+    // Restarts on every change, so a manual step gets a full turn before the next auto one
+    const timer = window.setInterval(() => { if (!document.hidden) setSlide((current) => ({ index: (current.index + 1) % news.length, from: current.index, dir: 1 })) }, 4200)
     return () => window.clearInterval(timer)
-  }, [paused])
+  }, [paused, index])
   const open = (event: MouseEvent<HTMLAnchorElement>) => {
+    if (swipe.current?.moved) { event.preventDefault(); return }
     if (event.metaKey || event.ctrlKey || event.shiftKey || event.button !== 0) return
     event.preventDefault()
     onNavigate(item.area)
@@ -306,18 +312,30 @@ function NewsTicker({ onNavigate }: { onNavigate: (area: PortfolioArea) => void 
     }
     window.setTimeout(find, 650)
   }
-  return <aside className="board" aria-label="Novedades del portfolio" onPointerEnter={() => setPaused(true)} onPointerLeave={() => setPaused(false)} onFocus={() => setPaused(true)} onBlur={() => setPaused(false)}>
+  const onPointerDown = (event: PointerEvent<HTMLElement>) => { swipe.current = event.pointerType === 'mouse' ? null : { x: event.clientX, y: event.clientY, moved: false } }
+  const onPointerUp = (event: PointerEvent<HTMLElement>) => {
+    const start = swipe.current
+    if (!start) return
+    const dx = event.clientX - start.x
+    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(event.clientY - start.y)) { start.moved = true; step(dx < 0 ? 1 : -1) }
+    window.setTimeout(() => { swipe.current = null }, 0)
+  }
+  const roll = (entry: (typeof news)[number]) => <>
+    <span className="board-where">{areaLabels[entry.area]}</span>
+    <span className="board-text">{entry.text}</span>
+  </>
+  return <aside className="board" aria-label="Novedades del portfolio" onPointerEnter={() => setPaused(true)} onPointerLeave={() => setPaused(false)} onFocus={() => setPaused(true)} onBlur={() => setPaused(false)} onPointerDown={onPointerDown} onPointerUp={onPointerUp}>
     <span className="board-label">Nuevo</span>
-    <a className="board-item" href={`${pathForArea(item.area)}#${item.anchor}`} onClick={open} aria-live="polite">
-      <span className="board-roll" key={index}>
-        <span className="board-where">{areaLabels[item.area]}</span>
-        <span className="board-text">{item.text}</span>
+    <a className="board-item" href={`${pathForArea(item.area)}#${item.anchor}`} onClick={open}>
+      <span className="board-stage" style={{ '--dir': dir } as CSSProperties} aria-live="polite">
+        {from >= 0 && <span className="board-roll is-out" key={`out-${from}-${index}`} aria-hidden="true" onAnimationEnd={(event) => { if (event.target === event.currentTarget) setSlide((current) => ({ ...current, from: -1 })) }}>{roll(news[from])}</span>}
+        <span className="board-roll is-in" key={`in-${index}`}>{roll(item)}</span>
       </span>
       <span className="board-go" aria-hidden="true"><Arrow /></span>
     </a>
     <span className="board-controls">
-      <span className="board-count" aria-hidden="true">{pad(index + 1)}<i>/{pad(news.length)}</i></span>
-      <span className="board-dots" aria-hidden="true">{news.map((entry, dot) => <i key={entry.anchor + entry.text} className={dot === index ? 'is-on' : ''} style={{ '--t': paused ? 'paused' : 'running' } as CSSProperties} />)}</span>
+      <span className="board-count" aria-hidden="true"><span className="board-count-now" key={index} style={{ '--dir': dir } as CSSProperties}>{pad(index + 1)}</span><i>/{pad(news.length)}</i></span>
+      <span className="board-dots">{news.map((entry, dot) => <button type="button" key={entry.anchor + entry.text} className={dot === index ? 'is-on' : ''} onClick={() => goTo(dot, dot > index ? 1 : -1)} aria-label={`Novedad ${dot + 1} de ${news.length}`} aria-current={dot === index || undefined}><i style={{ '--t': paused ? 'paused' : 'running' } as CSSProperties} /></button>)}</span>
       <button type="button" onClick={() => step(-1)} aria-label="Novedad anterior"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3 5 8l5 5" /></svg></button>
       <button type="button" onClick={() => step(1)} aria-label="Novedad siguiente"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m6 3 5 5-5 5" /></svg></button>
     </span>
