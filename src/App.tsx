@@ -348,6 +348,12 @@ function NewsTicker({ onNavigate }: { onNavigate: (area: PortfolioArea) => void 
   </aside>
 }
 
+const heroRoles: { area: Area; count: string }[] = [
+  { area: 'systems', count: '10 proyectos + 5 demos' },
+  { area: 'photography', count: `${albums.length} álbumes` },
+  { area: 'dj', count: '6 mashups' },
+]
+
 function HomeCover({ onNavigate, isReady }: { onNavigate: (area: PortfolioArea) => void; isReady: boolean }) {
   useReveal('home')
   const parallaxRef = usePointerParallax<HTMLElement>()
@@ -366,15 +372,17 @@ function HomeCover({ onNavigate, isReady }: { onNavigate: (area: PortfolioArea) 
   return <main className={`home${isReady ? ' is-ready' : ''}`}>
     <NewsTicker onNavigate={onNavigate} />
     <section ref={parallaxRef} className="hero-card" aria-labelledby="hero-title">
+      <div className="hero-copy">
+        <p className="hero-kicker">Portfolio · 2026 · Entre Ríos</p>
+        <h1 className="hero-name" id="hero-title">{['Joaquín', 'Gonzalez', 'Calderón'].map((word, index) => <span key={word} style={{ '--i': index } as CSSProperties}>{word}</span>)}</h1>
+        <p className="hero-lead">Analista en sistemas. DJ y fotógrafo amateur.</p>
+        <nav className="hero-roles" aria-label="Áreas">
+          {heroRoles.map((role) => <a key={role.area} href={pathForArea(role.area)} onClick={go(role.area)}><b>{areaLabels[role.area]}</b><span>{role.count}</span><Arrow /></a>)}
+        </nav>
+      </div>
       <figure className="hero-portrait">
         <img src="/areas/portrait-yo2.webp" alt="Retrato de Joaquín Gonzalez Calderón con gorra" width="1239" height="1269" fetchPriority="high" />
       </figure>
-      <h1 className="hero-title" id="hero-title">
-        <span className="sr-only">Portfolio de Joaquín Gonzalez Calderón: analista en sistemas, DJ y fotógrafo amateur</span>
-        <span className="hero-title-word" aria-hidden="true">{[...'Portfolio'].map((letter, index) => <span key={index} className={index === 3 || index === 4 ? 'is-outline' : undefined} style={{ '--i': index } as CSSProperties}>{letter}</span>)}</span>
-      </h1>
-      <p className="hero-corner hero-corner-tl">Analista en sistemas<br />DJ y fotógrafo amateur</p>
-      <p className="hero-corner hero-corner-bl">Joaquín Gonzalez Calderón</p>
       <a className="hero-corner hero-corner-tr" href={site.instagramUrl} target="_blank" rel="noreferrer">@joaquinncalderon</a>
       <Narrator isReady={isReady} />
     </section>
