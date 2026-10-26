@@ -29,7 +29,7 @@
   color: var(--cream);
 }
 
-.hero-portrait { position: absolute; z-index: 1; bottom: 0; left: 73%; height: 97%; margin: 0; transform: translateX(-50%); pointer-events: none; }
+.hero-portrait { position: absolute; z-index: 1; bottom: 0; left: 63%; height: 97%; margin: 0; transform: translateX(-50%); pointer-events: none; }
 .hero-portrait img { width: auto; max-width: none; height: 100%; filter: grayscale(1) contrast(1.06) brightness(.92); opacity: 0; transform: translateY(40px); }
 .home.is-ready .hero-portrait img { animation: portrait-in 1.2s .1s var(--ease-out) both; }
 
