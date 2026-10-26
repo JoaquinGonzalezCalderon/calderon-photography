@@ -379,11 +379,11 @@ function HomeCover({ onNavigate, isReady }: { onNavigate: (area: PortfolioArea) 
         <nav className="hero-roles" aria-label="Áreas">
           {heroRoles.map((role) => <a key={role.area} href={pathForArea(role.area)} onClick={go(role.area)}><b>{areaLabels[role.area]}</b><span>{role.count}</span><Arrow /></a>)}
         </nav>
+        <a className="hero-handle" href={site.instagramUrl} target="_blank" rel="noreferrer">@joaquinncalderon</a>
       </div>
       <figure className="hero-portrait">
         <img src="/areas/portrait-yo2.webp" alt="Retrato de Joaquín Gonzalez Calderón con gorra" width="1239" height="1269" fetchPriority="high" />
       </figure>
-      <a className="hero-corner hero-corner-tr" href={site.instagramUrl} target="_blank" rel="noreferrer">@joaquinncalderon</a>
       <Narrator isReady={isReady} />
     </section>
 
