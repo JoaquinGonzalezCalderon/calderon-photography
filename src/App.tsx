@@ -369,11 +369,11 @@ function HomeCover({ onNavigate, isReady }: { onNavigate: (area: PortfolioArea) 
       <div className="hero-intro">
         <p className="hero-kicker">Joaquín Gonzalez · Portfolio 2026</p>
         <p className="hero-lead">Analista en sistemas.<br />DJ y fotógrafo amateur.</p>
-        <a className="hero-handle" href={site.instagramUrl} target="_blank" rel="noreferrer">@joaquinncalderon</a>
+        <nav className="hero-areas" aria-label="Áreas">
+          {(Object.keys(areaLabels) as Area[]).map((area) => <a key={area} href={pathForArea(area)} onClick={go(area)}>{areaLabels[area]}<Arrow /></a>)}
+        </nav>
       </div>
-      <nav className="hero-areas" aria-label="Áreas">
-        {(Object.keys(areaLabels) as Area[]).map((area) => <a key={area} href={pathForArea(area)} onClick={go(area)}>{areaLabels[area]}<Arrow /></a>)}
-      </nav>
+      <a className="hero-handle" href={site.instagramUrl} target="_blank" rel="noreferrer">@joaquinncalderon</a>
       <div className="hero-echo" aria-hidden="true">{[0, 1].map((index) => <span key={index} style={{ '--i': index } as CSSProperties}>Calderón</span>)}<span className="is-spacer">Calderón</span></div>
       <figure className="hero-portrait">
         <img src="/areas/portrait-yo2.webp" alt="Retrato de Joaquín Gonzalez Calderón con gorra" width="1239" height="1269" fetchPriority="high" />
