@@ -348,12 +348,6 @@ function NewsTicker({ onNavigate }: { onNavigate: (area: PortfolioArea) => void 
   </aside>
 }
 
-const heroRoles: { area: Area; count: string }[] = [
-  { area: 'systems', count: '10 proyectos + 5 demos' },
-  { area: 'photography', count: `${albums.length} álbumes` },
-  { area: 'dj', count: '6 mashups' },
-]
-
 function HomeCover({ onNavigate, isReady }: { onNavigate: (area: PortfolioArea) => void; isReady: boolean }) {
   useReveal('home')
   const parallaxRef = usePointerParallax<HTMLElement>()
@@ -372,18 +366,19 @@ function HomeCover({ onNavigate, isReady }: { onNavigate: (area: PortfolioArea) 
   return <main className={`home${isReady ? ' is-ready' : ''}`}>
     <NewsTicker onNavigate={onNavigate} />
     <section ref={parallaxRef} className="hero-card" aria-labelledby="hero-title">
-      <div className="hero-copy">
-        <p className="hero-kicker">Portfolio · 2026 · Entre Ríos</p>
-        <h1 className="hero-name" id="hero-title">{['Joaquín', 'Gonzalez', 'Calderón'].map((word, index) => <span key={word} style={{ '--i': index } as CSSProperties}>{word}</span>)}</h1>
-        <p className="hero-lead">Analista en sistemas. DJ y fotógrafo amateur.</p>
-        <nav className="hero-roles" aria-label="Áreas">
-          {heroRoles.map((role) => <a key={role.area} href={pathForArea(role.area)} onClick={go(role.area)}><b>{areaLabels[role.area]}</b><span>{role.count}</span><Arrow /></a>)}
-        </nav>
+      <div className="hero-intro">
+        <p className="hero-kicker">Joaquín Gonzalez · Portfolio 2026</p>
+        <p className="hero-lead">Analista en sistemas.<br />DJ y fotógrafo amateur.</p>
         <a className="hero-handle" href={site.instagramUrl} target="_blank" rel="noreferrer">@joaquinncalderon</a>
       </div>
+      <nav className="hero-areas" aria-label="Áreas">
+        {(Object.keys(areaLabels) as Area[]).map((area) => <a key={area} href={pathForArea(area)} onClick={go(area)}>{areaLabels[area]}<Arrow /></a>)}
+      </nav>
+      <div className="hero-echo" aria-hidden="true">{[0, 1].map((index) => <span key={index} style={{ '--i': index } as CSSProperties}>Calderón</span>)}<span className="is-spacer">Calderón</span></div>
       <figure className="hero-portrait">
         <img src="/areas/portrait-yo2.webp" alt="Retrato de Joaquín Gonzalez Calderón con gorra" width="1239" height="1269" fetchPriority="high" />
       </figure>
+      <h1 className="hero-name" id="hero-title"><span className="sr-only">Joaquín Gonzalez </span><span className="hero-name-front">Calderón</span></h1>
       <Narrator isReady={isReady} />
     </section>
 
