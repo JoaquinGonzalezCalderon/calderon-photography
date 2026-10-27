@@ -6,9 +6,10 @@ import '@fontsource-variable/geist-mono'
 import '@fontsource/rubik-doodle-shadow'
 import '@fontsource/bebas-neue'
 import { App } from './App'
+import { I18nProvider } from './i18n'
 import './styles.css'
 import './motion.css'
 import './zine.css'
 import './home.css'
 
-createRoot(document.getElementById('root')!).render(<StrictMode><App /></StrictMode>)
+createRoot(document.getElementById('root')!).render(<StrictMode><I18nProvider><App /></I18nProvider></StrictMode>)

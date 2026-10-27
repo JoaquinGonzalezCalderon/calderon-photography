@@ -1,20 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
+import { useI18n } from '../i18n'
 
 type Look = 'center' | 'left' | 'right' | 'up' | 'down' | 'up-left' | 'up-right' | 'down-left' | 'down-right'
 // Eight compass sectors starting at "right" and going clockwise (screen y grows downward)
 const sectors: Look[] = ['right', 'down-right', 'down', 'down-left', 'left', 'up-left', 'up', 'up-right']
 type Frame = 'idle' | 'open' | 'blink' | Exclude<Look, 'center'>
 
-const intro = [
-  'Hola, ¿cómo estás?',
-  'Soy Joaquín Gonzalez Calderón, tengo 23 años. Soy analista en sistemas, y además DJ y fotógrafo amateur.',
-]
-const extras = [
-  '¡Ey! Bajá y mirá las tres áreas del portfolio.',
-  'Si tenés un proyecto, escribime al final de la página.',
-  'En Fotografía podés hacer girar los álbumes.',
-  'En DJ dale play a un mashup.',
-]
 const vowels = /[aeiouáéíóúAEIOUÁÉÍÓÚ]/
 const pauses: Record<string, number> = { ',': 220, '.': 320, '?': 320, '!': 320, '¿': 0, '¡': 0 }
 
@@ -36,6 +27,8 @@ export function Narrator({ isReady }: { isReady: boolean }) {
   const talking = useRef(false)
   const extraIndex = useRef(0)
   const reduce = useRef(false)
+  const { t } = useI18n()
+  const { intro, extras } = t.narrator
 
   const later = (fn: () => void, ms: number) => { timers.current.push(window.setTimeout(fn, ms)) }
   const clearTalk = () => { timers.current.forEach((id) => window.clearTimeout(id)); timers.current = [] }
@@ -85,6 +78,16 @@ export function Narrator({ isReady }: { isReady: boolean }) {
     later(() => say(intro), 1500)
     return clearTalk
   }, [isReady])
+
+  // Say it again in the new language when the visitor switches
+  const shownLang = useRef(t)
+  useEffect(() => {
+    if (shownLang.current === t) return
+    shownLang.current = t
+    if (!isVisible) return
+    clearTalk()
+    say([intro[intro.length - 1]])
+  }, [t])
 
   // Blinking while idle
   useEffect(() => {
@@ -148,7 +151,7 @@ export function Narrator({ isReady }: { isReady: boolean }) {
 
   const shown: Frame = isTalking ? (frame === 'open' ? 'open' : 'idle') : frame === 'blink' ? 'blink' : look !== 'center' ? look : 'idle'
 
-  return <aside className="narrator" aria-label="Presentación de Joaquín">
+  return <aside className="narrator" aria-label={t.narrator.aria}>
     <p className="sr-only" aria-live="polite">{spoken}</p>
     <p className={`narrator-bubble${isSpeechVisible ? ' is-visible' : ''}`} aria-hidden="true">
       <span className="narrator-name">Joaquín</span>
@@ -160,7 +163,7 @@ export function Narrator({ isReady }: { isReady: boolean }) {
       className={`narrator-character${isVisible ? ' is-visible' : ''}${isTalking ? ' is-talking' : ''} look-${isTalking ? 'center' : look}`}
       data-frame={shown}
       onClick={poke}
-      aria-label="Tocá al personaje de Joaquín para que diga algo más"
+      aria-label={t.narrator.button}
       tabIndex={isVisible ? 0 : -1}
     >
       <span className={`narrator-hop${hop ? ' is-hopping' : ''}`} key={hop}>

@@ -2,7 +2,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperti
 import { albumCover, albumPhotos, albums, driveUrls, loosePhotoIds, type Album } from './data/albums'
 import { photos as allPhotos, type Photo } from './data/photos'
 import { site } from './config/site'
-import { albumDescriptions } from './config/album-descriptions'
+import { langs, useI18n, type Messages } from './i18n'
 import { Narrator } from './components/Narrator'
 import { Orbit } from './components/Orbit'
 import { SplitLetters, useMagnetic, usePointerParallax, useTilt } from './motion'
@@ -11,7 +11,7 @@ type Transition = 'opening' | 'open' | 'closing'
 type PortfolioArea = 'home' | 'systems' | 'dj' | 'photography'
 type Area = Exclude<PortfolioArea, 'home'>
 
-const areaLabels: Record<Area, string> = { systems: 'Sistemas', photography: 'Fotografía', dj: 'DJ' }
+const areaOrder: Area[] = ['systems', 'photography', 'dj']
 const links = {
   whatsapp: 'https://wa.me/5491133693052',
   github: 'https://github.com/JoaquinGonzalezCalderon?tab=repositories',
@@ -81,6 +81,7 @@ function App() {
   const scrollPosition = useRef(0)
   const albumReturnPath = useRef(activeAlbum ? '/fotografia' : '/')
   const navigationTimer = useRef<number | null>(null)
+  const { t } = useI18n()
 
   const navigate = (area: PortfolioArea) => {
     const path = pathForArea(area)
@@ -130,14 +131,9 @@ function App() {
   }, [])
 
   useEffect(() => {
-    const titles: Record<PortfolioArea, string> = {
-      home: 'Joaquín Gonzalez Calderón · Portfolio',
-      systems: 'Sistemas · Joaquín Gonzalez Calderón',
-      dj: 'DJ · Joaquín Gonzalez Calderón',
-      photography: 'Fotografía · Joaquín Gonzalez Calderón',
-    }
-    document.title = activeAlbum ? `${activeAlbum.title} · Fotografía · Joaquín Gonzalez Calderón` : titles[activeArea]
-  }, [activeAlbum, activeArea])
+    const name = 'Joaquín Gonzalez Calderón'
+    document.title = activeAlbum ? `${activeAlbum.title} · ${t.areas.photography} · ${name}` : activeArea === 'home' ? `${name} · ${t.meta.home}` : `${t.areas[activeArea]} · ${name}`
+  }, [activeAlbum, activeArea, t])
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -232,21 +228,49 @@ function App() {
 }
 
 function SiteHeader({ current, onNavigate }: { current: PortfolioArea; onNavigate: (area: PortfolioArea) => void }) {
+  const { t } = useI18n()
   const go = (area: PortfolioArea) => (event: MouseEvent<HTMLAnchorElement>) => {
     if (event.metaKey || event.ctrlKey || event.shiftKey || event.button !== 0) return
     event.preventDefault()
     onNavigate(area)
   }
   return <header className="site-header">
-    <a className="site-logo" href="/" onClick={go('home')} aria-label="Calderón, inicio"><img src="/logo/calderon_logo.svg" alt="" width="2172" height="724" /></a>
-    <nav className="site-nav" aria-label="Secciones">
-      {(Object.keys(areaLabels) as Area[]).map((area) => <a key={area} href={pathForArea(area)} onClick={go(area)} aria-current={current === area ? 'page' : undefined}>{areaLabels[area]}</a>)}
-      <a className="site-nav-contact" href="#contacto" data-magnetic="0.25">Contacto</a>
+    <a className="site-logo" href="/" onClick={go('home')} aria-label={t.nav.home}><img src="/logo/calderon_logo.svg" alt="" width="2172" height="724" /></a>
+    <nav className="site-nav" aria-label={t.nav.sections}>
+      {areaOrder.map((area) => <a key={area} href={pathForArea(area)} onClick={go(area)} aria-current={current === area ? 'page' : undefined}>{t.areas[area]}</a>)}
+      <a className="site-nav-contact" href="#contacto" data-magnetic="0.25">{t.nav.contact}</a>
     </nav>
+    <LangSwitch />
   </header>
 }
 
+/** Compact language menu in the header; the choice is remembered on this device. */
+function LangSwitch() {
+  const { lang, setLang, t } = useI18n()
+  const [open, setOpen] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    if (!open) return
+    const onDown = (event: globalThis.PointerEvent) => { if (!ref.current?.contains(event.target as Node)) setOpen(false) }
+    const onKey = (event: KeyboardEvent) => { if (event.key === 'Escape') { setOpen(false); ref.current?.querySelector('button')?.focus() } }
+    document.addEventListener('pointerdown', onDown)
+    document.addEventListener('keydown', onKey)
+    return () => { document.removeEventListener('pointerdown', onDown); document.removeEventListener('keydown', onKey) }
+  }, [open])
+  const current = langs.find((item) => item.id === lang)!
+  return <div className={`lang${open ? ' is-open' : ''}`} ref={ref}>
+    <button type="button" className="lang-toggle" aria-expanded={open} aria-haspopup="true" aria-label={`${t.langLabel}: ${current.name}`} onClick={() => setOpen((value) => !value)}>
+      <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.25" /><path d="M1.75 8h12.5M8 1.75c1.7 1.8 2.5 3.9 2.5 6.25S9.7 12.45 8 14.25C6.3 12.45 5.5 10.35 5.5 8S6.3 3.55 8 1.75Z" /></svg>
+      <span>{current.short}</span>
+    </button>
+    {open && <ul className="lang-menu">
+      {langs.map((item) => <li key={item.id}><button type="button" lang={item.htmlLang} aria-current={item.id === lang || undefined} onClick={() => { setLang(item.id); setOpen(false) }}><span>{item.name}</span><i>{item.short}</i></button></li>)}
+    </ul>}
+  </div>
+}
+
 function SiteFooter({ showContact }: { showContact: boolean }) {
+  const { t } = useI18n()
   const contacts = [
     { label: 'WhatsApp', value: '11 3369-3052', href: links.whatsapp },
     { label: 'Instagram', value: '@joaquinncalderon', href: site.instagramUrl },
@@ -255,8 +279,8 @@ function SiteFooter({ showContact }: { showContact: boolean }) {
   ]
   return <footer className="site-footer" id={showContact ? 'contacto' : undefined}>
     {showContact && <div className="contact" data-reveal>
-      <h2 className="contact-title doodle"><span className="reveal-line"><span>¿Hacemos algo</span></span><span className="reveal-line"><span>juntos?</span></span></h2>
-      <p className="contact-lede">Sitios, apps, fotos o música para tu evento. Escribime y lo vemos.</p>
+      <h2 className="contact-title doodle"><span className="reveal-line"><span>{t.footer.titleTop}</span></span><span className="reveal-line"><span>{t.footer.titleBottom}</span></span></h2>
+      <p className="contact-lede">{t.footer.lede}</p>
       <ul className="contact-list">
         {contacts.map((contact) => <li key={contact.label}><a href={contact.href} target="_blank" rel="noreferrer"><span>{contact.label}</span><strong>{contact.value}</strong><Arrow /></a></li>)}
       </ul>
@@ -264,7 +288,7 @@ function SiteFooter({ showContact }: { showContact: boolean }) {
     <div className="footer-base">
       <img src="/logo/calderon_logo.svg" alt="Calderón" width="2172" height="724" />
       <span>© 2026 Joaquín Gonzalez Calderón</span>
-      <span>Entre Ríos, Argentina</span>
+      <span>{t.footer.place}</span>
     </div>
   </footer>
 }
@@ -274,14 +298,15 @@ function Arrow() {
 }
 
 /** Latest additions to the portfolio, newest first. Each one links to where it lives. Only the newest five show, so adding one on top drops the oldest. */
-type NewsItem = { title: string; text: string; note: string; image: string; area: Area; anchor: string }
+/** Text and note for each one live in `news.items` of src/i18n.tsx, under the same `id`. */
+type NewsItem = { id: keyof Messages['news']['items']; title: string; image: string; area: Area; anchor: string }
 const news: NewsItem[] = ([
-  { title: 'CUAD', text: 'Mi cuaderno virtual de páginas y bloques', note: 'En desarrollo', image: '/areas/news/cuad.webp', area: 'systems', anchor: 'cuad' },
-  { title: 'ENJAMBRE', text: 'Drones en red para emergencias, nuestro proyecto para el rally internacional', note: 'Proyecto en equipo', image: '/areas/news/enjambre.webp', area: 'systems', anchor: 'enjambre' },
-  { title: 'MAY', text: 'Mi editor de videos argentino, gratis y sin cuenta', note: 'En desarrollo', image: '/areas/news/may.webp', area: 'systems', anchor: 'may' },
-  { title: 'Docentes E', text: 'Fútbol en cancha abierta', note: 'Álbum nuevo', image: '/areas/news/docentes-e.webp', area: 'photography', anchor: 'albumes' },
-  { title: 'Fotos sueltas', text: 'Un músico callejero, la tienda Kloven y más autos clásicos', note: 'Fotos nuevas', image: '/areas/news/sueltas.webp', area: 'photography', anchor: 'sueltas' },
-  { title: 'Voider Goat', text: 'El reproductor de música de mi hermano', note: 'En vivo', image: '/areas/news/voider.webp', area: 'systems', anchor: 'voider' },
+  { id: 'cuad', title: 'CUAD', image: '/areas/news/cuad.webp', area: 'systems', anchor: 'cuad' },
+  { id: 'enjambre', title: 'ENJAMBRE', image: '/areas/news/enjambre.webp', area: 'systems', anchor: 'enjambre' },
+  { id: 'may', title: 'MAY', image: '/areas/news/may.webp', area: 'systems', anchor: 'may' },
+  { id: 'docentes', title: 'Docentes E', image: '/areas/news/docentes-e.webp', area: 'photography', anchor: 'albumes' },
+  { id: 'sueltas', title: 'Fotos sueltas', image: '/areas/news/sueltas.webp', area: 'photography', anchor: 'sueltas' },
+  { id: 'voider', title: 'Voider Goat', image: '/areas/news/voider.webp', area: 'systems', anchor: 'voider' },
 ] satisfies NewsItem[]).slice(0, 5)
 
 function NewsTicker({ onNavigate }: { onNavigate: (area: PortfolioArea) => void }) {
@@ -289,6 +314,7 @@ function NewsTicker({ onNavigate }: { onNavigate: (area: PortfolioArea) => void 
   const [slide, setSlide] = useState<{ index: number; from: number; dir: 1 | -1 }>({ index: 0, from: -1, dir: 1 })
   const [paused, setPaused] = useState(false)
   const swipe = useRef<{ x: number; y: number; moved: boolean } | null>(null)
+  const { t } = useI18n()
   // Warm the thumbnails so a slide never lands on an empty frame
   useEffect(() => { news.forEach((entry) => { new Image().src = entry.image }) }, [])
   const { index, from, dir } = slide
@@ -323,15 +349,18 @@ function NewsTicker({ onNavigate }: { onNavigate: (area: PortfolioArea) => void 
     if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(event.clientY - start.y)) { start.moved = true; step(dx < 0 ? 1 : -1) }
     window.setTimeout(() => { swipe.current = null }, 0)
   }
-  const roll = (entry: NewsItem) => <>
-    <span className="board-thumb"><img src={entry.image} alt="" width="144" height="96" /></span>
-    <span className="board-copy">
-      <span className="board-meta">{areaLabels[entry.area]}<i>{entry.note}</i></span>
-      <span className="board-text"><strong>{entry.title}</strong> {entry.text}</span>
-    </span>
-  </>
-  return <aside className="board" aria-label="Novedades del portfolio" onPointerEnter={() => setPaused(true)} onPointerLeave={() => setPaused(false)} onFocus={() => setPaused(true)} onBlur={() => setPaused(false)} onPointerDown={onPointerDown} onPointerUp={onPointerUp}>
-    <span className="board-label"><i className="board-pulse" aria-hidden="true" />Nuevo</span>
+  const roll = (entry: NewsItem) => {
+    const copy: { text: string; note: string; title?: string } = t.news.items[entry.id]
+    return <>
+      <span className="board-thumb"><img src={entry.image} alt="" width="144" height="96" /></span>
+      <span className="board-copy">
+        <span className="board-meta">{t.areas[entry.area]}<i>{copy.note}</i></span>
+        <span className="board-text"><strong>{copy.title ?? entry.title}</strong> {copy.text}</span>
+      </span>
+    </>
+  }
+  return <aside className="board" aria-label={t.news.aria} onPointerEnter={() => setPaused(true)} onPointerLeave={() => setPaused(false)} onFocus={() => setPaused(true)} onBlur={() => setPaused(false)} onPointerDown={onPointerDown} onPointerUp={onPointerUp}>
+    <span className="board-label"><i className="board-pulse" aria-hidden="true" />{t.news.label}</span>
     <a className="board-item" href={`${pathForArea(item.area)}#${item.anchor}`} onClick={open}>
       <span className="board-stage" style={{ '--dir': dir } as CSSProperties} aria-live="polite">
         {from >= 0 && <span className="board-roll is-out" key={`out-${from}-${index}`} aria-hidden="true" onAnimationEnd={(event) => { if (event.target === event.currentTarget) setSlide((current) => ({ ...current, from: -1 })) }}>{roll(news[from])}</span>}
@@ -341,15 +370,16 @@ function NewsTicker({ onNavigate }: { onNavigate: (area: PortfolioArea) => void 
     </a>
     <span className="board-controls">
       <span className="board-count" aria-hidden="true"><span className="board-count-now" key={index} style={{ '--dir': dir } as CSSProperties}>{pad(index + 1)}</span><i>/{pad(news.length)}</i></span>
-      <span className="board-dots">{news.map((entry, dot) => <button type="button" key={entry.anchor + entry.text} className={dot === index ? 'is-on' : ''} onClick={() => goTo(dot, dot > index ? 1 : -1)} aria-label={`Novedad ${dot + 1} de ${news.length}`} aria-current={dot === index || undefined}><i style={{ '--t': paused ? 'paused' : 'running' } as CSSProperties} /></button>)}</span>
-      <button type="button" onClick={() => step(-1)} aria-label="Novedad anterior"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3 5 8l5 5" /></svg></button>
-      <button type="button" onClick={() => step(1)} aria-label="Novedad siguiente"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m6 3 5 5-5 5" /></svg></button>
+      <span className="board-dots">{news.map((entry, dot) => <button type="button" key={entry.id} className={dot === index ? 'is-on' : ''} onClick={() => goTo(dot, dot > index ? 1 : -1)} aria-label={t.news.item(dot + 1, news.length)} aria-current={dot === index || undefined}><i style={{ '--t': paused ? 'paused' : 'running' } as CSSProperties} /></button>)}</span>
+      <button type="button" onClick={() => step(-1)} aria-label={t.news.prev}><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3 5 8l5 5" /></svg></button>
+      <button type="button" onClick={() => step(1)} aria-label={t.news.next}><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m6 3 5 5-5 5" /></svg></button>
     </span>
   </aside>
 }
 
 function HomeCover({ onNavigate, isReady }: { onNavigate: (area: PortfolioArea) => void; isReady: boolean }) {
   useReveal('home')
+  const { t } = useI18n()
   const parallaxRef = usePointerParallax<HTMLElement>()
   useTilt('home')
   const go = (area: Area) => (event: MouseEvent<HTMLAnchorElement>) => {
@@ -367,16 +397,16 @@ function HomeCover({ onNavigate, isReady }: { onNavigate: (area: PortfolioArea) 
     <NewsTicker onNavigate={onNavigate} />
     <section ref={parallaxRef} className="hero-card" aria-labelledby="hero-title">
       <div className="hero-intro">
-        <p className="hero-kicker">Joaquín Gonzalez · Portfolio 2026</p>
-        <p className="hero-lead">Analista en sistemas.<br />DJ y fotógrafo amateur.</p>
-        <nav className="hero-areas" aria-label="Áreas">
-          {(Object.keys(areaLabels) as Area[]).map((area) => <a key={area} href={pathForArea(area)} onClick={go(area)}>{areaLabels[area]}<Arrow /></a>)}
+        <p className="hero-kicker">{t.hero.kicker}</p>
+        <p className="hero-lead">{t.hero.lead[0]}<br />{t.hero.lead[1]}</p>
+        <nav className="hero-areas" aria-label={t.hero.areas}>
+          {areaOrder.map((area) => <a key={area} href={pathForArea(area)} onClick={go(area)}>{t.areas[area]}<Arrow /></a>)}
         </nav>
       </div>
       <a className="hero-handle" href={site.instagramUrl} target="_blank" rel="noreferrer">@joaquinncalderon</a>
       <div className="hero-echo" aria-hidden="true">{[0, 1].map((index) => <span key={index} style={{ '--i': index } as CSSProperties}>Calderón</span>)}<span className="is-spacer">Calderón</span></div>
       <figure className="hero-portrait">
-        <img src="/areas/portrait-yo2.webp" alt="Retrato de Joaquín Gonzalez Calderón con gorra" width="1239" height="1269" fetchPriority="high" />
+        <img src="/areas/portrait-yo2.webp" alt={t.hero.portraitAlt} width="1239" height="1269" fetchPriority="high" />
       </figure>
       <h1 className="hero-name" id="hero-title"><span className="sr-only">Joaquín Gonzalez </span><span className="hero-name-front">Calderón</span></h1>
       <Narrator isReady={isReady} />
@@ -384,38 +414,38 @@ function HomeCover({ onNavigate, isReady }: { onNavigate: (area: PortfolioArea) 
 
     <div className="case-grid" id="areas">
       <a className="case-card case-systems" data-tilt href={pathForArea('systems')} onClick={go('systems')} data-reveal>
-        <h2 className="case-title">Sistemas</h2>
-        <p className="case-rule"><span>Apps y sitios web</span></p>
+        <h2 className="case-title">{t.areas.systems}</h2>
+        <p className="case-rule"><span>{t.cases.systemsRule}</span></p>
         <SystemsRotator />
-        <span className="case-foot"><span>10 proyectos + 5 demos</span><span className="case-cta">Ver proyectos <Arrow /></span></span>
+        <span className="case-foot"><span>{t.cases.systemsFoot}</span><span className="case-cta">{t.cases.systemsCta} <Arrow /></span></span>
       </a>
 
       <a className="case-card case-photo" data-tilt href={pathForArea('photography')} onClick={go('photography')} data-reveal>
-        <h2 className="case-title">Fotografía</h2>
-        <p className="case-rule"><span>Amateur · eventos y marcas</span></p>
+        <h2 className="case-title">{t.areas.photography}</h2>
+        <p className="case-rule"><span>{t.cases.photoRule}</span></p>
         <span className="case-thumbs case-thumbs-stacks">
           {photoStacks.map(({ album, photos }) => <span className="case-stack" key={album.id}>
             {photos.map((photo) => <img key={photo.id} src={photo.src} srcSet={`${photo.src} 640w, ${photo.medium} 1200w`} sizes="(max-width: 760px) 30vw, 180px" alt="" loading="lazy" />)}
           </span>)}
         </span>
-        <span className="case-foot"><span>{albums.length} álbumes</span><span className="case-cta">Ver álbumes <Arrow /></span></span>
+        <span className="case-foot"><span>{t.cases.albums(albums.length)}</span><span className="case-cta">{t.cases.photoCta} <Arrow /></span></span>
       </a>
 
       <a className="case-card case-dj" data-tilt href={pathForArea('dj')} onClick={go('dj')} data-reveal>
         <h2 className="case-title"><span className="case-deboss" aria-hidden="true">Mashups</span>DJ</h2>
-        <p className="case-rule"><span>Amateur · mezclas propias</span></p>
+        <p className="case-rule"><span>{t.cases.djRule}</span></p>
         <span className="case-thumbs case-thumbs-covers">
           {djTracks.slice(0, 3).map((track) => <img key={track.number} src={track.cover} alt="" loading="lazy" />)}
         </span>
-        <span className="case-foot"><span>{djTracks.length} temas para escuchar</span><span className="case-cta">Escuchar <Arrow /></span></span>
+        <span className="case-foot"><span>{t.cases.djFoot(djTracks.length)}</span><span className="case-cta">{t.cases.djCta} <Arrow /></span></span>
       </a>
 
       <section className="case-card case-contact" id="contacto" aria-labelledby="contact-card-title" data-reveal>
-        <h2 className="case-contact-title" id="contact-card-title">¿Tenés un proyecto? Arrancamos cuando quieras.</h2>
-        <p className="case-contact-lede">Escaneá un QR o escribime directo.</p>
+        <h2 className="case-contact-title" id="contact-card-title">{t.cases.contactTitle}</h2>
+        <p className="case-contact-lede">{t.cases.contactLede}</p>
         <div className="qr-row">
-          <a className="qr" href={links.whatsapp} target="_blank" rel="noreferrer"><img src="/areas/qr-whatsapp.svg" alt="Código QR para escribir por WhatsApp" width="120" height="120" /><span>WhatsApp</span></a>
-          <a className="qr" href={site.instagramUrl} target="_blank" rel="noreferrer"><img src="/areas/qr-instagram.svg" alt="Código QR del Instagram @joaquinncalderon" width="120" height="120" /><span>Instagram</span></a>
+          <a className="qr" href={links.whatsapp} target="_blank" rel="noreferrer"><img src="/areas/qr-whatsapp.svg" alt={t.cases.qrWhatsapp} width="120" height="120" /><span>WhatsApp</span></a>
+          <a className="qr" href={site.instagramUrl} target="_blank" rel="noreferrer"><img src="/areas/qr-instagram.svg" alt={t.cases.qrInstagram} width="120" height="120" /><span>Instagram</span></a>
         </div>
         <ul className="case-contact-links">
           <li><a href={links.whatsapp} target="_blank" rel="noreferrer">11 3369-3052 <Arrow /></a></li>
@@ -427,29 +457,32 @@ function HomeCover({ onNavigate, isReady }: { onNavigate: (area: PortfolioArea) 
   </main>
 }
 
-const systemsShowcase = [
+type DemoId = keyof Messages['systems']['demos']['items']
+const systemsShowcase: { name?: string; demo?: DemoId; image: string; wip?: boolean; phone?: boolean }[] = [
   { name: 'Streak', image: '/areas/tustreak-desktop.webp' },
-  { name: 'MAY (en desarrollo)', image: '/areas/may-home.webp' },
+  { name: 'MAY', image: '/areas/may-home.webp', wip: true },
   { name: 'Voider Goat', image: '/areas/voidergoat-album.webp' },
   { name: 'STUGO', image: '/areas/stugo1.webp', phone: true },
   { name: 'ENJAMBRE', image: '/areas/enjambre-coe.webp' },
-  { name: 'CUAD (en desarrollo)', image: '/areas/cuad-home.webp' },
+  { name: 'CUAD', image: '/areas/cuad-home.webp', wip: true },
   { name: 'Mate Único', image: '/areas/jgc-mate.webp' },
   { name: 'Inmobiliaria Andrea Duré', image: '/areas/jgc-inmobiliaria.webp' },
-  { name: 'Barbería Los Santos (en desarrollo)', image: '/areas/jgc-barberia.webp' },
-  { name: 'Analía Calderón (en desarrollo)', image: '/areas/jgc-amelia.webp' },
-  { name: 'Demo Cafetería', image: '/areas/demo-cafeteria.webp' },
-  { name: 'Demo Bazar', image: '/areas/demo-bazar.webp' },
-  { name: 'Demo Tienda de ropa', image: '/areas/demo-tienda.webp' },
-  { name: 'Demo Barbería', image: '/areas/demo-barberia.webp' },
-  { name: 'Demo Gimnasio', image: '/areas/demo-gimnasio.webp' },
+  { name: 'Barbería Los Santos', image: '/areas/jgc-barberia.webp', wip: true },
+  { name: 'Analía Calderón', image: '/areas/jgc-amelia.webp', wip: true },
+  { demo: 'cafeteria', image: '/areas/demo-cafeteria.webp' },
+  { demo: 'bazar', image: '/areas/demo-bazar.webp' },
+  { demo: 'tienda', image: '/areas/demo-tienda.webp' },
+  { demo: 'barberia', image: '/areas/demo-barberia.webp' },
+  { demo: 'gimnasio', image: '/areas/demo-gimnasio.webp' },
 ]
 
 /** Cycles through every systems project, one in front and its neighbours tilted to the sides. */
 function SystemsRotator() {
   const [active, setActive] = useState(0)
   const ref = useRef<HTMLSpanElement>(null)
+  const { t } = useI18n()
   const count = systemsShowcase.length
+  const caption = (project: typeof systemsShowcase[number]) => project.demo ? `${t.demoPrefix} ${t.systems.demos.items[project.demo].name}` : project.wip ? `${project.name} (${t.status.wip.toLowerCase()})` : project.name
   useEffect(() => {
     if (prefersReducedMotion()) return
     const card = ref.current?.closest('.case-card')
@@ -476,10 +509,10 @@ function SystemsRotator() {
       {systemsShowcase.map((project, index) => {
         const offset = (index - active + count) % count
         const slot = offset === 0 ? 'center' : offset === 1 ? 'right' : offset === count - 1 ? 'left' : offset === 2 ? 'next' : 'away'
-        return <img key={project.name} className={`rotator-item is-${slot}${project.phone ? ' is-phone' : ''}`} src={project.image} alt="" loading="lazy" />
+        return <img key={project.image} className={`rotator-item is-${slot}${project.phone ? ' is-phone' : ''}`} src={project.image} alt="" loading="lazy" />
       })}
     </span>
-    <span className="rotator-caption" aria-live="off"><span key={active}>{systemsShowcase[active].name}</span><span>{active + 1} / {count}</span></span>
+    <span className="rotator-caption" aria-live="off"><span key={active}>{caption(systemsShowcase[active])}</span><span>{active + 1} / {count}</span></span>
   </span>
 }
 
@@ -494,9 +527,10 @@ function PageHead({ title, lede, children }: { title: string; lede: string; chil
 }
 
 function SystemsPage() {
+  const { t } = useI18n()
   useReveal('systems')
   return <main className="page systems">
-    <PageHead title="Sistemas" lede="Desarrollo web, comercio digital y soluciones para negocios. Apps propias y sitios para clientes.">
+    <PageHead title={t.areas.systems} lede={t.systems.lede}>
       <div className="page-head-links">
         <a className="pill-link" href={links.github} target="_blank" rel="noreferrer">GitHub <Arrow /></a>
         <a className="pill-link" href={links.linkedin} target="_blank" rel="noreferrer">LinkedIn <Arrow /></a>
@@ -509,12 +543,12 @@ function SystemsPage() {
     <FeaturedEnjambre />
     <FeaturedCuad />
     <section className="clients" id="clientes" aria-labelledby="clients-title">
-      <h2 className="section-title" id="clients-title" data-reveal><span className="reveal-line"><span>Sitios para clientes</span></span></h2>
+      <h2 className="section-title" id="clients-title" data-reveal><span className="reveal-line"><span>{t.systems.clientsTitle}</span></span></h2>
       <div className="clients-grid">
-        <ClientSite title="Mate Único" description="E-commerce full-stack con restricciones en base de datos y lógica avanzada de validación de stock." image="/areas/jgc-mate.webp" alt="Vista de la tienda online Mate Único" href="https://mate-unico-deployed.vercel.app/" />
-        <ClientSite title="Inmobiliaria Andrea Duré" description="Sitio inmobiliario profesional y responsivo para el mercado local de Colón, Entre Ríos." image="/areas/jgc-inmobiliaria.webp" alt="Vista de la web inmobiliaria de Andrea Duré" href="https://andreadure.com/" />
-        <ClientSite title="Barbería Los Santos" description="Plataforma web para presentar servicios, catálogo de cortes y reserva de turnos online." image="/areas/jgc-barberia.webp" alt="Vista del proyecto web Barbería Los Santos" href="https://lossantos-coral.vercel.app/" inProgress />
-        <ClientSite title="Analía Calderón · Artista visual" description="Portfolio para una ilustradora, ceramista y docente: su obra de dibujo, pintura y cerámica, y su personaje Amelia. Todavía lo estamos terminando." image="/areas/jgc-amelia.webp" alt="Vista del portfolio de Analía Calderón, artista visual" inProgress />
+        <ClientSite title="Mate Único" description={t.systems.clients.mate.description} image="/areas/jgc-mate.webp" alt={t.systems.clients.mate.alt} href="https://mate-unico-deployed.vercel.app/" />
+        <ClientSite title="Inmobiliaria Andrea Duré" description={t.systems.clients.inmobiliaria.description} image="/areas/jgc-inmobiliaria.webp" alt={t.systems.clients.inmobiliaria.alt} href="https://andreadure.com/" />
+        <ClientSite title="Barbería Los Santos" description={t.systems.clients.barberia.description} image="/areas/jgc-barberia.webp" alt={t.systems.clients.barberia.alt} href="https://lossantos-coral.vercel.app/" inProgress />
+        <ClientSite title={t.systems.clients.analia.title} description={t.systems.clients.analia.description} image="/areas/jgc-amelia.webp" alt={t.systems.clients.analia.alt} inProgress />
       </div>
     </section>
     <DemoShowcase />
@@ -529,33 +563,30 @@ function Phone({ src, alt, title }: { src: string; alt: string; title: string })
 }
 
 function FeaturedStreak() {
-  const screens = [
-    { src: '/areas/tustreak-home.webp', title: 'Inicio', alt: 'Inicio de Streak con la racha, la semana marcada día por día y el registro de gym' },
-    { src: '/areas/tustreak-progress.webp', title: 'Progreso', alt: 'Progreso de Streak con XP, nivel, racha actual y mejor racha, consistencia e historial' },
-    { src: '/areas/tustreak-gym.webp', title: 'Gym', alt: 'Gym en Streak con los entrenamientos de la semana, objetivo, rutina y estadísticas' },
-    { src: '/areas/tustreak-profile.webp', title: 'Perfil', alt: 'Perfil de Streak con avatar, nivel, frase motivadora, hábito y personalización' },
-  ]
+  const { t } = useI18n()
+  const screens = ['home', 'progress', 'gym', 'profile'].map((name, index) => ({ src: `/areas/tustreak-${name}.webp`, ...t.systems.streak.screens[index] }))
   return <article className="feature feature-streak" aria-labelledby="streak-title">
     <div className="feature-copy" data-reveal>
-      <p className="feature-kind">Producto digital · App web</p>
-      <div className="feature-title-row"><h2 id="streak-title">Streak</h2><span className="status is-live">En vivo</span></div>
-      <p className="feature-text">Streak reúne seguimiento de hábitos, entrenamiento y progreso en una app pensada para el celular e instalable como PWA. Registrá tu hábito diario y la toma de creatina, seguí la semana día por día y sumá a tus amigos para entrenar en desafíos. La XP y los niveles reconocen la constancia sin perder lo acumulado cuando se corta una racha.</p>
+      <p className="feature-kind">{t.systems.streak.kind}</p>
+      <div className="feature-title-row"><h2 id="streak-title">Streak</h2><span className="status is-live">{t.status.live}</span></div>
+      <p className="feature-text">{t.systems.streak.text}</p>
       <ul className="feature-points">
-        <li>Hábito diario, creatina y recordatorios</li><li>XP, niveles, rachas e historial</li><li>Rutinas, calendario y estadísticas de gym</li><li>Amigos, desafíos y códigos de invitación</li><li>Perfil personalizable y PWA instalable</li>
+        {t.systems.streak.points.map((point) => <li key={point}>{point}</li>)}
       </ul>
       <details className="feature-more">
-        <summary>Más detalles</summary>
-        <p>En Gym podés anotar entrenamientos y grupos musculares, editar el historial, crear rutinas propias y seguir objetivos semanales, mensuales y por músculo en el calendario. En Amigos sumás gente con un código, ves cómo viene cada uno y creás desafíos, como 20 entrenamientos en el mes. El perfil suma frases motivadoras, avatar, tema, color principal, hábito y recordatorios configurables. Cada cuenta guarda sus datos de forma privada.</p>
+        <summary>{t.systems.streak.moreLabel}</summary>
+        <p>{t.systems.streak.more}</p>
       </details>
-      <a className="button" data-magnetic="0.2" href="https://www.streak.com.ar/app" target="_blank" rel="noreferrer">Abrir Streak <Arrow /></a>
+      <a className="button" data-magnetic="0.2" href="https://www.streak.com.ar/app" target="_blank" rel="noreferrer">{t.systems.streak.cta} <Arrow /></a>
     </div>
-    <div className="feature-phones streak-phones" aria-label="Capturas de Streak" data-reveal>
+    <div className="feature-phones streak-phones" aria-label={t.systems.streak.shots} data-reveal>
       {screens.map((screen) => <Phone key={screen.title} {...screen} />)}
     </div>
   </article>
 }
 
 function FeaturedVoider() {
+  const { t } = useI18n()
   return <article className="feature feature-voider" id="voider" aria-labelledby="voider-title">
     <div className="voider-stage" data-reveal>
       <a className="voider-window voider-window-back" href="https://voidergoat-player.vercel.app/" target="_blank" rel="noreferrer" tabIndex={-1} aria-hidden="true">
@@ -569,19 +600,20 @@ function FeaturedVoider() {
       <span className="voider-phone" aria-hidden="true"><img src="/areas/voidergoat-m.webp" alt="" loading="lazy" width="400" height="800" /></span>
     </div>
     <div className="voider-copy" data-reveal>
-      <p className="feature-kind">Reproductor web · Música</p>
-      <div className="feature-title-row"><h2 id="voider-title">Voider Goat</h2><span className="status is-live">En vivo</span></div>
-      <p className="feature-text feature-text-lead">Un reproductor para la música de mi hermano, Voider Goat: todos sus álbumes, temas y beats en un solo lugar.</p>
-      <p className="feature-text">Los álbumes se ordenan por categoría (4 Fun, Free 4 Profit, Collabs y 4 Sale) y cada uno tiene su página con la lista de temas. El reproductor queda fijo abajo mientras navegás, con controles, progreso y volumen.</p>
+      <p className="feature-kind">{t.systems.voider.kind}</p>
+      <div className="feature-title-row"><h2 id="voider-title">Voider Goat</h2><span className="status is-live">{t.status.live}</span></div>
+      <p className="feature-text feature-text-lead">{t.systems.voider.lead}</p>
+      <p className="feature-text">{t.systems.voider.text}</p>
       <ul className="feature-points">
-        <li>Portada con los álbumes flotando alrededor del logo</li><li>Filtros por categoría e índice de álbumes</li><li>Reproductor persistente entre páginas</li><li>Español e inglés, modo claro y oscuro</li><li>Contacto directo por Instagram para pedir beats</li>
+        {t.systems.voider.points.map((point) => <li key={point}>{point}</li>)}
       </ul>
-      <a className="button voider-cta" data-magnetic="0.2" href="https://voidergoat-player.vercel.app/" target="_blank" rel="noreferrer">Abrir Voider Goat <Arrow /></a>
+      <a className="button voider-cta" data-magnetic="0.2" href="https://voidergoat-player.vercel.app/" target="_blank" rel="noreferrer">{t.systems.voider.cta} <Arrow /></a>
     </div>
   </article>
 }
 
 function FeaturedMay() {
+  const { t } = useI18n()
   return <article className="feature feature-shots feature-may" id="may" aria-labelledby="may-title">
     <div className="shots-stage" data-reveal>
       <a className="shots-window shots-window-back" href="https://may-editor.vercel.app/" target="_blank" rel="noreferrer" tabIndex={-1} aria-hidden="true">
@@ -594,19 +626,20 @@ function FeaturedMay() {
       </a>
     </div>
     <div className="shots-copy" data-reveal>
-      <p className="feature-kind">Editor de video · Web + escritorio</p>
-      <div className="feature-title-row"><h2 id="may-title">MAY</h2><span className="status is-wip">En desarrollo</span></div>
-      <p className="feature-text feature-text-lead">El editor de videos argentino: cortá, sumá texto, fotos, música y efectos, mezclá el sonido y exportá en MP4. Gratis y sin cuenta.</p>
-      <p className="feature-text">Un mismo proyecto tiene dos espacios: VIDEO para editar la imagen y AUDIO para el sonido, con un mixer de buses, envíos y medidores. Está pensado para andar bien en compus comunes y todo se procesa en tu equipo: no se sube nada, sin telemetría ni cookies.</p>
+      <p className="feature-kind">{t.systems.may.kind}</p>
+      <div className="feature-title-row"><h2 id="may-title">MAY</h2><span className="status is-wip">{t.status.wip}</span></div>
+      <p className="feature-text feature-text-lead">{t.systems.may.lead}</p>
+      <p className="feature-text">{t.systems.may.text}</p>
       <ul className="feature-points">
-        <li>Cortes, keyframes con curvas, transiciones y subtítulos SRT</li><li>Velocidad, reverse y efectos acelerados por GPU</li><li>Mixer con buses, automatización y medición LUFS</li><li>Exportación local en MP4, WAV y stems</li><li>Versión web y app de escritorio para Windows (próximamente)</li>
+        {t.systems.may.points.map((point) => <li key={point}>{point}</li>)}
       </ul>
-      <a className="button shots-cta" data-magnetic="0.2" href="https://may-editor.vercel.app/" target="_blank" rel="noreferrer">Abrir MAY <Arrow /></a>
+      <a className="button shots-cta" data-magnetic="0.2" href="https://may-editor.vercel.app/" target="_blank" rel="noreferrer">{t.systems.may.cta} <Arrow /></a>
     </div>
   </article>
 }
 
 function FeaturedEnjambre() {
+  const { t } = useI18n()
   return <article className="feature feature-shots feature-enjambre is-reversed" id="enjambre" aria-labelledby="enjambre-title">
     <div className="shots-stage" data-reveal>
       <a className="shots-window shots-window-back" href="https://enjambreer.vercel.app/drones/" target="_blank" rel="noreferrer" tabIndex={-1} aria-hidden="true">
@@ -619,19 +652,20 @@ function FeaturedEnjambre() {
       </a>
     </div>
     <div className="shots-copy" data-reveal>
-      <p className="feature-kind">Rally internacional de innovación · En equipo</p>
-      <div className="feature-title-row"><h2 id="enjambre-title">Enjambre</h2><span className="status">Proyecto en equipo</span></div>
-      <p className="feature-text feature-text-lead">Un sistema de apoyo a las decisiones en emergencias y desastres naturales: drones en red, inteligencia artificial y unidades móviles que le acercan información en tiempo real a Defensa Civil y a los equipos de rescate.</p>
-      <p className="feature-text">Lo ideamos con LOISIS, un equipo de diez estudiantes y egresados de Sistemas y Organización Industrial de la UADER y la UTN. El sitio presenta la propuesta: cómo trabaja la red, las unidades y la flota, y una simulación del panel COE donde el enjambre reorganiza sus recorridos cuando encuentra algo.</p>
+      <p className="feature-kind">{t.systems.enjambre.kind}</p>
+      <div className="feature-title-row"><h2 id="enjambre-title">Enjambre</h2><span className="status">{t.status.team}</span></div>
+      <p className="feature-text feature-text-lead">{t.systems.enjambre.lead}</p>
+      <p className="feature-text">{t.systems.enjambre.text}</p>
       <ul className="feature-points">
-        <li>Simulación del panel COE con prioridades sugeridas</li><li>Hangar 3D: girá cada drone y encendé los motores</li><li>Drones que adaptan sus rutas según lo que encuentran</li><li>Pensado para Defensa Civil y equipos de rescate</li>
+        {t.systems.enjambre.points.map((point) => <li key={point}>{point}</li>)}
       </ul>
-      <a className="button shots-cta" data-magnetic="0.2" href="https://enjambreer.vercel.app/" target="_blank" rel="noreferrer">Ver ENJAMBRE <Arrow /></a>
+      <a className="button shots-cta" data-magnetic="0.2" href="https://enjambreer.vercel.app/" target="_blank" rel="noreferrer">{t.systems.enjambre.cta} <Arrow /></a>
     </div>
   </article>
 }
 
 function FeaturedCuad() {
+  const { t } = useI18n()
   return <article className="feature feature-shots feature-cuad" id="cuad" aria-labelledby="cuad-title">
     <div className="shots-stage" data-reveal>
       <a className="shots-window shots-window-back" href="https://cuad-eight.vercel.app/" target="_blank" rel="noreferrer" tabIndex={-1} aria-hidden="true">
@@ -639,46 +673,42 @@ function FeaturedCuad() {
         <img src="/areas/cuad-home.webp" alt="" loading="lazy" width="1280" height="800" />
       </a>
       <a className="shots-window shots-window-front" href="https://cuad-eight.vercel.app/" target="_blank" rel="noreferrer" tabIndex={-1} aria-hidden="true">
-        <span className="demo-browser-bar"><i /><i /><i /><span>CUAD · Apuntes de clase</span></span>
+        <span className="demo-browser-bar"><i /><i /><i /><span>{t.systems.cuad.barNotes}</span></span>
         <img src="/areas/cuad-apuntes.webp" alt="" loading="lazy" width="1280" height="800" />
       </a>
     </div>
     <div className="shots-copy" data-reveal>
-      <p className="feature-kind">Cuaderno virtual · App web</p>
-      <div className="feature-title-row"><h2 id="cuad-title">CUAD</h2><span className="status is-wip">En desarrollo</span></div>
-      <p className="feature-text feature-text-lead">Mi cuaderno virtual, en la línea de Notion: páginas y bloques para tomar apuntes, ordenar ideas y llevar tareas, a tu estilo.</p>
-      <p className="feature-text">Cada página tiene portada, subpáginas y bloques de texto, títulos, listas, tareas, desplegables, citas y código. Se insertan escribiendo / o desde el panel de estado, se reordenan arrastrando y todo se guarda solo mientras escribís.</p>
+      <p className="feature-kind">{t.systems.cuad.kind}</p>
+      <div className="feature-title-row"><h2 id="cuad-title">CUAD</h2><span className="status is-wip">{t.status.wip}</span></div>
+      <p className="feature-text feature-text-lead">{t.systems.cuad.lead}</p>
+      <p className="feature-text">{t.systems.cuad.text}</p>
       <ul className="feature-points">
-        <li>Bloques con atajos tipo Markdown y comandos con /</li><li>Subpáginas, favoritos, recientes y papelera</li><li>Búsqueda rápida con Ctrl + K</li><li>Panel de estado con bloques, palabras y tareas</li>
+        {t.systems.cuad.points.map((point) => <li key={point}>{point}</li>)}
       </ul>
-      <a className="button shots-cta" data-magnetic="0.2" href="https://cuad-eight.vercel.app/" target="_blank" rel="noreferrer">Probar CUAD <Arrow /></a>
+      <a className="button shots-cta" data-magnetic="0.2" href="https://cuad-eight.vercel.app/" target="_blank" rel="noreferrer">{t.systems.cuad.cta} <Arrow /></a>
     </div>
   </article>
 }
 
 function FeaturedStugo() {
-  const screens = [
-    { src: '/areas/stugo1.webp', title: 'Inicio', alt: 'Inicio de STUGO con asistente, agenda, viajes y vivienda' },
-    { src: '/areas/stugo2.webp', title: 'Servicios', alt: 'Categorías de servicios cotidianos y comercios cercanos en STUGO' },
-    { src: '/areas/stugo3.webp', title: 'Asistente IA', alt: 'Asistente por voz y texto de STUGO con consultas rápidas de actividades y viajes' },
-    { src: '/areas/stugo4.webp', title: 'Actividades', alt: 'Descubrimiento de actividades y eventos locales en STUGO' },
-  ]
+  const { t } = useI18n()
+  const screens = t.systems.stugo.screens.map((screen, index) => ({ src: `/areas/stugo${index + 1}.webp`, ...screen }))
   return <article className="feature feature-stugo" aria-labelledby="stugo-title">
-    <div className="feature-title-row" data-reveal><h2 id="stugo-title">STUGO</h2><span className="status">Proyecto propio</span></div>
-    <div className="feature-phones stugo-phones" aria-label="Capturas de STUGO" data-reveal>
+    <div className="feature-title-row" data-reveal><h2 id="stugo-title">STUGO</h2><span className="status">{t.status.own}</span></div>
+    <div className="feature-phones stugo-phones" aria-label={t.systems.stugo.shots} data-reveal>
       {screens.map((screen) => <Phone key={screen.title} {...screen} />)}
     </div>
     <div className="stugo-copy" data-reveal>
       <div>
-        <p className="feature-kind">Plataforma hiperlocal · Mobile + web</p>
-        <p className="feature-text feature-text-lead">Un ecosistema para la vida universitaria que conecta a estudiantes con vivienda verificada, viajes compartidos, actividades y servicios cotidianos, empezando por Concepción del Uruguay.</p>
-        <p className="feature-text">La app móvil y web reúne mapas y filtros locales, reservas de carpooling con contacto protegido, publicaciones inmobiliarias moderadas y un asistente conversacional por voz y texto. El asistente consulta información real de la plataforma y responde con tarjetas interactivas de viviendas, viajes, lugares y actividades.</p>
+        <p className="feature-kind">{t.systems.stugo.kind}</p>
+        <p className="feature-text feature-text-lead">{t.systems.stugo.lead}</p>
+        <p className="feature-text">{t.systems.stugo.text}</p>
       </div>
       <div>
         <ul className="feature-points">
-          <li>Vivienda estudiantil, servicios y actividades</li><li>Carpooling con reservas y privacidad</li><li>App Expo y panel web de moderación</li><li>FastAPI, PostgreSQL y asistente con IA y voz</li>
+          {t.systems.stugo.points.map((point) => <li key={point}>{point}</li>)}
         </ul>
-        <ul className="stack" aria-label="Tecnologías principales">
+        <ul className="stack" aria-label={t.systems.stugo.stack}>
           {['React Native', 'Expo', 'TypeScript', 'FastAPI', 'PostgreSQL', 'Groq', 'Whisper'].map((tech) => <li key={tech}>{tech}</li>)}
         </ul>
       </div>
@@ -687,30 +717,33 @@ function FeaturedStugo() {
 }
 
 function ClientSite({ title, description, image, alt, href, inProgress = false }: { title: string; description: string; image: string; alt: string; href?: string; inProgress?: boolean }) {
+  const { t } = useI18n()
   const picture = <img src={image} alt={alt} loading="lazy" width="1440" height="700" />
   return <article className="client" data-reveal="clip">
     {href ? <a className="client-image" href={href} target="_blank" rel="noreferrer" tabIndex={-1} aria-hidden="true">{picture}</a> : <div className="client-image">{picture}</div>}
     <div className="client-info">
-      {inProgress && <span className="status is-wip">En desarrollo</span>}
+      {inProgress && <span className="status is-wip">{t.status.wip}</span>}
       <h3>{title}</h3>
       <p>{description}</p>
-      {href && <a className="text-link" href={href} target="_blank" rel="noreferrer" aria-label={`${inProgress ? 'Ver el avance del sitio' : 'Ver sitio'} de ${title}`}>{inProgress ? 'Ver avance' : 'Ver sitio'} <Arrow /></a>}
+      {href && <a className="text-link" href={href} target="_blank" rel="noreferrer" aria-label={t.systems.viewSiteAria(title, inProgress)}>{inProgress ? t.systems.viewProgress : t.systems.viewSite} <Arrow /></a>}
     </div>
   </article>
 }
 
 const demos = [
-  { id: 'cafeteria', name: 'Cafetería', domain: 'tu-cafeteria.vercel.app', accent: '#d39a5c', tagline: 'Café de especialidad, sin apuro.', style: 'Oscuro tipo espresso, con sello giratorio y vapor animado.', features: ['Menú con pestañas y precios', 'Reservas de mesa por WhatsApp', 'Reseñas que rotan', 'Abierto o cerrado en vivo'] },
-  { id: 'bazar', name: 'Bazar', domain: 'tu-bazar.vercel.app', accent: '#c8643c', tagline: 'Objetos que hacen hogar.', style: 'Editorial cálido, con serif elegante y tonos terracota.', features: ['Tienda con filtros y favoritos', 'Carrito que cierra el pedido por WhatsApp', 'Ambientes en bento y mapa', 'Indicador de abierto ahora'] },
-  { id: 'tienda', name: 'Tienda de ropa', domain: 'tu-tienda-de-ropa.vercel.app', accent: '#c8ff2e', tagline: 'Dominá la calle.', style: 'Streetwear brutalista en negro y verde ácido.', features: ['Cuenta regresiva al próximo drop', 'Talles, agotados y bolsa de compras', 'Lookbook deslizable', 'Newsletter con código de descuento'] },
-  { id: 'barberia', name: 'Barbería', domain: 'tu-barberia-ten.vercel.app', accent: '#c9a24a', tagline: 'Cortes con oficio.', style: 'Negro y dorado, con poste de barbero animado.', features: ['Turnos en 4 pasos: servicio, barbero, día y hora', 'Confirmación por WhatsApp', 'Carta de precios y equipo', 'Galería de cortes'] },
-  { id: 'gimnasio', name: 'Gimnasio', domain: 'tu-gimnasio-seven.vercel.app', accent: '#ff5a1f', tagline: 'Entrená sin excusas.', style: 'Alto impacto en naranja.', features: ['Grilla semanal de clases', 'Planes que recalculan el ahorro', 'Calculadora de IMC', 'Clase gratis por WhatsApp'] },
+  { id: 'cafeteria', domain: 'tu-cafeteria.vercel.app', accent: '#d39a5c' },
+  { id: 'bazar', domain: 'tu-bazar.vercel.app', accent: '#c8643c' },
+  { id: 'tienda', domain: 'tu-tienda-de-ropa.vercel.app', accent: '#c8ff2e' },
+  { id: 'barberia', domain: 'tu-barberia-ten.vercel.app', accent: '#c9a24a' },
+  { id: 'gimnasio', domain: 'tu-gimnasio-seven.vercel.app', accent: '#ff5a1f' },
 ] as const
 
 /** Tabs for each business type; the stage shows the desktop and phone versions of the selected demo. */
 function DemoShowcase() {
   const [active, setActive] = useState(0)
+  const { t } = useI18n()
   const demo = demos[active]
+  const copy = t.systems.demos.items[demo.id]
   const tabsRef = useRef<HTMLDivElement>(null)
   const select = (index: number) => {
     setActive(index)
@@ -720,10 +753,10 @@ function DemoShowcase() {
   }
   return <section className="demos" id="demos" aria-labelledby="demos-title" style={{ '--demo': demo.accent } as CSSProperties}>
     <div className="demos-head" data-reveal>
-      <h2 className="section-title" id="demos-title">Demos para comercios</h2>
-      <p>Cinco sitios de ejemplo, cada uno con su propia estética y funciones reales. Elegí un rubro, probalo y lo adaptamos a tu local.</p>
+      <h2 className="section-title" id="demos-title">{t.systems.demos.title}</h2>
+      <p>{t.systems.demos.lede}</p>
     </div>
-    <div className="demo-tabs" role="tablist" aria-label="Rubros" ref={tabsRef} onKeyDown={(event) => {
+    <div className="demo-tabs" role="tablist" aria-label={t.systems.demos.tabs} ref={tabsRef} onKeyDown={(event) => {
       const forward = event.key === 'ArrowRight' || event.key === 'ArrowDown'
       if (!forward && event.key !== 'ArrowLeft' && event.key !== 'ArrowUp') return
       event.preventDefault()
@@ -733,12 +766,12 @@ function DemoShowcase() {
     }}>
       {demos.map((item, index) => <button key={item.id} type="button" role="tab" id={`demo-tab-${item.id}`} aria-selected={index === active} aria-controls="demo-panel" tabIndex={index === active ? 0 : -1} style={{ '--tab': item.accent } as CSSProperties} onClick={() => select(index)}>
         <span className="demo-tab-dot" aria-hidden="true" />
-        <span className="demo-tab-name">{item.name}</span>
-        <span className="demo-tab-line">{item.tagline}</span>
+        <span className="demo-tab-name">{t.systems.demos.items[item.id].name}</span>
+        <span className="demo-tab-line">{t.systems.demos.items[item.id].tagline}</span>
       </button>)}
     </div>
     <div className="demo-panel" id="demo-panel" role="tabpanel" aria-labelledby={`demo-tab-${demo.id}`}>
-      <a className="demo-stage" href={`https://${demo.domain}`} target="_blank" rel="noreferrer" aria-label={`Abrir la demo de ${demo.name}`} key={demo.id}>
+      <a className="demo-stage" href={`https://${demo.domain}`} target="_blank" rel="noreferrer" aria-label={t.systems.demos.open(copy.name)} key={demo.id}>
         <span className="demo-browser">
           <span className="demo-browser-bar" aria-hidden="true"><i /><i /><i /><span>{demo.domain}</span></span>
           <img src={`/areas/demo-${demo.id}.webp`} alt="" width="1280" height="800" />
@@ -746,9 +779,9 @@ function DemoShowcase() {
         <span className="demo-phone" aria-hidden="true"><img src={`/areas/demo-${demo.id}-m.webp`} alt="" width="400" height="800" /></span>
       </a>
       <div className="demo-info" key={`${demo.id}-info`}>
-        <p className="demo-style">{demo.style}</p>
-        <ul className="demo-features">{demo.features.map((feature) => <li key={feature}>{feature}</li>)}</ul>
-        <a className="button demo-cta" href={`https://${demo.domain}`} target="_blank" rel="noreferrer">Probar la demo <Arrow /></a>
+        <p className="demo-style">{copy.style}</p>
+        <ul className="demo-features">{copy.features.map((feature) => <li key={feature}>{feature}</li>)}</ul>
+        <a className="button demo-cta" href={`https://${demo.domain}`} target="_blank" rel="noreferrer">{t.systems.demos.cta} <Arrow /></a>
       </div>
     </div>
     <span className="demo-preload" aria-hidden="true">{demos.map((item) => <img key={item.id} src={`/areas/demo-${item.id}.webp`} alt="" loading="lazy" />)}</span>
@@ -765,6 +798,7 @@ function DJPage() {
   const [duration, setDuration] = useState(0)
   const [audioError, setAudioError] = useState(false)
   const activeTrack = djTracks[activeIndex]
+  const { t } = useI18n()
   useReveal('dj')
   useEffect(() => {
     const audio = audioRef.current
@@ -819,8 +853,8 @@ function DJPage() {
 
   return <main className="page dj" id="mashups">
     <audio ref={audioRef} src={activeTrack.src} preload="auto" onLoadedMetadata={(event) => setDuration(Number.isFinite(event.currentTarget.duration) ? event.currentTarget.duration : 0)} onTimeUpdate={(event) => setCurrentTime(event.currentTarget.currentTime)} onPlay={() => { setPlaying(true); setAudioError(false); fadeTrackIn() }} onPause={() => { setPlaying(false); if (trackFadeFrame.current !== null) { window.cancelAnimationFrame(trackFadeFrame.current); trackFadeFrame.current = null } }} onEnded={() => { setPlaying(false); setCurrentTime(0) }} onError={() => setAudioError(true)} />
-    <PageHead title="Mashups" lede="Soy DJ amateur: me gusta mezclar canciones, probar cruces y jugar con la energía de cada tema. Voy a ir publicando mis mashups acá." />
-    <section className="dj-deck" aria-label="Reproductor de mashups">
+    <PageHead title="Mashups" lede={t.dj.lede} />
+    <section className="dj-deck" aria-label={t.dj.deck}>
       <div className="dj-stage">
         <div className="dj-discs" style={{ '--progress': progress } as CSSProperties}>
           <span className={`dj-vinyl${playing ? ' is-playing' : ''}`} aria-hidden="true"><span className="dj-vinyl-disc"><img src={activeTrack.cover} alt="" /></span></span>
@@ -829,7 +863,7 @@ function DJPage() {
             const selected = index === activeIndex
             const position = selected ? 'active' : relativeIndex === 1 ? 'next' : relativeIndex === djTracks.length - 1 ? 'previous' : 'hidden'
             const isAdjacent = position !== 'hidden'
-            return <button type="button" key={track.number} className={`dj-disc is-${position}${selected && playing ? ' is-playing' : ''}`} onClick={() => selectTrack(index)} aria-label={`${selected ? 'Seleccionado' : 'Seleccionar'}: ${track.title}`} aria-pressed={selected} aria-hidden={!isAdjacent} tabIndex={isAdjacent ? 0 : -1}>
+            return <button type="button" key={track.number} className={`dj-disc is-${position}${selected && playing ? ' is-playing' : ''}`} onClick={() => selectTrack(index)} aria-label={t.dj.select(track.title, selected)} aria-pressed={selected} aria-hidden={!isAdjacent} tabIndex={isAdjacent ? 0 : -1}>
               <img src={track.cover} alt="" width="1254" height="1254" />
             </button>
           })}
@@ -837,20 +871,20 @@ function DJPage() {
         <div className="dj-player">
           <p className="dj-now"><span>Mashup {activeTrack.number}</span><strong>{activeTrack.title}</strong></p>
           <div className="dj-controls">
-            <button type="button" className="dj-step" onClick={() => stepTrack(-1)} aria-label="Mashup anterior"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h2v14H6zM19 5.8v12.4c0 .8-.9 1.2-1.5.7L9.6 12.7a.9.9 0 0 1 0-1.4l7.9-6.2c.6-.5 1.5-.1 1.5.7Z" /></svg></button>
-            <button type="button" className="dj-play" data-magnetic="0.35" onClick={togglePlayback} aria-label={playing ? 'Pausar mashup' : 'Reproducir mashup'}><svg viewBox="0 0 24 24" aria-hidden="true">{playing ? <path d="M7 5h4v14H7zM14 5h4v14h-4z" /> : <path d="M8 5.3c0-.8.9-1.3 1.6-.8l9.6 6.7c.6.4.6 1.3 0 1.7l-9.6 6.7c-.7.5-1.6 0-1.6-.8V5.3Z" />}</svg></button>
-            <button type="button" className="dj-step" onClick={() => stepTrack(1)} aria-label="Siguiente mashup"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 5h2v14h-2zM5 5.8v12.4c0 .8.9 1.2 1.5.7l7.9-6.2a.9.9 0 0 0 0-1.4L6.5 5.1C5.9 4.6 5 5 5 5.8Z" /></svg></button>
+            <button type="button" className="dj-step" onClick={() => stepTrack(-1)} aria-label={t.dj.prev}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h2v14H6zM19 5.8v12.4c0 .8-.9 1.2-1.5.7L9.6 12.7a.9.9 0 0 1 0-1.4l7.9-6.2c.6-.5 1.5-.1 1.5.7Z" /></svg></button>
+            <button type="button" className="dj-play" data-magnetic="0.35" onClick={togglePlayback} aria-label={playing ? t.dj.pause : t.dj.play}><svg viewBox="0 0 24 24" aria-hidden="true">{playing ? <path d="M7 5h4v14H7zM14 5h4v14h-4z" /> : <path d="M8 5.3c0-.8.9-1.3 1.6-.8l9.6 6.7c.6.4.6 1.3 0 1.7l-9.6 6.7c-.7.5-1.6 0-1.6-.8V5.3Z" />}</svg></button>
+            <button type="button" className="dj-step" onClick={() => stepTrack(1)} aria-label={t.dj.next}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 5h2v14h-2zM5 5.8v12.4c0 .8.9 1.2 1.5.7l7.9-6.2a.9.9 0 0 0 0-1.4L6.5 5.1C5.9 4.6 5 5 5 5.8Z" /></svg></button>
           </div>
           <div className="dj-timeline">
             <span>{formatTime(currentTime)}</span>
-            <input type="range" min="0" max={duration || 1} step="0.1" value={Math.min(currentTime, duration || 1)} style={{ '--progress': `${progress * 100}%` } as CSSProperties} onChange={(event) => { if (audioRef.current) audioRef.current.currentTime = Number(event.target.value) }} aria-label="Posición de reproducción" />
+            <input type="range" min="0" max={duration || 1} step="0.1" value={Math.min(currentTime, duration || 1)} style={{ '--progress': `${progress * 100}%` } as CSSProperties} onChange={(event) => { if (audioRef.current) audioRef.current.currentTime = Number(event.target.value) }} aria-label={t.dj.position} />
             <span>{formatTime(duration)}</span>
           </div>
-          {audioError && <p className="dj-error" role="status">No se pudo cargar el mashup. Intentá reproducirlo otra vez.</p>}
+          {audioError && <p className="dj-error" role="status">{t.dj.error}</p>}
         </div>
       </div>
       <div className="dj-side">
-        <ol className="dj-tracklist" aria-label="Lista de mashups">
+        <ol className="dj-tracklist" aria-label={t.dj.list}>
           {djTracks.map((track, index) => <li key={track.number}>
             <button type="button" className={index === activeIndex ? 'is-active' : ''} onClick={() => selectTrack(index, true)} aria-current={index === activeIndex ? 'true' : undefined}>
               <span className="dj-track-num">{index === activeIndex && playing ? <span className="eq" aria-hidden="true"><i /><i /><i /></span> : track.number}</span>
@@ -877,6 +911,7 @@ function LooseBoard({ onOpenPhoto }: { onOpenPhoto: (photos: Photo[], index: num
   const boardRef = useRef<HTMLDivElement>(null)
   const before = useRef(new Map<string, DOMRect>())
   const paused = useRef(false)
+  const { t } = useI18n()
   useEffect(() => {
     const board = boardRef.current
     if (!board || prefersReducedMotion() || order.length < 2) return
@@ -929,7 +964,7 @@ function LooseBoard({ onOpenPhoto }: { onOpenPhoto: (photos: Photo[], index: num
     before.current.clear()
   }, [order])
   return <div className="loose-board" ref={boardRef} data-reveal onPointerEnter={() => { paused.current = true }} onPointerLeave={() => { paused.current = false }} onFocus={() => { paused.current = true }} onBlur={() => { paused.current = false }}>
-    {order.map((photo, index) => <button key={photo.id} data-id={photo.id} type="button" className={`loose-print${photo.orientation === 'portrait' ? ' is-portrait' : ''}`} style={{ '--r': `${tilts[index % tilts.length]}deg` } as CSSProperties} onClick={() => onOpenPhoto(order, index)} aria-label={`Ampliar foto suelta ${index + 1} de ${order.length}`}>
+    {order.map((photo, index) => <button key={photo.id} data-id={photo.id} type="button" className={`loose-print${photo.orientation === 'portrait' ? ' is-portrait' : ''}`} style={{ '--r': `${tilts[index % tilts.length]}deg` } as CSSProperties} onClick={() => onOpenPhoto(order, index)} aria-label={t.photo.looseItem(index + 1, order.length)}>
       <img src={photo.src} srcSet={`${photo.src} 640w, ${photo.medium} 1200w`} sizes="(max-width: 760px) 70vw, 360px" alt="" loading="lazy" width={photo.width} height={photo.height} />
     </button>)}
   </div>
@@ -938,6 +973,7 @@ function LooseBoard({ onOpenPhoto }: { onOpenPhoto: (photos: Photo[], index: num
 function PhotographyPage({ albums, onOpenAlbum, onOpenPhoto }: { albums: Album[]; onOpenAlbum: (album: Album) => void; onOpenPhoto: (photos: Photo[], index: number) => void }) {
   const totalPhotos = albums.reduce((sum, album) => sum + albumPhotos(album).length, 0)
   const [activeAlbumIndex, setActiveAlbumIndex] = useState(0)
+  const { t } = useI18n()
   const [orbitItems, orbitAlbumIndex] = useMemo(() => {
     const items: { key: string; src: string; srcSet: string; alt: string }[] = []
     const owners: number[] = []
@@ -947,33 +983,33 @@ function PhotographyPage({ albums, onOpenAlbum, onOpenPhoto }: { albums: Album[]
       const rest = photos.filter((photo) => photo.id !== cover.id)
       const picks = [cover, ...[1, 2, 3].map((part) => rest[Math.floor((rest.length * part) / 4)]).filter(Boolean)]
       picks.forEach((photo) => {
-        items.push({ key: photo.id, src: photo.src, srcSet: `${photo.src} 640w, ${photo.medium} 1200w`, alt: `Abrir álbum ${album.title}` })
+        items.push({ key: photo.id, src: photo.src, srcSet: `${photo.src} 640w, ${photo.medium} 1200w`, alt: t.photo.openAlbum(album.title) })
         owners.push(albumIndex)
       })
     })
     return [items, owners] as const
-  }, [albums])
+  }, [albums, t])
   const featured = albums[activeAlbumIndex]
   useReveal('photography')
   return <main className="page photography">
-    <PageHead title="Fotografía" lede="Fotografía amateur: coberturas de eventos y sesiones para marcas y comercios. Arrastrá la órbita o tocá una foto para abrir su álbum.">
-      <p className="page-meta">{albums.length} álbumes · {totalPhotos} fotos</p>
+    <PageHead title={t.areas.photography} lede={t.photo.lede}>
+      <p className="page-meta">{t.photo.meta(albums.length, totalPhotos)}</p>
     </PageHead>
-    <Orbit items={orbitItems} label="Álbumes en órbita" onSelect={(index) => onOpenAlbum(albums[orbitAlbumIndex[index]])} onActiveChange={(index) => setActiveAlbumIndex(orbitAlbumIndex[index])}>
+    <Orbit items={orbitItems} label={t.photo.orbit} onSelect={(index) => onOpenAlbum(albums[orbitAlbumIndex[index]])} onActiveChange={(index) => setActiveAlbumIndex(orbitAlbumIndex[index])}>
       <div className="orbit-info" key={featured.id}>
-        <p className="orbit-info-meta">{albumPhotos(featured).length} fotos · {featured.year}</p>
+        <p className="orbit-info-meta">{t.photo.photosYear(albumPhotos(featured).length, featured.year)}</p>
         <h2 className="orbit-info-title">{featured.title}</h2>
-        <button type="button" className="button" data-magnetic="0.2" onClick={() => onOpenAlbum(featured)}>Ver álbum <Arrow /></button>
+        <button type="button" className="button" data-magnetic="0.2" onClick={() => onOpenAlbum(featured)}>{t.photo.viewAlbum} <Arrow /></button>
       </div>
     </Orbit>
-    <h2 className="section-title album-grid-title" data-reveal><span className="reveal-line"><span>Todos los álbumes</span></span></h2>
-    <section className="album-grid" id="albumes" aria-label="Álbumes">
+    <h2 className="section-title album-grid-title" data-reveal><span className="reveal-line"><span>{t.photo.allAlbums}</span></span></h2>
+    <section className="album-grid" id="albumes" aria-label={t.photo.albumsAria}>
       {albums.map((album, index) => <AlbumCard key={album.id} album={album} index={index} layout={albumLayout[index % albumLayout.length]} onOpen={() => onOpenAlbum(album)} />)}
     </section>
     <section className="loose" id="sueltas" aria-labelledby="loose-title">
       <div className="loose-head" data-reveal>
-        <h2 className="section-title" id="loose-title"><span className="reveal-line"><span>Sueltas</span></span></h2>
-        <p>Fotos que no son de ningún álbum, sacadas por ahí. Tocá una para verla grande.</p>
+        <h2 className="section-title" id="loose-title"><span className="reveal-line"><span>{t.photo.looseTitle}</span></span></h2>
+        <p>{t.photo.looseText}</p>
       </div>
       <LooseBoard onOpenPhoto={onOpenPhoto} />
     </section>
@@ -987,6 +1023,7 @@ function AlbumCard({ album, index, layout, onOpen }: { album: Album; index: numb
   const [coverIndex, setCoverIndex] = useState(0)
   const [hasRotated, setHasRotated] = useState(false)
   const [loadedCoverId, setLoadedCoverId] = useState<string | null>(null)
+  const { t } = useI18n()
   useEffect(() => {
     if (coverPhotos.length < 2 || prefersReducedMotion()) return
     const interval = window.setInterval(() => {
@@ -1000,17 +1037,17 @@ function AlbumCard({ album, index, layout, onOpen }: { album: Album; index: numb
   const isCurrentCoverLoaded = loadedCoverId === currentCover.id
   const coverSizes = layout === 'pair' ? '(max-width: 760px) 100vw, 660px' : '(max-width: 760px) 100vw, 440px'
   return <article className={`album-card is-${layout}`} data-reveal="clip">
-    <button className="album-card-open" onClick={onOpen} aria-label={`Abrir álbum ${album.title}, ${photos.length} fotos`}>
+    <button className="album-card-open" onClick={onOpen} aria-label={t.photo.openAlbumCount(album.title, photos.length)}>
       <span className="album-card-image">
         {hasRotated && <img className="album-cover-frame" src={previousCover.medium} srcSet={`${previousCover.medium} 960w, ${previousCover.large} 2048w`} sizes={coverSizes} alt="" decoding="async" />}
         <img key={currentCover.id} className={`album-cover-frame album-cover-current${isCurrentCoverLoaded ? ' is-loaded' : ''}${hasRotated && isCurrentCoverLoaded ? ' is-transitioning' : ''}`} src={currentCover.medium} srcSet={`${currentCover.medium} 960w, ${currentCover.large} 2048w`} sizes={coverSizes} alt="" loading={index < 2 ? 'eager' : 'lazy'} decoding="async" onLoad={() => setLoadedCoverId(currentCover.id)} />
       </span>
       <span className="album-card-meta">
         <strong>{album.title}</strong>
-        <span>{photos.length} fotos · {album.year}</span>
+        <span>{t.photo.photosYear(photos.length, album.year)}</span>
       </span>
     </button>
-    {driveUrls[album.id] && <a className="text-link album-card-drive" href={driveUrls[album.id]} target="_blank" rel="noreferrer">Abrir en Drive <Arrow /></a>}
+    {driveUrls[album.id] && <a className="text-link album-card-drive" href={driveUrls[album.id]} target="_blank" rel="noreferrer">{t.photo.drive} <Arrow /></a>}
   </article>
 }
 
@@ -1018,46 +1055,48 @@ function AlbumOverlay({ album, transition, onClose, onOpenPhoto }: { album: Albu
   const [isScrolled, setIsScrolled] = useState(false)
   const [view, setView] = useState<'orbit' | 'grid'>('orbit')
   const [frontPhoto, setFrontPhoto] = useState(0)
+  const { t } = useI18n()
   const photos = albumPhotos(album)
-  const orbitItems = useMemo(() => photos.map((photo, index) => ({ key: photo.id, src: photo.src, srcSet: `${photo.src} 640w, ${photo.medium} 1200w`, alt: `Ampliar foto ${index + 1} de ${photos.length}` })), [album.id])
-  return <section className={`album-overlay transition-${transition}${isScrolled ? ' is-scrolled' : ''}`} onScroll={(event) => setIsScrolled(event.currentTarget.scrollTop > 24)} role="dialog" aria-modal="true" aria-label={`Álbum ${album.title}`}>
+  const orbitItems = useMemo(() => photos.map((photo, index) => ({ key: photo.id, src: photo.src, srcSet: `${photo.src} 640w, ${photo.medium} 1200w`, alt: t.album.enlarge(index + 1, photos.length) })), [album.id, t])
+  return <section className={`album-overlay transition-${transition}${isScrolled ? ' is-scrolled' : ''}`} onScroll={(event) => setIsScrolled(event.currentTarget.scrollTop > 24)} role="dialog" aria-modal="true" aria-label={t.album.dialog(album.title)}>
     <div className="album-backdrop" />
     <div className="album-bar">
-      <button className="pill-link" onClick={() => onClose()}><svg className="arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" /></svg> Cerrar</button>
+      <button className="pill-link" onClick={() => onClose()}><svg className="arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" /></svg> {t.album.close}</button>
       <span className="album-bar-title">{album.title}</span>
-      <span className="album-bar-count">{pad(photos.length)} fotos</span>
+      <span className="album-bar-count">{t.album.photos(pad(photos.length))}</span>
     </div>
     <div className="album-content">
       <header className="album-head">
         <h1>{album.title}</h1>
         <div className="album-head-side">
-          <p>{albumDescriptions[album.id]}</p>
-          <p className="album-head-meta">{photos.length} fotos · {album.year}{driveUrls[album.id] && <> · <a className="text-link" href={driveUrls[album.id]} target="_blank" rel="noreferrer">Abrir en Drive <Arrow /></a></>}</p>
+          <p>{t.album.descriptions[album.id]}</p>
+          <p className="album-head-meta">{t.photo.photosYear(photos.length, album.year)}{driveUrls[album.id] && <> · <a className="text-link" href={driveUrls[album.id]} target="_blank" rel="noreferrer">{t.photo.drive} <Arrow /></a></>}</p>
         </div>
       </header>
-      <div className="view-toggle" role="group" aria-label="Vista del álbum">
-        <button type="button" aria-pressed={view === 'orbit'} onClick={() => setView('orbit')}>Órbita</button>
-        <button type="button" aria-pressed={view === 'grid'} onClick={() => setView('grid')}>Grilla</button>
+      <div className="view-toggle" role="group" aria-label={t.album.view}>
+        <button type="button" aria-pressed={view === 'orbit'} onClick={() => setView('orbit')}>{t.album.orbit}</button>
+        <button type="button" aria-pressed={view === 'grid'} onClick={() => setView('grid')}>{t.album.grid}</button>
       </div>
-      {view === 'orbit' ? <Orbit items={orbitItems} label={`Fotos de ${album.title}`} onSelect={(index) => onOpenPhoto(photos, index)} onActiveChange={setFrontPhoto}>
+      {view === 'orbit' ? <Orbit items={orbitItems} label={t.album.photosOf(album.title)} onSelect={(index) => onOpenPhoto(photos, index)} onActiveChange={setFrontPhoto}>
         <div className="orbit-info">
           <p className="orbit-info-count">{pad(frontPhoto + 1)} <span>/ {pad(photos.length)}</span></p>
-          <p className="orbit-info-hint">Tocá la foto del frente para ampliarla</p>
+          <p className="orbit-info-hint">{t.album.hint}</p>
         </div>
-      </Orbit> : <div className="album-gallery">{photos.map((photo, index) => <button className="album-photo" key={photo.id} onClick={() => onOpenPhoto(photos, index)} aria-label={`Ampliar foto ${index + 1} de ${photos.length}`}><img src={photo.large} width={photo.width} height={photo.height} alt={`${album.title}, foto ${index + 1}`} decoding="async" loading={index < 3 ? 'eager' : 'lazy'} /></button>)}</div>}
-      <div className="album-end"><span>Fin de {album.title}</span><button className="pill-link" onClick={() => onClose()}>Volver a los álbumes</button></div>
+      </Orbit> : <div className="album-gallery">{photos.map((photo, index) => <button className="album-photo" key={photo.id} onClick={() => onOpenPhoto(photos, index)} aria-label={t.album.enlarge(index + 1, photos.length)}><img src={photo.large} width={photo.width} height={photo.height} alt={t.album.photoAlt(album.title, index + 1)} decoding="async" loading={index < 3 ? 'eager' : 'lazy'} /></button>)}</div>}
+      <div className="album-end"><span>{t.album.end(album.title)}</span><button className="pill-link" onClick={() => onClose()}>{t.album.back}</button></div>
     </div>
   </section>
 }
 
 function PhotoLightbox({ photo, index, total, onClose, onMove }: { photo: Photo; index: number; total: number; onClose: () => void; onMove: (direction: 1 | -1) => void }) {
   const touchStart = useRef(0)
-  return <div className="lightbox" role="dialog" aria-modal="true" aria-label="Fotografía ampliada" onTouchStart={(event) => { touchStart.current = event.changedTouches[0].clientX }} onTouchEnd={(event) => { const delta = event.changedTouches[0].clientX - touchStart.current; if (Math.abs(delta) > 45) onMove(delta < 0 ? 1 : -1) }}>
-    <div className="lightbox-bar"><span className="lightbox-count">{pad(index + 1)} / {pad(total)}</span><button className="pill-link" onClick={onClose}><svg className="arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" /></svg> Cerrar</button></div>
-    <img key={photo.id} src={photo.large} alt={`Foto ${index + 1} de ${total}`} />
+  const { t } = useI18n()
+  return <div className="lightbox" role="dialog" aria-modal="true" aria-label={t.lightbox.dialog} onTouchStart={(event) => { touchStart.current = event.changedTouches[0].clientX }} onTouchEnd={(event) => { const delta = event.changedTouches[0].clientX - touchStart.current; if (Math.abs(delta) > 45) onMove(delta < 0 ? 1 : -1) }}>
+    <div className="lightbox-bar"><span className="lightbox-count">{pad(index + 1)} / {pad(total)}</span><button className="pill-link" onClick={onClose}><svg className="arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" /></svg> {t.album.close}</button></div>
+    <img key={photo.id} src={photo.large} alt={t.lightbox.alt(index + 1, total)} />
     <div className="lightbox-controls">
-      <button onClick={() => onMove(-1)} aria-label="Fotografía anterior"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3 5 8l5 5" /></svg></button>
-      <button onClick={() => onMove(1)} aria-label="Fotografía siguiente"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m6 3 5 5-5 5" /></svg></button>
+      <button onClick={() => onMove(-1)} aria-label={t.lightbox.prev}><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3 5 8l5 5" /></svg></button>
+      <button onClick={() => onMove(1)} aria-label={t.lightbox.next}><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m6 3 5 5-5 5" /></svg></button>
     </div>
   </div>
 }

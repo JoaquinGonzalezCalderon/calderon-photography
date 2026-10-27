@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { useI18n } from '../i18n'
 
 export interface OrbitItem {
   key: string
@@ -29,6 +30,7 @@ export function Orbit({ items, onSelect, onActiveChange, label, children }: {
   const onActiveRef = useRef(onActiveChange)
   onActiveRef.current = onActiveChange
   const [front, setFront] = useState(0)
+  const { t } = useI18n()
   const engine = useRef({ snapBy: (_steps: number) => {}, wasDrag: false })
 
   // Repeat short lists so the circle is always full.
@@ -202,7 +204,7 @@ export function Orbit({ items, onSelect, onActiveChange, label, children }: {
     }
   }, [count, items.length])
 
-  return <div className="orbit" ref={rootRef} role="region" aria-roledescription="carrusel" aria-label={label} onKeyDown={(event) => {
+  return <div className="orbit" ref={rootRef} role="region" aria-roledescription={t.orbit.role} aria-label={label} onKeyDown={(event) => {
     if (event.key === 'ArrowRight') { event.preventDefault(); engine.current.snapBy(1) }
     if (event.key === 'ArrowLeft') { event.preventDefault(); engine.current.snapBy(-1) }
   }}>
@@ -221,8 +223,8 @@ export function Orbit({ items, onSelect, onActiveChange, label, children }: {
       </button>)}
     </div>
     <div className="orbit-arrows">
-      <button type="button" onClick={() => engine.current.snapBy(-1)} aria-label="Anterior"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3 5 8l5 5" /></svg></button>
-      <button type="button" onClick={() => engine.current.snapBy(1)} aria-label="Siguiente"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m6 3 5 5-5 5" /></svg></button>
+      <button type="button" onClick={() => engine.current.snapBy(-1)} aria-label={t.orbit.prev}><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3 5 8l5 5" /></svg></button>
+      <button type="button" onClick={() => engine.current.snapBy(1)} aria-label={t.orbit.next}><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m6 3 5 5-5 5" /></svg></button>
     </div>
     <div className="orbit-center">{children}</div>
   </div>

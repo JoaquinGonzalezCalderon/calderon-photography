@@ -95,6 +95,18 @@ body.is-arriving .site > main { animation: page-in .5s var(--ease-out) both; }
 .site-nav .site-nav-contact { padding: 8px 16px; border: 1px solid var(--line-strong); border-radius: 999px; color: var(--ink); transition: background-color .2s ease, color .2s ease, border-color .2s ease; }
 .site-nav .site-nav-contact::after { display: none; }
 .site-nav .site-nav-contact:hover { border-color: var(--accent); background: var(--accent); color: var(--accent-ink); }
+.site-header .site-nav { margin-left: auto; }
+.lang { position: relative; flex: none; }
+.lang-toggle { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 12px; border: 1px solid var(--line-strong); border-radius: 999px; background: transparent; color: var(--ink); font: 500 13px/1 var(--mono); letter-spacing: .04em; cursor: pointer; transition: border-color .2s ease, background-color .2s ease; }
+.lang-toggle svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.2; }
+.lang-toggle:hover, .lang.is-open .lang-toggle { border-color: var(--ink-2); background: rgb(242 239 232 / .06); }
+.lang-menu { position: absolute; top: calc(100% + 8px); right: 0; min-width: 168px; margin: 0; padding: 6px; list-style: none; border: 1px solid var(--line-strong); border-radius: 14px; background: var(--bg-raised); box-shadow: 0 18px 40px -18px rgb(0 0 0 / .8); animation: lang-in .22s var(--ease-out) both; }
+@keyframes lang-in { from { opacity: 0; transform: translateY(-6px); } }
+.lang-menu button { display: flex; align-items: center; justify-content: space-between; gap: 16px; width: 100%; padding: 10px 12px; border: 0; border-radius: 9px; background: transparent; color: var(--ink-2); font: 500 14px/1.2 var(--sans); text-align: left; cursor: pointer; }
+.lang-menu button i { color: var(--ink-3); font: normal 11px/1 var(--mono); letter-spacing: .06em; }
+.lang-menu button:hover { background: rgb(242 239 232 / .07); color: var(--ink); }
+.lang-menu button[aria-current] { color: var(--ink); }
+.lang-menu button[aria-current] i { color: var(--accent); }
 
 /* ---------- Shared bits ---------- */
 .pill-link { display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; border: 1px solid var(--line-strong); border-radius: 999px; color: var(--ink); font-size: 14px; font-weight: 500; transition: border-color .2s ease, background-color .2s ease, color .2s ease; }
@@ -436,6 +448,8 @@ body.album-is-open { position: fixed; inset: 0; width: 100%; overflow: hidden; }
   .site-logo { width: 84px; }
   .site-nav { gap: 16px; font-size: 14px; }
   .site-nav .site-nav-contact { display: none; }
+  .site-header { gap: 14px; }
+  .lang-toggle { min-height: 32px; padding: 0 9px; gap: 5px; }
 
 
   .page-head { grid-template-columns: 1fr; padding-top: 32px; }
@@ -486,6 +500,8 @@ body.album-is-open { position: fixed; inset: 0; width: 100%; overflow: hidden; }
 
 @media (max-width: 420px) {
   .site-nav { gap: 12px; font-size: 13px; }
+  .site-header { gap: 12px; }
+  .lang-toggle svg { display: none; }
   .album-gallery { column-count: 1; }
 }
 
