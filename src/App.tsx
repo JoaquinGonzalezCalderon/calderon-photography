@@ -377,6 +377,77 @@ function NewsTicker({ onNavigate }: { onNavigate: (area: PortfolioArea) => void 
   </aside>
 }
 
+/* Camera viewfinder over the hero: live REC timecode, audio meters, and a focus box that rests on the face,
+   follows the pointer and locks onto links. Clicking empty space takes a shot (flash + counter). */
+function HeroViewfinder() {
+  const ref = useRef<HTMLDivElement>(null)
+  const clock = useRef<HTMLSpanElement>(null)
+  const [shots, setShots] = useState(0)
+  useEffect(() => {
+    const start = performance.now()
+    const id = window.setInterval(() => {
+      if (!clock.current) return
+      const elapsed = (performance.now() - start) / 1000
+      clock.current.textContent = `${pad(Math.floor(elapsed / 3600))}:${pad(Math.floor(elapsed / 60) % 60)}:${pad(Math.floor(elapsed) % 60)}:${pad(Math.floor((elapsed % 1) * 24))}`
+    }, 1000 / 24)
+    return () => window.clearInterval(id)
+  }, [])
+  useEffect(() => {
+    const hero = ref.current?.parentElement
+    const photo = hero?.querySelector<HTMLImageElement>('.hero-portrait img')
+    if (!hero || !photo) return
+    const place = (left: number, top: number, width: number, height: number, mode: string) => {
+      hero.style.setProperty('--fx', `${left.toFixed(1)}px`)
+      hero.style.setProperty('--fy', `${top.toFixed(1)}px`)
+      hero.style.setProperty('--fw', `${width.toFixed(1)}px`)
+      hero.style.setProperty('--fh', `${height.toFixed(1)}px`)
+      hero.dataset.focus = mode
+    }
+    // Face sits at roughly these fractions of the cutout
+    const restOnFace = () => {
+      const box = hero.getBoundingClientRect()
+      const img = photo.getBoundingClientRect()
+      place(img.left - box.left + img.width * 0.36, img.top - box.top + img.height * 0.28, img.width * 0.2, img.height * 0.36, 'face')
+    }
+    const move = (event: globalThis.PointerEvent) => {
+      if (event.pointerType !== 'mouse') return
+      const box = hero.getBoundingClientRect()
+      const target = (event.target as Element).closest('a, button')
+      if (target && hero.contains(target)) {
+        const rect = target.getBoundingClientRect()
+        place(rect.left - box.left - 10, rect.top - box.top - 8, rect.width + 20, rect.height + 16, 'lock')
+      } else place(event.clientX - box.left - 60, event.clientY - box.top - 44, 120, 88, 'hunt')
+    }
+    const shoot = (event: globalThis.MouseEvent) => {
+      if ((event.target as Element).closest('a, button')) return
+      setShots((count) => count + 1)
+    }
+    restOnFace()
+    photo.addEventListener('load', restOnFace)
+    const observer = new ResizeObserver(restOnFace)
+    observer.observe(hero)
+    hero.addEventListener('pointermove', move)
+    hero.addEventListener('pointerleave', restOnFace)
+    hero.addEventListener('click', shoot)
+    return () => {
+      photo.removeEventListener('load', restOnFace)
+      observer.disconnect()
+      hero.removeEventListener('pointermove', move)
+      hero.removeEventListener('pointerleave', restOnFace)
+      hero.removeEventListener('click', shoot)
+    }
+  }, [])
+  return <div ref={ref} className="viewfinder" aria-hidden="true">
+    <span className="vf-frame" />
+    <span className="vf-thirds" />
+    <span className="vf-rec"><i className="vf-dot" />REC <span ref={clock}>00:00:00:00</span></span>
+    <span className="vf-meters"><span>L<i /></span><span>R<i /></span></span>
+    <span className="vf-specs"><span>4K · 24P</span><span>ISO 800</span><span>1/50</span><span>ƒ1.8</span><span className="vf-shots">SHOT {String(shots).padStart(3, '0')}</span></span>
+    <span className="vf-focus"><b>AF</b></span>
+    {shots > 0 && <span className="vf-flash" key={shots} />}
+  </div>
+}
+
 function HomeCover({ onNavigate, isReady }: { onNavigate: (area: PortfolioArea) => void; isReady: boolean }) {
   useReveal('home')
   const { t } = useI18n()
@@ -396,6 +467,13 @@ function HomeCover({ onNavigate, isReady }: { onNavigate: (area: PortfolioArea) 
   return <main className={`home${isReady ? ' is-ready' : ''}`}>
     <NewsTicker onNavigate={onNavigate} />
     <section ref={parallaxRef} className="hero-card" aria-labelledby="hero-title">
+      <h1 className="hero-name" id="hero-title"><span className="sr-only">Joaquín Gonzalez </span><span className="hero-name-front">Calderón</span></h1>
+      <figure className="hero-portrait">
+        <img src="/areas/portrait-rec.webp" srcSet="/areas/portrait-rec-sm.webp 820w, /areas/portrait-rec.webp 1448w" sizes="(max-width: 760px) 120vw, 70vw" alt={t.hero.portraitAlt} width="1448" height="1086" fetchPriority="high" />
+        <i className="hero-glint" aria-hidden="true" />
+      </figure>
+      <div className="hero-ghost" aria-hidden="true">Calderón</div>
+      <HeroViewfinder />
       <div className="hero-intro">
         <p className="hero-kicker">{t.hero.kicker}</p>
         <p className="hero-lead">{t.hero.lead[0]}<br />{t.hero.lead[1]}</p>
@@ -404,11 +482,6 @@ function HomeCover({ onNavigate, isReady }: { onNavigate: (area: PortfolioArea) 
         </nav>
       </div>
       <a className="hero-handle" href={site.instagramUrl} target="_blank" rel="noreferrer">@joaquinncalderon</a>
-      <div className="hero-echo" aria-hidden="true">{[0, 1].map((index) => <span key={index} style={{ '--i': index } as CSSProperties}>Calderón</span>)}<span className="is-spacer">Calderón</span></div>
-      <figure className="hero-portrait">
-        <img src="/areas/portrait-yo2.webp" alt={t.hero.portraitAlt} width="1239" height="1269" fetchPriority="high" />
-      </figure>
-      <h1 className="hero-name" id="hero-title"><span className="sr-only">Joaquín Gonzalez </span><span className="hero-name-front">Calderón</span></h1>
       <Narrator isReady={isReady} />
     </section>
 

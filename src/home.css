@@ -1,6 +1,6 @@
 /*
-  Home: graphite "slides" layout. A boxless poster hero: the surname huge at the bottom left
-  with outlined echoes behind the cutout portrait on the right, then one card per area and a contact card.
+  Home: graphite "slides" layout. The hero is a camera viewfinder: the surname huge behind the cutout
+  (with an outlined copy in front), a REC/AF overlay on top, then one card per area and a contact card.
   Sizes inside cards use container units so nothing collides at any width.
 */
 
@@ -21,37 +21,86 @@
 /* Paper grain shared by every card, kept under photos and text */
 .case-card::after { position: absolute; z-index: 0; inset: 0; background-image: var(--noise); content: ''; mix-blend-mode: overlay; opacity: .5; pointer-events: none; }
 
-/* ---------- Hero: a poster straight on the page, no box ---------- */
-.hero-card { --hero-name: min(17cqw, 27cqh); position: relative; isolation: isolate; container-type: size; height: clamp(520px, calc(100svh - var(--header-h) - 112px), 860px); overflow: clip; overflow-clip-margin: var(--gutter); color: var(--cream); }
-.hero-intro { position: absolute; z-index: 3; top: clamp(16px, 3cqh, 30px); left: clamp(22px, 4.6cqw, 64px); display: grid; justify-items: start; gap: 12px; }
+/* ---------- Hero: a viewfinder, the surname behind the head and its outline in front ---------- */
+.hero-card { --hero-name: min(25.5cqw, 40cqh); --edge: clamp(18px, 3.4cqw, 48px); --af: #e8b02f; position: relative; isolation: isolate; container-type: size; height: clamp(520px, calc(100svh - var(--header-h) - 112px), 860px); overflow: clip; border-radius: var(--card-radius); background: radial-gradient(70% 90% at 62% 40%, #2c2c30, var(--graphite-deep) 75%); color: var(--cream); cursor: crosshair; }
+.hero-card::after { position: absolute; z-index: 5; inset: 0; background-image: var(--noise); content: ''; mix-blend-mode: overlay; opacity: .45; pointer-events: none; }
+.hero-intro { position: absolute; z-index: 4; bottom: var(--edge); left: var(--edge); display: grid; justify-items: start; gap: 10px; max-width: 44cqw; text-shadow: 0 2px 14px rgb(0 0 0 / .7); }
 .hero-kicker { margin: 0; color: rgb(239 228 210 / .6); font-family: var(--mono); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; }
-.hero-lead { margin: 0; color: rgb(239 228 210 / .82); font-family: var(--display); font-size: clamp(18px, 1.9cqw, 30px); font-stretch: 88%; font-weight: 600; line-height: 1.2; }
-.hero-handle { position: absolute; z-index: 3; top: clamp(16px, 3cqh, 30px); right: clamp(22px, 4.6cqw, 64px); color: rgb(239 228 210 / .6); font-size: 14px; text-decoration: underline; text-decoration-color: transparent; text-underline-offset: 4px; transition: color .2s ease, text-decoration-color .2s ease; }
+.hero-lead { margin: 0; color: rgb(239 228 210 / .9); font-family: var(--display); font-size: clamp(18px, 2.1cqw, 32px); font-stretch: 88%; font-weight: 600; line-height: 1.15; }
+.hero-handle { position: absolute; z-index: 4; top: var(--edge); right: var(--edge); color: rgb(239 228 210 / .6); font-family: var(--mono); font-size: 12px; letter-spacing: .06em; text-decoration: underline; text-decoration-color: transparent; text-underline-offset: 4px; transition: color .2s ease, text-decoration-color .2s ease; }
 .hero-handle:hover { color: var(--cream); text-decoration-color: currentColor; }
 .hero-areas { display: flex; flex-wrap: wrap; gap: 6px 20px; margin-top: 2px; }
 .hero-areas a { display: flex; align-items: center; gap: 6px; color: var(--cream); font-size: 15px; font-weight: 600; text-decoration: underline; text-decoration-color: transparent; text-underline-offset: 5px; transition: text-decoration-color .2s ease; }
 .hero-areas a:hover { text-decoration-color: currentColor; }
-.hero-intro, .hero-handle { opacity: 0; }
+.hero-intro, .hero-handle, .viewfinder { opacity: 0; }
 .home.is-ready .hero-intro, .home.is-ready .hero-handle { animation: corner-in .8s .9s ease both; }
+.home.is-ready .viewfinder { animation: vf-on 1s .5s steps(1) both; }
 
-.hero-portrait { position: absolute; z-index: 1; bottom: 0; left: 68%; height: 100%; margin: 0; transform: translateX(-50%); pointer-events: none; }
-.hero-portrait img { width: auto; max-width: none; height: 100%; filter: grayscale(1) contrast(1.06) brightness(.92); opacity: 0; transform: translateY(40px); }
+.hero-portrait { position: absolute; z-index: 1; right: -3cqw; bottom: 0; height: 90%; aspect-ratio: 1448 / 1086; margin: 0; pointer-events: none; }
+.hero-portrait img { display: block; width: 100%; max-width: none; height: 100%; filter: contrast(1.05) brightness(.95); opacity: 0; transform: translateY(40px); }
 .home.is-ready .hero-portrait img { animation: portrait-in 1.2s .1s var(--ease-out) both; }
+/* Light catching the phone's lens every few seconds */
+.hero-glint { position: absolute; top: 49.4%; left: 59%; width: 3.4%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle, rgb(255 255 255 / .95), rgb(255 236 200 / .4) 30%, transparent 65%); mix-blend-mode: screen; opacity: 0; transform: translate(-50%, -50%) scale(.4); }
+.home.is-ready .hero-glint { animation: glint 5s 2.2s ease-in-out infinite; }
+@keyframes glint { 0%, 78%, 100% { opacity: 0; transform: translate(-50%, -50%) scale(.4) rotate(0); } 86% { opacity: 1; transform: translate(-50%, -50%) scale(2.2) rotate(45deg); } }
 
-/* The surname sits solid in front of the portrait, with outlined echoes stacked behind it */
-.hero-echo, .hero-name { position: absolute; bottom: -.03em; left: clamp(22px, 4.6cqw, 64px); margin: 0; font-family: 'Bebas Neue', var(--display); font-size: var(--hero-name); font-weight: 400; line-height: .78; transform-origin: 0 100%; }
-.hero-echo { z-index: 0; display: grid; color: transparent; }
-.hero-echo span { -webkit-text-stroke: max(1.5px, .1cqw) rgb(239 228 210 / calc(.2 + var(--i) * .2)); opacity: 0; transform: translateY(40%); }
-.hero-echo .is-spacer { visibility: hidden; }
-.home.is-ready .hero-echo span { animation: title-in 1.1s calc(.55s + (1 - var(--i)) * 120ms) var(--ease-out) both; }
-.hero-name { z-index: 2; color: var(--cream); }
+/* Solid surname behind the head; an outlined copy in exactly the same spot runs over the portrait */
+.hero-name, .hero-ghost { position: absolute; top: 11cqh; left: 0; right: 0; margin: 0; font-family: 'Bebas Neue', var(--display); font-size: var(--hero-name); font-weight: 400; letter-spacing: -.005em; line-height: .8; text-align: center; white-space: nowrap; }
+.hero-name { z-index: 0; color: var(--cream); }
 .hero-name-front { display: block; opacity: 0; transform: translateY(30%); }
 .home.is-ready .hero-name-front { animation: title-in 1.1s .3s var(--ease-out) both; }
-/* Tall hero (tablets held upright): smaller portrait and surname, bubble up in the empty space above the head */
+.hero-ghost { z-index: 2; color: transparent; -webkit-text-stroke: max(1.2px, .09cqw) rgb(239 228 210 / .55); opacity: 0; pointer-events: none; }
+.home.is-ready .hero-ghost { animation: corner-in 1s 1.2s ease both; }
+
+/* Viewfinder overlay */
+.viewfinder { position: absolute; z-index: 3; inset: 0; color: var(--cream); font-family: var(--mono); font-size: 11px; letter-spacing: .1em; pointer-events: none; }
+.vf-frame { position: absolute; inset: calc(var(--edge) * .55); --c: rgb(239 228 210 / .7); --l: clamp(18px, 2.4cqw, 34px);
+  background:
+    linear-gradient(var(--c), var(--c)) 0 0 / var(--l) 1.5px, linear-gradient(var(--c), var(--c)) 0 0 / 1.5px var(--l),
+    linear-gradient(var(--c), var(--c)) 100% 0 / var(--l) 1.5px, linear-gradient(var(--c), var(--c)) 100% 0 / 1.5px var(--l),
+    linear-gradient(var(--c), var(--c)) 0 100% / var(--l) 1.5px, linear-gradient(var(--c), var(--c)) 0 100% / 1.5px var(--l),
+    linear-gradient(var(--c), var(--c)) 100% 100% / var(--l) 1.5px, linear-gradient(var(--c), var(--c)) 100% 100% / 1.5px var(--l);
+  background-repeat: no-repeat; }
+.vf-thirds { position: absolute; inset: 0; background: linear-gradient(90deg, transparent calc(33.33% - .5px), rgb(239 228 210 / .07) 0 calc(33.33% + .5px), transparent 0 calc(66.66% - .5px), rgb(239 228 210 / .07) 0 calc(66.66% + .5px), transparent 0), linear-gradient(transparent calc(33.33% - .5px), rgb(239 228 210 / .07) 0 calc(33.33% + .5px), transparent 0 calc(66.66% - .5px), rgb(239 228 210 / .07) 0 calc(66.66% + .5px), transparent 0); }
+.vf-rec { position: absolute; top: var(--edge); left: var(--edge); display: flex; align-items: center; gap: 8px; font-size: 12px; font-variant-numeric: tabular-nums; }
+.vf-dot { width: 9px; height: 9px; border-radius: 50%; background: #ff3b30; box-shadow: 0 0 10px #ff3b30; animation: rec-blink 1s steps(1) infinite; }
+@keyframes rec-blink { 50% { opacity: .15; } }
+.vf-meters { position: absolute; top: calc(var(--edge) + 22px); left: var(--edge); display: grid; gap: 4px; color: rgb(239 228 210 / .55); font-size: 9px; }
+.vf-meters span { display: flex; align-items: center; gap: 6px; }
+@property --lv { syntax: '<percentage>'; inherits: false; initial-value: 40%; }
+.vf-meters i { width: 86px; height: 4px; border-radius: 2px; background: linear-gradient(90deg, #7bd88f 0 65%, var(--af) 0 85%, #ff3b30 0) 0 0 / 86px 4px no-repeat, rgb(239 228 210 / .14); clip-path: inset(0 calc(100% - var(--lv)) 0 0 round 2px); animation: meter .9s ease-in-out infinite alternate; }
+.vf-meters span + span i { animation-duration: .7s; animation-delay: -.3s; }
+@keyframes meter { 0% { --lv: 30%; } 25% { --lv: 72%; } 45% { --lv: 48%; } 70% { --lv: 88%; } 100% { --lv: 55%; } }
+.vf-specs { position: absolute; top: var(--edge); left: 50%; display: flex; gap: 18px; color: rgb(239 228 210 / .62); white-space: nowrap; transform: translateX(-50%); }
+.vf-shots { color: var(--cream); }
+@property --c { syntax: '<color>'; inherits: true; initial-value: #efe4d2; }
+.vf-focus { position: absolute; top: 0; left: 0; width: var(--fw, 0); height: var(--fh, 0); translate: var(--fx, -200px) var(--fy, -200px); --c: var(--cream); --l: 14px;
+  background:
+    linear-gradient(var(--c), var(--c)) 0 0 / var(--l) 2px, linear-gradient(var(--c), var(--c)) 0 0 / 2px var(--l),
+    linear-gradient(var(--c), var(--c)) 100% 0 / var(--l) 2px, linear-gradient(var(--c), var(--c)) 100% 0 / 2px var(--l),
+    linear-gradient(var(--c), var(--c)) 0 100% / var(--l) 2px, linear-gradient(var(--c), var(--c)) 0 100% / 2px var(--l),
+    linear-gradient(var(--c), var(--c)) 100% 100% / var(--l) 2px, linear-gradient(var(--c), var(--c)) 100% 100% / 2px var(--l);
+  background-repeat: no-repeat; transition: translate .35s var(--ease-out), width .35s var(--ease-out), height .35s var(--ease-out), --c .2s; }
+.vf-focus b { position: absolute; bottom: calc(100% + 5px); left: 0; color: var(--c); font-size: 10px; font-weight: 500; white-space: nowrap; }
+.vf-focus b::after { content: ' · FACE'; }
+.hero-card[data-focus='hunt'] .vf-focus { transition-duration: .18s; }
+.hero-card[data-focus='hunt'] .vf-focus b::after { content: ''; }
+.hero-card[data-focus='lock'] .vf-focus { --c: var(--af); animation: af-lock .3s ease; }
+.hero-card[data-focus='lock'] .vf-focus b::after { content: ' · LOCK'; }
+.hero-card[data-focus='face'] .vf-focus { --c: var(--af); }
+@keyframes af-lock { 40% { scale: .94; } }
+.vf-flash { position: absolute; inset: 0; background: #fff; animation: flash .55s ease-out both; }
+@keyframes flash { 0% { opacity: .9; } 100% { opacity: 0; } }
+@keyframes vf-on { 0% { opacity: 0; } 10% { opacity: 1; } 18% { opacity: .2; } 26%, 100% { opacity: 1; } }
+
+/* Tall hero (phones, tablets held upright): copy under the REC line, photo at the bottom,
+   and the surname placed from the photo's height so the head still overlaps it */
 @container (max-aspect-ratio: 6 / 5) {
-  .hero-echo, .hero-name { font-size: 22cqw; }
-  .hero-portrait { left: 60%; height: 64%; }
-  .hero-card .narrator.narrator { top: 30%; bottom: auto; }
+  .hero-card { --ph: 56; }
+  .hero-portrait { right: -22cqw; height: calc(var(--ph) * 1%); }
+  .hero-name, .hero-ghost { top: calc((100 - var(--ph) * .85) * 1cqh - 15cqw); font-size: 25cqw; }
+  .hero-intro { top: calc(var(--edge) + 34px); bottom: auto; max-width: none; right: var(--edge); }
+  .hero-card .narrator.narrator { top: auto; bottom: var(--edge); }
 }
 @keyframes title-in { to { opacity: 1; transform: none; } }
 
@@ -227,10 +276,9 @@ a.case-card:hover { box-shadow: 0 30px 60px -30px rgb(0 0 0 / .7); }
 
 /* ---------- Motion ---------- */
 /* Pointer parallax: portrait and title drift in opposite directions (uses `translate`, which composes with transforms) */
-.hero-portrait { translate: calc(var(--px, 0) * 22px) calc(var(--py, 0) * 10px); transition: translate .1s linear; }
-.hero-name, .hero-intro { translate: calc(var(--px, 0) * -14px) calc(var(--py, 0) * -6px); }
-.hero-echo { translate: calc(var(--px, 0) * -6px) 0; }
-.hero-card::before { position: absolute; z-index: 0; inset: 0; background: radial-gradient(30% 50% at calc(68% + var(--px, 0) * 10%) calc(42% + var(--py, 0) * 12%), rgb(255 255 255 / .08), transparent 70%); content: ''; pointer-events: none; }
+.hero-portrait { translate: calc(var(--px, 0) * 16px) calc(var(--py, 0) * 8px); transition: translate .1s linear; }
+.hero-name, .hero-ghost { translate: calc(var(--px, 0) * -10px) calc(var(--py, 0) * -5px); }
+.hero-card::before { position: absolute; z-index: 0; inset: 0; background: radial-gradient(34% 50% at calc(62% + var(--px, 0) * 10%) calc(42% + var(--py, 0) * 12%), rgb(255 255 255 / .07), transparent 70%); content: ''; pointer-events: none; }
 
 /* 3D tilt + glare on the area cards */
 .case-card[data-tilt] { transform: perspective(1100px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); transition: transform .5s var(--ease-out), box-shadow .5s var(--ease-out); }
@@ -242,7 +290,7 @@ a.case-card:hover { box-shadow: 0 30px 60px -30px rgb(0 0 0 / .7); }
 /* Scroll-linked: as the hero leaves, the title spreads out and the portrait pushes in */
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
-    .hero-name, .hero-echo { animation: hero-title-out linear both; animation-timeline: scroll(root); animation-range: 0 75vh; }
+    .hero-name, .hero-ghost { animation: hero-title-out linear both; animation-timeline: scroll(root); animation-range: 0 75vh; }
     .home.is-ready .hero-portrait img { animation: portrait-in 1.2s .1s var(--ease-out) both, hero-portrait-out linear both; animation-timeline: auto, scroll(root); animation-range: normal, 0 75vh; }
     .case-thumbs, .rotator { animation: thumbs-rise linear both; animation-timeline: view(); animation-range: entry 0% cover 45%; }
   }
@@ -254,21 +302,23 @@ a.case-card:hover { box-shadow: 0 30px 60px -30px rgb(0 0 0 / .7); }
 /* ---------- Mobile ---------- */
 @media (max-width: 760px) {
   .hero-card { height: min(calc(100svh - var(--header-h) - 170px), 700px); min-height: 480px; }
-  .hero-card { --hero-name: 22cqw; }
-  .hero-intro { top: 16px; gap: 8px; }
+  .hero-card { --edge: 16px; }
+  .hero-intro { gap: 8px; }
   .hero-lead { font-size: 17px; }
-  .hero-handle { display: none; }
-  .hero-portrait { left: 60%; height: 62%; }
-  .hero-card .narrator { top: 150px; right: 12px; bottom: auto; left: 12px; justify-content: flex-end; max-width: none; }
-  .narrator-character { width: 72px; }
-  .hero-card .narrator-bubble { max-width: 240px; margin-bottom: 18px; padding: 10px 13px 11px; font-size: 13.5px; }
+  .hero-handle, .vf-specs, .vf-meters { display: none; }
+  /* Taller photo so the face sits high, leaving the strip along the bottom (the shirt) for the bubble */
+  .hero-card { --ph: 64; }
+  .hero-card .narrator.narrator { top: auto; right: 10px; bottom: 12px; left: 10px; justify-content: flex-end; max-width: none; }
+  .narrator-character { width: 60px; }
+  .hero-card .narrator-bubble { min-width: 0; max-width: 220px; margin-bottom: 8px; padding: 9px 12px 10px; font-size: 12.5px; line-height: 1.35; }
   .case-grid { grid-template-columns: 1fr; }
-  @container (max-height: 560px) { .hero-portrait { height: 52%; } }
   .case-card { min-height: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero-intro, .hero-handle, .hero-echo span, .hero-name-front, .hero-portrait img, .narrator-character { opacity: 1; transform: none; }
+  .hero-intro, .hero-handle, .hero-ghost, .viewfinder, .hero-name-front, .hero-portrait img, .narrator-character { opacity: 1; transform: none; }
+  .vf-dot, .vf-meters i, .hero-glint { animation: none; }
+  .vf-focus { transition: none; }
   .narrator-body, .narrator-shadow { animation: none; }
 }
 
