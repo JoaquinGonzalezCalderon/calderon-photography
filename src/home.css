@@ -35,7 +35,9 @@
 .hero-intro, .hero-handle { opacity: 0; }
 .home.is-ready .hero-intro, .home.is-ready .hero-handle { animation: corner-in .8s .9s ease both; }
 
-.hero-portrait { position: absolute; z-index: 1; right: -3cqw; bottom: 0; height: 90%; aspect-ratio: 1448 / 1086; margin: 0; pointer-events: none; }
+/* Placed from the centre, not the right edge: the head (a third into the cutout, which is 120cqh wide)
+   lands under the middle of the surname at any width; min() keeps the phone in frame on narrower boxes */
+.hero-portrait { position: absolute; z-index: 1; left: min(50cqw - 40cqh, 100cqw - 106cqh); bottom: 0; height: 90%; aspect-ratio: 1448 / 1086; margin: 0; pointer-events: none; }
 .hero-portrait img { display: block; width: 100%; max-width: none; height: 100%; filter: contrast(1.05) brightness(.95); opacity: 0; transform: translateY(40px); }
 .home.is-ready .hero-portrait img { animation: portrait-in 1.2s .1s var(--ease-out) both; }
 /* Solid surname behind the head; an outlined copy in exactly the same spot runs over the portrait */
@@ -49,7 +51,7 @@
 /* Tall hero (phones, tablets held upright): copy at the top, photo at the bottom,
    and the surname placed from the photo's height so the head still overlaps it */
 @container (max-aspect-ratio: 6 / 5) {
-  .hero-portrait { right: -22cqw; height: calc(var(--ph) * 1%); }
+  .hero-portrait { left: auto; right: -22cqw; height: calc(var(--ph) * 1%); }
   .hero-name, .hero-ghost { top: calc((100 - var(--ph) * .85) * 1cqh - 15cqw); font-size: 25cqw; }
   .hero-intro { top: var(--edge); bottom: auto; max-width: none; right: var(--edge); }
   .hero-card .narrator.narrator { top: auto; bottom: var(--edge); }
