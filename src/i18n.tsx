@@ -33,7 +33,7 @@ const es = {
     },
   },
   hero: {
-    kicker: 'Joaquín Gonzalez · Portfolio 2026',
+    kicker: 'Portfolio 2026',
     lead: ['Analista en sistemas.', 'DJ y fotógrafo amateur.'],
     areas: 'Áreas',
     portraitAlt: 'Joaquín Gonzalez Calderón de perfil, con auriculares, sosteniendo un celular',
@@ -228,7 +228,7 @@ const en: Messages = {
     },
   },
   hero: {
-    kicker: 'Joaquín Gonzalez · Portfolio 2026',
+    kicker: 'Portfolio 2026',
     lead: ['Systems analyst.', 'DJ and amateur photographer.'],
     areas: 'Areas',
     portraitAlt: 'Joaquín Gonzalez Calderón in profile, wearing earphones and holding up a phone',
@@ -421,7 +421,7 @@ const pt: Messages = {
     },
   },
   hero: {
-    kicker: 'Joaquín Gonzalez · Portfólio 2026',
+    kicker: 'Portfólio 2026',
     lead: ['Analista de sistemas.', 'DJ e fotógrafo amador.'],
     areas: 'Áreas',
     portraitAlt: 'Joaquín Gonzalez Calderón de perfil, com fones de ouvido, segurando um celular',
@@ -614,7 +614,7 @@ const zh: Messages = {
     },
   },
   hero: {
-    kicker: 'Joaquín Gonzalez · 作品集 2026',
+    kicker: '作品集 2026',
     lead: ['系统分析师。', 'DJ 和业余摄影师。'],
     areas: '领域',
     portraitAlt: '戴着耳机、举着手机的 Joaquín Gonzalez Calderón 侧面像',
