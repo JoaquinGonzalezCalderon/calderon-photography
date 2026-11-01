@@ -14,7 +14,7 @@ const MIN_CARDS = 18
 /**
  * Cards laid out on a huge circle whose top arc peeks into view, inspired by
  * "orbit" carousels. It cruises on its own, follows drag/flick with inertia,
- * snaps with the arrow buttons or keyboard, and pauses while hovered.
+ * snaps with the keyboard arrows, and pauses while hovered.
  * All per-frame work writes transforms straight to the DOM; React only hears
  * about it when the front card changes.
  */
@@ -221,10 +221,6 @@ export function Orbit({ items, onSelect, onActiveChange, label, children }: {
       >
         <img src={card.src} srcSet={card.srcSet} sizes="(max-width: 760px) 180px, 240px" alt="" draggable={false} loading={index < 8 || index > count - 8 ? 'eager' : 'lazy'} decoding="async" />
       </button>)}
-    </div>
-    <div className="orbit-arrows">
-      <button type="button" onClick={() => engine.current.snapBy(-1)} aria-label={t.orbit.prev}><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3 5 8l5 5" /></svg></button>
-      <button type="button" onClick={() => engine.current.snapBy(1)} aria-label={t.orbit.next}><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m6 3 5 5-5 5" /></svg></button>
     </div>
     <div className="orbit-center">{children}</div>
   </div>

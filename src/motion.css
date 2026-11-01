@@ -56,10 +56,6 @@ body.is-arriving .curtain img { opacity: 0; transform: translateY(-30px); transi
 .orbit-info-count { font-family: var(--display); font-size: clamp(56px, 7vw, 104px); font-stretch: 75%; font-weight: 800; line-height: .85; }
 .orbit-info-count span { color: var(--ink-3); }
 .orbit-info-hint { color: var(--ink-2); font-size: 14px; }
-.orbit-arrows { position: absolute; z-index: 260; top: var(--arc-top); left: 50%; display: flex; justify-content: space-between; width: calc(var(--card-w) * 1.1 + 128px); transform: translate(-50%, -50%); pointer-events: none; }
-.orbit-arrows button { display: grid; width: 46px; height: 46px; place-items: center; border: 1px solid var(--line-strong); border-radius: 50%; background: rgb(13 13 12 / .55); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); pointer-events: auto; transition: background-color .2s ease, color .2s ease; }
-.orbit-arrows button:hover { background: var(--ink); color: var(--bg); }
-.orbit-arrows svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
 .photography .orbit { margin-top: clamp(8px, 2vh, 24px); border-bottom: 1px solid var(--line); }
 .album-grid-title { padding-top: clamp(56px, 9vh, 104px); }
 .album-grid-title + .album-grid { padding-top: clamp(32px, 5vh, 56px); }
@@ -97,8 +93,6 @@ body.is-arriving .curtain img { opacity: 0; transform: translateY(-30px); transi
 @media (max-width: 760px) {
   .streak-phones .phone, .stugo-phones .phone { animation: none; translate: none; }
   .orbit { --card-w: clamp(140px, 40vw, 180px); height: calc(var(--arc-top) + var(--card-h) / 2 + 270px); }
-  .orbit-arrows { width: calc(var(--card-w) * 1.1 + 104px); }
-  .orbit-arrows button { width: 42px; height: 42px; }
   .dj-vinyl.is-playing { transform: translateX(-22%); }
 }
 

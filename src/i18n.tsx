@@ -194,7 +194,7 @@ const es = {
     } as Record<string, string>,
   },
   lightbox: { dialog: 'Fotografía ampliada', alt: (n: number, total: number) => `Foto ${n} de ${total}`, prev: 'Fotografía anterior', next: 'Fotografía siguiente' },
-  orbit: { role: 'carrusel', prev: 'Anterior', next: 'Siguiente' },
+  orbit: { role: 'carrusel' },
   narrator: {
     aria: 'Presentación de Joaquín',
     button: 'Tocá al personaje de Joaquín para que diga algo más',
@@ -391,7 +391,7 @@ const en: Messages = {
     },
   },
   lightbox: { dialog: 'Enlarged photo', alt: (n, total) => `Photo ${n} of ${total}`, prev: 'Previous photo', next: 'Next photo' },
-  orbit: { role: 'carousel', prev: 'Previous', next: 'Next' },
+  orbit: { role: 'carousel' },
   narrator: {
     aria: 'Joaquín’s introduction',
     button: 'Tap Joaquín’s character to make him say something else',
@@ -586,7 +586,7 @@ const pt: Messages = {
     },
   },
   lightbox: { dialog: 'Foto ampliada', alt: (n, total) => `Foto ${n} de ${total}`, prev: 'Foto anterior', next: 'Próxima foto' },
-  orbit: { role: 'carrossel', prev: 'Anterior', next: 'Próximo' },
+  orbit: { role: 'carrossel' },
   narrator: {
     aria: 'Apresentação de Joaquín',
     button: 'Toque no personagem do Joaquín para ele dizer mais alguma coisa',
@@ -781,7 +781,7 @@ const zh: Messages = {
     },
   },
   lightbox: { dialog: '放大的照片', alt: (n, total) => `第 ${n} 张照片，共 ${total} 张`, prev: '上一张照片', next: '下一张照片' },
-  orbit: { role: '轮播', prev: '上一个', next: '下一个' },
+  orbit: { role: '轮播' },
   narrator: {
     aria: 'Joaquín 的自我介绍',
     button: '点击 Joaquín 的卡通形象，让他再说点什么',
