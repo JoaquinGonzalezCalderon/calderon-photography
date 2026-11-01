@@ -301,6 +301,7 @@ function Arrow() {
 /** Text and note for each one live in `news.items` of src/i18n.tsx, under the same `id`. */
 type NewsItem = { id: keyof Messages['news']['items']; title: string; image: string; area: Area; anchor: string }
 const news: NewsItem[] = ([
+  { id: 'desfile', title: 'Desfile Concepción', image: '/areas/news/desfile-concepcion.webp', area: 'photography', anchor: 'albumes' },
   { id: 'cuad', title: 'CUAD', image: '/areas/news/cuad.webp', area: 'systems', anchor: 'cuad' },
   { id: 'enjambre', title: 'ENJAMBRE', image: '/areas/news/enjambre.webp', area: 'systems', anchor: 'enjambre' },
   { id: 'may', title: 'MAY', image: '/areas/news/may.webp', area: 'systems', anchor: 'may' },
@@ -899,7 +900,7 @@ function DJPage() {
 }
 
 /** Rows of 2 · 3 · 2 cards keep every album the same height. */
-const albumLayout = ['pair', 'pair', 'trio', 'trio', 'trio', 'trio', 'trio', 'trio'] as const
+const albumLayout: ('pair' | 'trio')[] = ['trio', 'trio', 'trio', 'trio', 'trio', 'trio', 'trio', 'trio', 'trio']
 
 const loosePhotos = loosePhotoIds.map((id) => allPhotos.find((photo) => photo.id === id)).filter((photo): photo is Photo => Boolean(photo))
 
