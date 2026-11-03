@@ -24,6 +24,8 @@ const es = {
     prev: 'Novedad anterior',
     next: 'Novedad siguiente',
     items: {
+      calde: { text: 'Mi uso de Claude en un widget 3D para el escritorio', note: 'En desarrollo' },
+      cflap: { text: 'Autómatas y gramáticas en el navegador, en equipo y en vivo', note: 'En vivo' },
       cuad: { text: 'Mi cuaderno virtual, ahora una pizarra infinita', note: 'En desarrollo' },
       enjambre: { text: 'Drones en red para emergencias, nuestro proyecto para el rally internacional', note: 'Proyecto en equipo' },
       may: { text: 'Mi editor de videos argentino, gratis y sin cuenta', note: 'En desarrollo' },
@@ -41,7 +43,7 @@ const es = {
   },
   cases: {
     systemsRule: 'Apps y sitios web',
-    systemsFoot: '10 proyectos + 5 demos',
+    systemsFoot: '12 proyectos + 5 demos',
     systemsCta: 'Ver proyectos',
     photoRule: 'Amateur · eventos y marcas',
     albums: (n: number) => `${n} álbumes`,
@@ -111,6 +113,21 @@ const es = {
       points: ['Notas, textos, formas, conectores y lápiz', 'Blocs de notas con bloques y comandos con /', 'Zoom, modo foco y subpizarras', 'Panel de estado con elementos, notas y blocs'],
       cta: 'Probar CUAD',
       barNotes: 'CUAD · Apuntes de clase',
+    },
+    cflap: {
+      kind: 'Lenguajes formales · App web colaborativa',
+      lead: 'Un editor y simulador de autómatas en el navegador, inspirado en JFLAP, donde varios trabajan en el mismo tablero en tiempo real, como en Google Docs.',
+      text: 'Autómatas finitos, de pila, máquinas de Turing de hasta tres cintas, Mealy y Moore, y gramáticas. La simulación se anima paso a paso y los algoritmos de la materia (subconjuntos, minimización, FNC, CYK, LL(1)) se ven funcionando. Importa y exporta archivos .jff de JFLAP.',
+      points: ['Tableros compartidos con cursores y presencia', 'Simulación animada con cintas, pila y no determinismo', 'Algoritmos y conversiones paso a paso', 'Lema de bombeo como juego contra la computadora'],
+      cta: 'Abrir C FLAP',
+      barBoard: 'C FLAP · Tablero',
+    },
+    calde: {
+      kind: 'Widget de escritorio · Windows',
+      lead: 'Mi personaje en 3D que vive en el escritorio y muestra cuánto me queda de Claude: la sesión de 5 horas y la semana.',
+      text: 'Me sigue con la mirada, me saluda cuando abro Claude Code y pone cara de preocupado cuando estoy por llegar a un límite. También lista las terminales que están trabajando, avisa cuando una termina y controla Spotify sin iniciar sesión.',
+      points: ['Uso de Claude y Codex en vivo', 'Terminales activas con aviso al terminar', 'Spotify con portada, progreso y controles', 'En el escritorio o siempre encima'],
+      alt: 'Widget Calde: el personaje de Joaquín junto al uso de Claude de la sesión y la semana, una terminal activa y Spotify sonando',
     },
     stugo: {
       kind: 'Plataforma hiperlocal · Mobile + web',
@@ -221,6 +238,8 @@ const en: Messages = {
     prev: 'Previous news',
     next: 'Next news',
     items: {
+      calde: { text: 'My Claude usage in a 3D desktop widget', note: 'In progress' },
+      cflap: { text: 'Automata and grammars in the browser, live and together', note: 'Live' },
       cuad: { text: 'My virtual notebook, now an endless whiteboard', note: 'In progress' },
       enjambre: { text: 'Networked drones for emergencies, our project for the international rally', note: 'Team project' },
       may: { text: 'My Argentine video editor, free and with no account', note: 'In progress' },
@@ -238,7 +257,7 @@ const en: Messages = {
   },
   cases: {
     systemsRule: 'Apps and websites',
-    systemsFoot: '10 projects + 5 demos',
+    systemsFoot: '12 projects + 5 demos',
     systemsCta: 'See projects',
     photoRule: 'Amateur · events and brands',
     albums: (n) => `${n} albums`,
@@ -308,6 +327,21 @@ const en: Messages = {
       points: ['Notes, text, shapes, connectors and a pencil', 'Notepads with blocks and / commands', 'Zoom, focus mode and sub-boards', 'Status panel with items, notes and notepads'],
       cta: 'Try CUAD',
       barNotes: 'CUAD · Class notes',
+    },
+    cflap: {
+      kind: 'Formal languages · Collaborative web app',
+      lead: 'An automata editor and simulator in the browser, inspired by JFLAP, where several people work on the same board in real time, like Google Docs.',
+      text: 'Finite and pushdown automata, Turing machines with up to three tapes, Mealy and Moore machines, and grammars. Simulation animates step by step and the course algorithms (subset construction, minimization, CNF, CYK, LL(1)) play out on screen. It imports and exports JFLAP .jff files.',
+      points: ['Shared boards with cursors and presence', 'Animated simulation with tapes, stack and nondeterminism', 'Step-by-step algorithms and conversions', 'The pumping lemma as a game against the computer'],
+      cta: 'Open C FLAP',
+      barBoard: 'C FLAP · Board',
+    },
+    calde: {
+      kind: 'Desktop widget · Windows',
+      lead: 'My 3D character living on the desktop, showing how much Claude I have left: the 5-hour session and the week.',
+      text: 'It follows me with its eyes, greets me when I open Claude Code and looks worried when I am close to a limit. It also lists the terminals that are working, tells me when one finishes and controls Spotify without signing in.',
+      points: ['Live Claude and Codex usage', 'Active terminals with a heads-up when done', 'Spotify with cover, progress and controls', 'On the desktop or always on top'],
+      alt: 'Calde widget: Joaquín’s character next to his Claude session and weekly usage, an active terminal and Spotify playing',
     },
     stugo: {
       kind: 'Hyperlocal platform · Mobile + web',
@@ -416,6 +450,8 @@ const pt: Messages = {
     prev: 'Novidade anterior',
     next: 'Próxima novidade',
     items: {
+      calde: { text: 'Meu uso do Claude num widget 3D para a área de trabalho', note: 'Em desenvolvimento' },
+      cflap: { text: 'Autômatos e gramáticas no navegador, em equipe e ao vivo', note: 'No ar' },
       cuad: { text: 'Meu caderno virtual, agora um quadro infinito', note: 'Em desenvolvimento' },
       enjambre: { text: 'Drones em rede para emergências, nosso projeto para o rally internacional', note: 'Projeto em equipe' },
       may: { text: 'Meu editor de vídeo argentino, grátis e sem conta', note: 'Em desenvolvimento' },
@@ -433,7 +469,7 @@ const pt: Messages = {
   },
   cases: {
     systemsRule: 'Apps e sites',
-    systemsFoot: '10 projetos + 5 demos',
+    systemsFoot: '12 projetos + 5 demos',
     systemsCta: 'Ver projetos',
     photoRule: 'Amador · eventos e marcas',
     albums: (n) => `${n} álbuns`,
@@ -503,6 +539,21 @@ const pt: Messages = {
       points: ['Notas, textos, formas, conectores e lápis', 'Blocos de notas com blocos e comandos com /', 'Zoom, modo foco e subquadros', 'Painel de status com elementos, notas e blocos'],
       cta: 'Experimentar CUAD',
       barNotes: 'CUAD · Anotações de aula',
+    },
+    cflap: {
+      kind: 'Linguagens formais · App web colaborativo',
+      lead: 'Um editor e simulador de autômatos no navegador, inspirado no JFLAP, onde várias pessoas trabalham no mesmo quadro em tempo real, como no Google Docs.',
+      text: 'Autômatos finitos e de pilha, máquinas de Turing de até três fitas, Mealy e Moore, e gramáticas. A simulação é animada passo a passo e os algoritmos da disciplina (subconjuntos, minimização, FNC, CYK, LL(1)) aparecem funcionando. Importa e exporta arquivos .jff do JFLAP.',
+      points: ['Quadros compartilhados com cursores e presença', 'Simulação animada com fitas, pilha e não determinismo', 'Algoritmos e conversões passo a passo', 'Lema do bombeamento como jogo contra o computador'],
+      cta: 'Abrir C FLAP',
+      barBoard: 'C FLAP · Quadro',
+    },
+    calde: {
+      kind: 'Widget de área de trabalho · Windows',
+      lead: 'Meu personagem em 3D que vive na área de trabalho e mostra quanto me resta do Claude: a sessão de 5 horas e a semana.',
+      text: 'Ele me segue com o olhar, me cumprimenta quando abro o Claude Code e fica preocupado quando estou perto de um limite. Também lista os terminais que estão trabalhando, avisa quando um termina e controla o Spotify sem login.',
+      points: ['Uso do Claude e do Codex ao vivo', 'Terminais ativos com aviso ao terminar', 'Spotify com capa, progresso e controles', 'Na área de trabalho ou sempre por cima'],
+      alt: 'Widget Calde: o personagem de Joaquín ao lado do uso do Claude na sessão e na semana, um terminal ativo e o Spotify tocando',
     },
     stugo: {
       kind: 'Plataforma hiperlocal · Mobile + web',
@@ -611,6 +662,8 @@ const zh: Messages = {
     prev: '上一条动态',
     next: '下一条动态',
     items: {
+      calde: { text: '把我的 Claude 用量放进桌面 3D 小组件', note: '开发中' },
+      cflap: { text: '在浏览器里一起实时编辑自动机和文法', note: '已上线' },
       cuad: { text: '我的虚拟笔记本，现在是一块无限白板', note: '开发中' },
       enjambre: { text: '用于应急救援的联网无人机，我们参加国际创新拉力赛的项目', note: '团队项目' },
       may: { text: '我做的阿根廷视频编辑器，免费、无需注册', note: '开发中' },
@@ -628,7 +681,7 @@ const zh: Messages = {
   },
   cases: {
     systemsRule: '应用与网站',
-    systemsFoot: '10 个项目 + 5 个演示',
+    systemsFoot: '12 个项目 + 5 个演示',
     systemsCta: '查看项目',
     photoRule: '业余 · 活动与品牌',
     albums: (n) => `${n} 个相册`,
@@ -698,6 +751,21 @@ const zh: Messages = {
       points: ['便签、文本、形状、连接线和画笔', '支持块和 / 命令的记事本', '缩放、专注模式和子白板', '显示元素、便签和记事本的状态面板'],
       cta: '试用 CUAD',
       barNotes: 'CUAD · 课堂笔记',
+    },
+    cflap: {
+      kind: '形式语言 · 协作 Web 应用',
+      lead: '一个受 JFLAP 启发的浏览器自动机编辑器和模拟器，多人可以像用 Google Docs 一样在同一块画板上实时协作。',
+      text: '支持有限自动机、下推自动机、最多三条纸带的图灵机、Mealy 和 Moore 机，以及文法。模拟逐步动画演示，课程中的算法（子集构造、最小化、乔姆斯基范式、CYK、LL(1)）都能直观地看到运行过程。可以导入和导出 JFLAP 的 .jff 文件。',
+      points: ['共享画板，显示光标和在线成员', '带纸带、栈和非确定性的动画模拟', '逐步演示的算法与转换', '把泵引理做成和电脑对战的游戏'],
+      cta: '打开 C FLAP',
+      barBoard: 'C FLAP · 画板',
+    },
+    calde: {
+      kind: '桌面小组件 · Windows',
+      lead: '住在桌面上的我的 3D 角色，显示 Claude 还剩多少用量：5 小时会话和本周额度。',
+      text: '它的目光会跟着我，打开 Claude Code 时会打招呼，快到上限时会露出担心的表情。它还会列出正在运行的终端，在任务完成时提醒我，并且无需登录就能控制 Spotify。',
+      points: ['实时显示 Claude 和 Codex 用量', '列出活动终端并在完成时提醒', 'Spotify 封面、进度和播放控制', '放在桌面上或始终置顶'],
+      alt: 'Calde 小组件：Joaquín 的角色旁边是 Claude 会话和本周用量、一个活动终端以及正在播放的 Spotify',
     },
     stugo: {
       kind: '超本地平台 · 移动端 + 网页',

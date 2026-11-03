@@ -301,6 +301,8 @@ function Arrow() {
 /** Text and note for each one live in `news.items` of src/i18n.tsx, under the same `id`. */
 type NewsItem = { id: keyof Messages['news']['items']; title: string; image: string; area: Area; anchor: string }
 const news: NewsItem[] = ([
+  { id: 'calde', title: 'Calde', image: '/areas/news/calde.webp', area: 'systems', anchor: 'calde' },
+  { id: 'cflap', title: 'C FLAP', image: '/areas/news/cflap.webp', area: 'systems', anchor: 'cflap' },
   { id: 'desfile', title: 'Desfile Concepción', image: '/areas/news/desfile-concepcion.webp', area: 'photography', anchor: 'albumes' },
   { id: 'cuad', title: 'CUAD', image: '/areas/news/cuad.webp', area: 'systems', anchor: 'cuad' },
   { id: 'enjambre', title: 'ENJAMBRE', image: '/areas/news/enjambre.webp', area: 'systems', anchor: 'enjambre' },
@@ -466,6 +468,8 @@ const systemsShowcase: { name?: string; demo?: DemoId; image: string; wip?: bool
   { name: 'STUGO', image: '/areas/stugo1.webp', phone: true },
   { name: 'ENJAMBRE', image: '/areas/enjambre-coe.webp' },
   { name: 'CUAD', image: '/areas/cuad-home.webp', wip: true },
+  { name: 'C FLAP', image: '/areas/cflap-board.webp' },
+  { name: 'Calde', image: '/areas/calde-widget.webp', wip: true },
   { name: 'Mate Único', image: '/areas/jgc-mate.webp' },
   { name: 'Inmobiliaria Andrea Duré', image: '/areas/jgc-inmobiliaria.webp' },
   { name: 'Barbería Los Santos', image: '/areas/jgc-barberia.webp', wip: true },
@@ -543,6 +547,8 @@ function SystemsPage() {
     <FeaturedStugo />
     <FeaturedEnjambre />
     <FeaturedCuad />
+    <FeaturedCflap />
+    <FeaturedCalde />
     <section className="clients" id="clientes" aria-labelledby="clients-title">
       <h2 className="section-title" id="clients-title" data-reveal><span className="reveal-line"><span>{t.systems.clientsTitle}</span></span></h2>
       <div className="clients-grid">
@@ -687,6 +693,51 @@ function FeaturedCuad() {
         {t.systems.cuad.points.map((point) => <li key={point}>{point}</li>)}
       </ul>
       <a className="button shots-cta" data-magnetic="0.2" href="https://cuad-eight.vercel.app/" target="_blank" rel="noreferrer">{t.systems.cuad.cta} <Arrow /></a>
+    </div>
+  </article>
+}
+
+function FeaturedCflap() {
+  const { t } = useI18n()
+  return <article className="feature feature-shots feature-cflap is-reversed" id="cflap" aria-labelledby="cflap-title">
+    <div className="shots-stage" data-reveal>
+      <a className="shots-window shots-window-back" href="https://cflap.vercel.app/" target="_blank" rel="noreferrer" tabIndex={-1} aria-hidden="true">
+        <span className="demo-browser-bar"><i /><i /><i /><span>cflap.vercel.app</span></span>
+        <img src="/areas/cflap-home.webp" alt="" loading="lazy" width="1280" height="800" />
+      </a>
+      <a className="shots-window shots-window-front" href="https://cflap.vercel.app/" target="_blank" rel="noreferrer" tabIndex={-1} aria-hidden="true">
+        <span className="demo-browser-bar"><i /><i /><i /><span>{t.systems.cflap.barBoard}</span></span>
+        <img src="/areas/cflap-board.webp" alt="" loading="lazy" width="1280" height="800" />
+      </a>
+    </div>
+    <div className="shots-copy" data-reveal>
+      <p className="feature-kind">{t.systems.cflap.kind}</p>
+      <div className="feature-title-row"><h2 id="cflap-title">C FLAP</h2><span className="status is-live">{t.status.live}</span></div>
+      <p className="feature-text feature-text-lead">{t.systems.cflap.lead}</p>
+      <p className="feature-text">{t.systems.cflap.text}</p>
+      <ul className="feature-points">
+        {t.systems.cflap.points.map((point) => <li key={point}>{point}</li>)}
+      </ul>
+      <a className="button shots-cta" data-magnetic="0.2" href="https://cflap.vercel.app/" target="_blank" rel="noreferrer">{t.systems.cflap.cta} <Arrow /></a>
+    </div>
+  </article>
+}
+
+/** A desktop widget, so it floats on its own instead of sitting in a browser window. */
+function FeaturedCalde() {
+  const { t } = useI18n()
+  return <article className="feature feature-shots feature-calde" id="calde" aria-labelledby="calde-title">
+    <div className="shots-stage calde-stage" data-reveal>
+      <img className="calde-widget" src="/areas/calde-widget.webp" alt={t.systems.calde.alt} loading="lazy" width="753" height="497" />
+    </div>
+    <div className="shots-copy" data-reveal>
+      <p className="feature-kind">{t.systems.calde.kind}</p>
+      <div className="feature-title-row"><h2 id="calde-title">Calde</h2><span className="status is-wip">{t.status.wip}</span></div>
+      <p className="feature-text feature-text-lead">{t.systems.calde.lead}</p>
+      <p className="feature-text">{t.systems.calde.text}</p>
+      <ul className="feature-points">
+        {t.systems.calde.points.map((point) => <li key={point}>{point}</li>)}
+      </ul>
     </div>
   </article>
 }

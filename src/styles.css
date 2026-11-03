@@ -221,6 +221,11 @@ body.is-arriving .site > main { animation: page-in .5s var(--ease-out) both; }
 .feature-may { --tone: #f7b500; }
 .feature-enjambre { --tone: #f26b1d; }
 .feature-cuad { --tone: #cec8b0; }
+.feature-cflap { --tone: #9b7bff; }
+.feature-calde { --tone: #e8784f; }
+.calde-stage { display: grid; place-items: center; }
+.calde-widget { width: min(86%, 560px); height: auto; filter: drop-shadow(0 40px 60px rgb(0 0 0 / .7)); transform: rotate(-2deg); transition: transform .7s var(--ease-out); }
+@media (hover: hover) { .calde-stage:hover .calde-widget { transform: rotate(0deg) scale(1.03); } }
 /* Copy on the left on wide screens; the stage stays first in the DOM so phones show it first */
 @media (min-width: 1081px) {
   .feature-shots.is-reversed { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }
