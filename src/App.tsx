@@ -467,12 +467,12 @@ const systemsShowcase: { name?: string; demo?: DemoId; image: string; wip?: bool
   { name: 'Streak', image: '/areas/tustreak-desktop.webp' },
   { name: 'MAY', image: '/areas/may-home.webp', wip: true },
   { name: 'Voider Goat', image: '/areas/voidergoat-album.webp' },
-  { name: 'STUGO', image: '/areas/stugo1.webp', phone: true },
   { name: 'ENJAMBRE', image: '/areas/enjambre-coe.webp' },
   { name: 'CUAD', image: '/areas/cuad-home.webp', wip: true },
   { name: 'C FLAP', image: '/areas/cflap-board.webp' },
   { name: 'Calde', image: '/areas/calde-widget.webp', wip: true },
   { name: 'TPF Computación Avanzada', image: '/areas/tfi-home.webp' },
+  { name: 'STUGO', image: '/areas/stugo1.webp', phone: true },
   { name: 'Mate Único', image: '/areas/jgc-mate.webp' },
   { name: 'Inmobiliaria Andrea Duré', image: '/areas/jgc-inmobiliaria.webp' },
   { name: 'Barbería Los Santos', image: '/areas/jgc-barberia.webp', wip: true },
@@ -547,12 +547,12 @@ function SystemsPage() {
     <FeaturedStreak />
     <FeaturedMay />
     <FeaturedVoider />
-    <FeaturedStugo />
     <FeaturedEnjambre />
     <FeaturedCuad />
     <FeaturedCflap />
     <FeaturedCalde />
     <FeaturedTpf />
+    <FeaturedStugo />
     <section className="clients" id="clientes" aria-labelledby="clients-title">
       <h2 className="section-title" id="clients-title" data-reveal><span className="reveal-line"><span>{t.systems.clientsTitle}</span></span></h2>
       <div className="clients-grid">
