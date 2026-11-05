@@ -404,8 +404,10 @@ function HomeCover({ onNavigate, isReady }: { onNavigate: (area: PortfolioArea) 
       <h1 className="hero-name" id="hero-title"><span className="hero-name-front"><span className="hero-first">Joaquín Gonzalez</span> <span className="hero-last">Calderón</span></span></h1>
       <figure className="hero-portrait">
         <img src="/areas/portrait-yo2.webp" alt={t.hero.portraitAlt} width="1239" height="1269" fetchPriority="high" />
+        <span className="hero-mark is-up" style={{ left: '49%', top: '3%' }} aria-hidden="true" />
+        <span className="hero-mark is-right" style={{ left: '79%', top: '68%' }} aria-hidden="true"><span className="hero-mark-label">{t.footer.place}</span></span>
+        <span className="hero-mark is-left" style={{ left: '20%', top: '76%' }} aria-hidden="true" />
       </figure>
-      <div className="hero-ghost" aria-hidden="true"><span className="hero-first">Joaquín Gonzalez</span><span className="hero-last">Calderón</span></div>
       <div className="hero-intro">
         <p className="hero-kicker">{t.hero.kicker}</p>
         <p className="hero-lead">{t.hero.lead[0]}<br />{t.hero.lead[1]}</p>
