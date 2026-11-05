@@ -401,19 +401,18 @@ function HomeCover({ onNavigate, isReady }: { onNavigate: (area: PortfolioArea) 
   return <main className={`home${isReady ? ' is-ready' : ''}`}>
     <NewsTicker onNavigate={onNavigate} />
     <section ref={parallaxRef} className="hero-card" aria-labelledby="hero-title">
-      <p className="hero-word" aria-hidden="true">Portfolio</p>
-      <h1 className="hero-name" id="hero-title"><span className="hero-first">Joaquín</span> <span className="hero-last"><span className="hero-middle">Gonzalez</span> Calderón</span></h1>
+      <p className="hero-strip"><span>Nº 01<span className="hero-strip-place"> · {t.footer.place}</span></span><span>Joaquín Gonzalez Calderón</span><a href={site.instagramUrl} target="_blank" rel="noreferrer">@joaquinncalderon</a></p>
+      <h1 className="hero-name" id="hero-title"><span className="hero-first">Joaquín Gonzalez </span><span className="hero-last">Calderón</span></h1>
       <figure className="hero-portrait">
         <img src="/areas/portrait-yo2.webp" alt={t.hero.portraitAlt} width="1239" height="1269" fetchPriority="high" />
       </figure>
-      <div className="hero-intro">
-        <p className="hero-kicker">{t.hero.kicker}</p>
+      <nav className="hero-lines" aria-label={t.hero.areas}>
+        {areaOrder.map((area) => <a key={area} href={pathForArea(area)} onClick={go(area)}><b>{t.areas[area]}<Arrow /></b><span>{area === 'systems' ? t.cases.systemsFoot : area === 'photography' ? t.cases.albums(albums.length) : t.cases.djFoot(djTracks.length)}</span></a>)}
+      </nav>
+      <div className="hero-cover">
+        <p className="hero-sticker">{t.hero.kicker}</p>
         <p className="hero-lead">{t.hero.lead[0]}<br />{t.hero.lead[1]}</p>
-        <nav className="hero-areas" aria-label={t.hero.areas}>
-          {areaOrder.map((area) => <a key={area} href={pathForArea(area)} onClick={go(area)}>{t.areas[area]}<Arrow /></a>)}
-        </nav>
       </div>
-      <a className="hero-handle" href={site.instagramUrl} target="_blank" rel="noreferrer">@joaquinncalderon</a>
       <Narrator isReady={isReady} />
     </section>
 
