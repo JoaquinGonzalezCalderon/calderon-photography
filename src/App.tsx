@@ -301,6 +301,7 @@ function Arrow() {
 /** Text and note for each one live in `news.items` of src/i18n.tsx, under the same `id`. */
 type NewsItem = { id: keyof Messages['news']['items']; title: string; image: string; area: Area; anchor: string }
 const news: NewsItem[] = ([
+  { id: 'tpf', title: 'TPF Computación Avanzada', image: '/areas/news/tfi.webp', area: 'systems', anchor: 'tpf' },
   { id: 'padel', title: 'Pádel', image: '/areas/news/padel.webp', area: 'photography', anchor: 'albumes' },
   { id: 'calde', title: 'Calde', image: '/areas/news/calde.webp', area: 'systems', anchor: 'calde' },
   { id: 'cflap', title: 'C FLAP', image: '/areas/news/cflap.webp', area: 'systems', anchor: 'cflap' },
@@ -471,6 +472,7 @@ const systemsShowcase: { name?: string; demo?: DemoId; image: string; wip?: bool
   { name: 'CUAD', image: '/areas/cuad-home.webp', wip: true },
   { name: 'C FLAP', image: '/areas/cflap-board.webp' },
   { name: 'Calde', image: '/areas/calde-widget.webp', wip: true },
+  { name: 'TPF Computación Avanzada', image: '/areas/tfi-home.webp' },
   { name: 'Mate Único', image: '/areas/jgc-mate.webp' },
   { name: 'Inmobiliaria Andrea Duré', image: '/areas/jgc-inmobiliaria.webp' },
   { name: 'Barbería Los Santos', image: '/areas/jgc-barberia.webp', wip: true },
@@ -550,6 +552,7 @@ function SystemsPage() {
     <FeaturedCuad />
     <FeaturedCflap />
     <FeaturedCalde />
+    <FeaturedTpf />
     <section className="clients" id="clientes" aria-labelledby="clients-title">
       <h2 className="section-title" id="clients-title" data-reveal><span className="reveal-line"><span>{t.systems.clientsTitle}</span></span></h2>
       <div className="clients-grid">
@@ -739,6 +742,32 @@ function FeaturedCalde() {
       <ul className="feature-points">
         {t.systems.calde.points.map((point) => <li key={point}>{point}</li>)}
       </ul>
+    </div>
+  </article>
+}
+
+function FeaturedTpf() {
+  const { t } = useI18n()
+  return <article className="feature feature-shots feature-tpf is-reversed" id="tpf" aria-labelledby="tpf-title">
+    <div className="shots-stage" data-reveal>
+      <a className="shots-window shots-window-back" href="https://tfi-interfaz.vercel.app/" target="_blank" rel="noreferrer" tabIndex={-1} aria-hidden="true">
+        <span className="demo-browser-bar"><i /><i /><i /><span>tfi-interfaz.vercel.app</span></span>
+        <img src="/areas/tfi-home.webp" alt="" loading="lazy" width="1280" height="800" />
+      </a>
+      <a className="shots-window shots-window-front" href="https://tfi-interfaz.vercel.app/#openmp" target="_blank" rel="noreferrer" tabIndex={-1} aria-hidden="true">
+        <span className="demo-browser-bar"><i /><i /><i /><span>{t.systems.tpf.barOpenmp}</span></span>
+        <img src="/areas/tfi-openmp.webp" alt="" loading="lazy" width="1280" height="800" />
+      </a>
+    </div>
+    <div className="shots-copy" data-reveal>
+      <p className="feature-kind">{t.systems.tpf.kind}</p>
+      <div className="feature-title-row"><h2 id="tpf-title">TPF Computación Avanzada</h2><span className="status">{t.status.team}</span></div>
+      <p className="feature-text feature-text-lead">{t.systems.tpf.lead}</p>
+      <p className="feature-text">{t.systems.tpf.text}</p>
+      <ul className="feature-points">
+        {t.systems.tpf.points.map((point) => <li key={point}>{point}</li>)}
+      </ul>
+      <a className="button shots-cta" data-magnetic="0.2" href="https://tfi-interfaz.vercel.app/" target="_blank" rel="noreferrer">{t.systems.tpf.cta} <Arrow /></a>
     </div>
   </article>
 }

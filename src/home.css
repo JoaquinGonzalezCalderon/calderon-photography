@@ -34,8 +34,7 @@
 .hero-intro, .hero-handle { opacity: 0; }
 .home.is-ready .hero-intro, .home.is-ready .hero-handle { animation: corner-in .8s .9s ease both; }
 
-/* Placed from the name, not the right edge: the face (centered in the cutout, which is ~98cqh wide) sits just past
-   the end of the name, so the last letters tuck behind the cap and the face itself stays clear of the type */
+/* The cutout is ~98cqh wide with the face centered; each layout below places it */
 .hero-portrait { position: absolute; z-index: 1; left: calc(var(--edge) + var(--name-w) * .78 - 20cqh); bottom: 0; height: 100%; aspect-ratio: 1239 / 1269; margin: 0; pointer-events: none; }
 .hero-portrait img { display: block; width: 100%; max-width: none; height: 100%; filter: contrast(1.05) brightness(.95); opacity: 0; transform: translateY(40px); -webkit-mask-image: linear-gradient(to top, transparent, #000 14%); mask-image: linear-gradient(to top, transparent, #000 14%); }
 .home.is-ready .hero-portrait img { animation: portrait-in 1.2s .1s var(--ease-out) both; }
@@ -51,15 +50,29 @@
 .hero-ghost { z-index: 2; color: transparent; -webkit-text-stroke: max(1.2px, .09cqw) rgb(239 228 210 / .55); opacity: 0; pointer-events: none; }
 .home.is-ready .hero-ghost { animation: corner-in 1s 1.2s ease both; }
 
-/* Tall hero (phones, tablets held upright): copy at the top, photo at the bottom, the name across the full width,
-   placed from the photo's height so the head still overlaps the surname */
+/* Wide hero: a poster. The full name runs in one line along the bottom, in front of the chest, and the face stays clear above it */
+@container (min-aspect-ratio: 1201 / 1000) {
+  .hero-portrait { left: calc(42cqw - 49cqh); height: 100%; }
+  .hero-name, .hero-ghost, .hero-card .narrator.narrator { --line: calc((100cqw - var(--edge) * 2) / 9.15); }
+  .hero-name, .hero-ghost { top: auto; bottom: calc(var(--edge) * .6); }
+  .hero-name { z-index: 3; text-shadow: 0 6px 40px rgb(0 0 0 / .45); }
+  .hero-name .hero-first, .hero-name .hero-last, .hero-ghost .hero-first, .hero-ghost .hero-last { display: inline; margin: 0; font-size: var(--line); }
+  .hero-name .hero-last { margin-left: .08em; }
+  .hero-ghost { display: none; }
+  /* The narrator sits on the name line instead of over it */
+  .hero-card .narrator.narrator { bottom: calc(var(--edge) * .6 + var(--line) * .8 + 18px); }
+}
+
+/* Tall hero (phones, tablets held upright): copy at the top, photo below it and the name across the full width
+   along the bottom, in front of the chest like on wide screens */
 @container (max-aspect-ratio: 6 / 5) {
   .hero-name, .hero-ghost, .hero-portrait { --name-w: calc(100cqw - var(--edge) * 2); }
-  /* Face (0.49 x the photo height in from its left) under the name; min() keeps the shoulders in frame */
-  .hero-portrait { left: min(var(--edge) + var(--name-w) * .5 - var(--ph) * .49cqh, 100cqw - var(--ph) * .98cqh); height: calc(var(--ph) * 1%); }
-  .hero-name, .hero-ghost { top: max(var(--edge) + 136px, (100 - var(--ph) * .85) * 1cqh - var(--name-w) * .3); }
+  /* Face (0.49 x the photo height in from its left) centered; min() keeps the shoulders in frame */
+  .hero-portrait { left: min(50cqw - var(--ph) * .49cqh, 100cqw - var(--ph) * .98cqh); height: calc(var(--ph) * 1%); }
+  .hero-name { top: auto; bottom: var(--edge); z-index: 3; text-shadow: 0 6px 30px rgb(0 0 0 / .5); }
+  .hero-ghost { display: none; }
   .hero-intro { right: var(--edge); left: var(--edge); top: var(--edge); max-width: none; justify-items: start; text-align: left; }
-  .hero-card .narrator.narrator { top: auto; bottom: var(--edge); }
+  .hero-card .narrator.narrator { top: auto; bottom: calc(var(--edge) + var(--name-w) * .42 + 8px); }
 }
 @keyframes title-in { to { opacity: 1; transform: none; } }
 
@@ -265,9 +278,9 @@ a.case-card:hover { box-shadow: 0 30px 60px -30px rgb(0 0 0 / .7); }
   .hero-intro { gap: 8px; }
   .hero-lead { font-size: 17px; }
   .hero-handle { display: none; }
-  /* Taller photo so the face sits high, leaving the strip along the bottom (the shirt) for the bubble */
-  .hero-card { --ph: 64; }
-  .hero-card .narrator.narrator { top: auto; right: 10px; bottom: 12px; left: 10px; justify-content: flex-end; max-width: none; }
+  /* Taller photo so the face sits high, above the name along the bottom; the narrator rests on the name */
+  .hero-card { --ph: 80; }
+  .hero-card .narrator.narrator { top: auto; right: 10px; bottom: calc(var(--edge) + (100cqw - var(--edge) * 2) * .42 + 4px); left: 10px; justify-content: flex-end; max-width: none; }
   .narrator-character { width: 60px; }
   .hero-card .narrator-bubble { min-width: 0; max-width: 220px; margin-bottom: 8px; padding: 9px 12px 10px; font-size: 12.5px; line-height: 1.35; }
   .case-grid { grid-template-columns: 1fr; }

@@ -25,6 +25,7 @@ const es = {
     next: 'Novedad siguiente',
     items: {
       calde: { text: 'Mi uso de Claude en un widget 3D para el escritorio', note: 'En desarrollo' },
+      tpf: { text: 'El mismo filtro cartoon en secuencial, OpenMP, MPI e híbrido', note: 'Proyecto en equipo' },
       cflap: { text: 'Autómatas y gramáticas en el navegador, en equipo y en vivo', note: 'En vivo' },
       cuad: { text: 'Mi cuaderno virtual, ahora una pizarra infinita', note: 'En desarrollo' },
       enjambre: { text: 'Drones en red para emergencias, nuestro proyecto para el rally internacional', note: 'Proyecto en equipo' },
@@ -44,7 +45,7 @@ const es = {
   },
   cases: {
     systemsRule: 'Apps y sitios web',
-    systemsFoot: '12 proyectos + 5 demos',
+    systemsFoot: '13 proyectos + 5 demos',
     systemsCta: 'Ver proyectos',
     photoRule: 'Amateur · eventos y marcas',
     albums: (n: number) => `${n} álbumes`,
@@ -129,6 +130,14 @@ const es = {
       text: 'Me sigue con la mirada, me saluda cuando abro Claude Code y pone cara de preocupado cuando estoy por llegar a un límite. También lista las terminales que están trabajando, avisa cuando una termina y controla Spotify sin iniciar sesión.',
       points: ['Uso de Claude y Codex en vivo', 'Terminales activas con aviso al terminar', 'Spotify con portada, progreso y controles', 'En el escritorio o siempre encima'],
       alt: 'Widget Calde: el personaje de Joaquín junto al uso de Claude de la sesión y la semana, una terminal activa y Spotify sonando',
+    },
+    tpf: {
+      kind: 'Computación paralela · Presentación interactiva',
+      lead: 'El trabajo final de Computación Avanzada con Rafaela Sanna: un filtro que convierte una foto en cartoon, programado en C++ de cuatro formas distintas para comparar cuánto tarda cada una.',
+      text: 'La misma imagen pasa por la versión secuencial, por OpenMP con threads, por MPI con procesos y por una versión híbrida. La presentación anima cómo se reparte el trabajo, deja cargar una foto propia y mide speedup y eficiencia.',
+      points: ['Detección de bordes con Sobel y posterizado', 'Reparto de filas por thread y por proceso, animado', 'Parámetros en vivo sobre tu propia foto', 'Speedup y eficiencia lado a lado'],
+      cta: 'Ver la presentación',
+      barOpenmp: 'TPF · OpenMP',
     },
     stugo: {
       kind: 'Plataforma hiperlocal · Mobile + web',
@@ -241,6 +250,7 @@ const en: Messages = {
     next: 'Next news',
     items: {
       calde: { text: 'My Claude usage in a 3D desktop widget', note: 'In progress' },
+      tpf: { text: 'One cartoon filter in sequential, OpenMP, MPI and hybrid', note: 'Team project' },
       cflap: { text: 'Automata and grammars in the browser, live and together', note: 'Live' },
       cuad: { text: 'My virtual notebook, now an endless whiteboard', note: 'In progress' },
       enjambre: { text: 'Networked drones for emergencies, our project for the international rally', note: 'Team project' },
@@ -260,7 +270,7 @@ const en: Messages = {
   },
   cases: {
     systemsRule: 'Apps and websites',
-    systemsFoot: '12 projects + 5 demos',
+    systemsFoot: '13 projects + 5 demos',
     systemsCta: 'See projects',
     photoRule: 'Amateur · events and brands',
     albums: (n) => `${n} albums`,
@@ -345,6 +355,14 @@ const en: Messages = {
       text: 'It follows me with its eyes, greets me when I open Claude Code and looks worried when I am close to a limit. It also lists the terminals that are working, tells me when one finishes and controls Spotify without signing in.',
       points: ['Live Claude and Codex usage', 'Active terminals with a heads-up when done', 'Spotify with cover, progress and controls', 'On the desktop or always on top'],
       alt: 'Calde widget: Joaquín’s character next to his Claude session and weekly usage, an active terminal and Spotify playing',
+    },
+    tpf: {
+      kind: 'Parallel computing · Interactive presentation',
+      lead: 'Our Advanced Computing final project with Rafaela Sanna: a filter that turns a photo into a cartoon, written in C++ four different ways to compare how long each one takes.',
+      text: 'The same image runs through the sequential version, OpenMP with threads, MPI with processes and a hybrid of both. The presentation animates how the work is split, lets you load your own photo and measures speedup and efficiency.',
+      points: ['Sobel edge detection and posterization', 'Rows split per thread and per process, animated', 'Live parameters on your own photo', 'Speedup and efficiency side by side'],
+      cta: 'See the presentation',
+      barOpenmp: 'TPF · OpenMP',
     },
     stugo: {
       kind: 'Hyperlocal platform · Mobile + web',
@@ -455,6 +473,7 @@ const pt: Messages = {
     next: 'Próxima novidade',
     items: {
       calde: { text: 'Meu uso do Claude num widget 3D para a área de trabalho', note: 'Em desenvolvimento' },
+      tpf: { text: 'O mesmo filtro cartoon em sequencial, OpenMP, MPI e híbrido', note: 'Projeto em equipe' },
       cflap: { text: 'Autômatos e gramáticas no navegador, em equipe e ao vivo', note: 'No ar' },
       cuad: { text: 'Meu caderno virtual, agora um quadro infinito', note: 'Em desenvolvimento' },
       enjambre: { text: 'Drones em rede para emergências, nosso projeto para o rally internacional', note: 'Projeto em equipe' },
@@ -474,7 +493,7 @@ const pt: Messages = {
   },
   cases: {
     systemsRule: 'Apps e sites',
-    systemsFoot: '12 projetos + 5 demos',
+    systemsFoot: '13 projetos + 5 demos',
     systemsCta: 'Ver projetos',
     photoRule: 'Amador · eventos e marcas',
     albums: (n) => `${n} álbuns`,
@@ -559,6 +578,14 @@ const pt: Messages = {
       text: 'Ele me segue com o olhar, me cumprimenta quando abro o Claude Code e fica preocupado quando estou perto de um limite. Também lista os terminais que estão trabalhando, avisa quando um termina e controla o Spotify sem login.',
       points: ['Uso do Claude e do Codex ao vivo', 'Terminais ativos com aviso ao terminar', 'Spotify com capa, progresso e controles', 'Na área de trabalho ou sempre por cima'],
       alt: 'Widget Calde: o personagem de Joaquín ao lado do uso do Claude na sessão e na semana, um terminal ativo e o Spotify tocando',
+    },
+    tpf: {
+      kind: 'Computação paralela · Apresentação interativa',
+      lead: 'O trabalho final de Computação Avançada com Rafaela Sanna: um filtro que transforma uma foto em cartoon, programado em C++ de quatro formas diferentes para comparar quanto cada uma demora.',
+      text: 'A mesma imagem passa pela versão sequencial, pelo OpenMP com threads, pelo MPI com processos e por uma versão híbrida. A apresentação anima como o trabalho é dividido, permite carregar uma foto própria e mede speedup e eficiência.',
+      points: ['Detecção de bordas com Sobel e posterização', 'Divisão de linhas por thread e por processo, animada', 'Parâmetros ao vivo sobre sua própria foto', 'Speedup e eficiência lado a lado'],
+      cta: 'Ver a apresentação',
+      barOpenmp: 'TPF · OpenMP',
     },
     stugo: {
       kind: 'Plataforma hiperlocal · Mobile + web',
@@ -669,6 +696,7 @@ const zh: Messages = {
     next: '下一条动态',
     items: {
       calde: { text: '把我的 Claude 用量放进桌面 3D 小组件', note: '开发中' },
+      tpf: { text: '同一个卡通滤镜的串行、OpenMP、MPI 和混合版本', note: '团队项目' },
       cflap: { text: '在浏览器里一起实时编辑自动机和文法', note: '已上线' },
       cuad: { text: '我的虚拟笔记本，现在是一块无限白板', note: '开发中' },
       enjambre: { text: '用于应急救援的联网无人机，我们参加国际创新拉力赛的项目', note: '团队项目' },
@@ -688,7 +716,7 @@ const zh: Messages = {
   },
   cases: {
     systemsRule: '应用与网站',
-    systemsFoot: '12 个项目 + 5 个演示',
+    systemsFoot: '13 个项目 + 5 个演示',
     systemsCta: '查看项目',
     photoRule: '业余 · 活动与品牌',
     albums: (n) => `${n} 个相册`,
@@ -773,6 +801,14 @@ const zh: Messages = {
       text: '它的目光会跟着我，打开 Claude Code 时会打招呼，快到上限时会露出担心的表情。它还会列出正在运行的终端，在任务完成时提醒我，并且无需登录就能控制 Spotify。',
       points: ['实时显示 Claude 和 Codex 用量', '列出活动终端并在完成时提醒', 'Spotify 封面、进度和播放控制', '放在桌面上或始终置顶'],
       alt: 'Calde 小组件：Joaquín 的角色旁边是 Claude 会话和本周用量、一个活动终端以及正在播放的 Spotify',
+    },
+    tpf: {
+      kind: '并行计算 · 交互式演示',
+      lead: '我和 Rafaela Sanna 的高级计算课程期末项目：一个把照片变成卡通风格的滤镜，用 C++ 以四种方式实现，比较各自的耗时。',
+      text: '同一张图片分别经过串行版本、使用线程的 OpenMP、使用进程的 MPI 以及两者结合的混合版本。演示以动画展示工作如何分配，可以上传自己的照片，并测量加速比和效率。',
+      points: ['Sobel 边缘检测与色调分离', '按线程和进程分配行的动画', '在自己的照片上实时调整参数', '并排比较加速比和效率'],
+      cta: '查看演示',
+      barOpenmp: 'TPF · OpenMP',
     },
     stugo: {
       kind: '超本地平台 · 移动端 + 网页',

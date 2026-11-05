@@ -223,6 +223,7 @@ body.is-arriving .site > main { animation: page-in .5s var(--ease-out) both; }
 .feature-cuad { --tone: #cec8b0; }
 .feature-cflap { --tone: #9b7bff; }
 .feature-calde { --tone: #e8784f; }
+.feature-tpf { --tone: #2ed3a0; }
 .calde-stage { display: grid; place-items: center; }
 .calde-widget { width: min(86%, 560px); height: auto; filter: drop-shadow(0 40px 60px rgb(0 0 0 / .7)); transform: rotate(-2deg); transition: transform .7s var(--ease-out); }
 @media (hover: hover) { .calde-stage:hover .calde-widget { transform: rotate(0deg) scale(1.03); } }
