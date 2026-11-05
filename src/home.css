@@ -34,9 +34,9 @@
 .hero-intro, .hero-handle { opacity: 0; }
 .home.is-ready .hero-intro, .home.is-ready .hero-handle { animation: corner-in .8s .9s ease both; }
 
-/* Placed from the name, not the right edge: the face (centered in the cutout, which is 88cqh wide)
-   lands under the middle of the name block, keeping the right side free for the copy and the narrator */
-.hero-portrait { position: absolute; z-index: 1; left: calc(var(--edge) + var(--name-w) * .5 - 44cqh); bottom: 0; height: 90%; aspect-ratio: 1239 / 1269; margin: 0; pointer-events: none; }
+/* Placed from the name, not the right edge: the face (centered in the cutout, which is ~98cqh wide) sits just past
+   the end of the name, so the last letters tuck behind the cap and the face itself stays clear of the type */
+.hero-portrait { position: absolute; z-index: 1; left: calc(var(--edge) + var(--name-w) * .78 - 20cqh); bottom: 0; height: 100%; aspect-ratio: 1239 / 1269; margin: 0; pointer-events: none; }
 .hero-portrait img { display: block; width: 100%; max-width: none; height: 100%; filter: contrast(1.05) brightness(.95); opacity: 0; transform: translateY(40px); -webkit-mask-image: linear-gradient(to top, transparent, #000 14%); mask-image: linear-gradient(to top, transparent, #000 14%); }
 .home.is-ready .hero-portrait img { animation: portrait-in 1.2s .1s var(--ease-out) both; }
 /* Full name stacked flush left, both lines the same width (Bebas: the first line runs 5.62em, the surname 3.09em).
