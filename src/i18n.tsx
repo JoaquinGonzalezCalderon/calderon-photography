@@ -40,7 +40,7 @@ const es = {
     kicker: 'Portfolio 2026',
     lead: ['Analista en sistemas.', 'DJ y fotógrafo amateur.'],
     areas: 'Áreas',
-    portraitAlt: 'Joaquín Gonzalez Calderón de perfil, con auriculares, sosteniendo un celular',
+    portraitAlt: 'Joaquín Gonzalez Calderón con gorra, mirando a cámara',
   },
   cases: {
     systemsRule: 'Apps y sitios web',
@@ -256,7 +256,7 @@ const en: Messages = {
     kicker: 'Portfolio 2026',
     lead: ['Systems analyst.', 'DJ and amateur photographer.'],
     areas: 'Areas',
-    portraitAlt: 'Joaquín Gonzalez Calderón in profile, wearing earphones and holding up a phone',
+    portraitAlt: 'Joaquín Gonzalez Calderón in a cap, looking at the camera',
   },
   cases: {
     systemsRule: 'Apps and websites',
@@ -470,7 +470,7 @@ const pt: Messages = {
     kicker: 'Portfólio 2026',
     lead: ['Analista de sistemas.', 'DJ e fotógrafo amador.'],
     areas: 'Áreas',
-    portraitAlt: 'Joaquín Gonzalez Calderón de perfil, com fones de ouvido, segurando um celular',
+    portraitAlt: 'Joaquín Gonzalez Calderón de boné, olhando para a câmera',
   },
   cases: {
     systemsRule: 'Apps e sites',
@@ -684,7 +684,7 @@ const zh: Messages = {
     kicker: '作品集 2026',
     lead: ['系统分析师。', 'DJ 和业余摄影师。'],
     areas: '领域',
-    portraitAlt: '戴着耳机、举着手机的 Joaquín Gonzalez Calderón 侧面像',
+    portraitAlt: '戴着棒球帽、直视镜头的 Joaquín Gonzalez Calderón',
   },
   cases: {
     systemsRule: '应用与网站',

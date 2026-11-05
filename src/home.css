@@ -34,9 +34,9 @@
 .hero-intro, .hero-handle { opacity: 0; }
 .home.is-ready .hero-intro, .home.is-ready .hero-handle { animation: corner-in .8s .9s ease both; }
 
-/* Placed from the name, not the right edge: the head (a third into the cutout, which is 120cqh wide)
+/* Placed from the name, not the right edge: the face (centered in the cutout, which is 88cqh wide)
    lands under the middle of the name block, keeping the right side free for the copy and the narrator */
-.hero-portrait { position: absolute; z-index: 1; left: calc(var(--edge) + var(--name-w) * .5 - 40cqh); bottom: 0; height: 90%; aspect-ratio: 1448 / 1086; margin: 0; pointer-events: none; }
+.hero-portrait { position: absolute; z-index: 1; left: calc(var(--edge) + var(--name-w) * .5 - 44cqh); bottom: 0; height: 90%; aspect-ratio: 1239 / 1269; margin: 0; pointer-events: none; }
 .hero-portrait img { display: block; width: 100%; max-width: none; height: 100%; filter: contrast(1.05) brightness(.95); opacity: 0; transform: translateY(40px); -webkit-mask-image: linear-gradient(to top, transparent, #000 14%); mask-image: linear-gradient(to top, transparent, #000 14%); }
 .home.is-ready .hero-portrait img { animation: portrait-in 1.2s .1s var(--ease-out) both; }
 /* Full name stacked flush left, both lines the same width (Bebas: the first line runs 5.62em, the surname 3.09em).
@@ -55,8 +55,8 @@
    placed from the photo's height so the head still overlaps the surname */
 @container (max-aspect-ratio: 6 / 5) {
   .hero-name, .hero-ghost, .hero-portrait { --name-w: calc(100cqw - var(--edge) * 2); }
-  /* Head (0.44 x the photo height in from its left) under the name; min() keeps the phone in frame */
-  .hero-portrait { left: min(var(--edge) + var(--name-w) * .42 - var(--ph) * .44cqh, 100cqw - var(--ph) * 1.2cqh); height: calc(var(--ph) * 1%); }
+  /* Face (0.49 x the photo height in from its left) under the name; min() keeps the shoulders in frame */
+  .hero-portrait { left: min(var(--edge) + var(--name-w) * .5 - var(--ph) * .49cqh, 100cqw - var(--ph) * .98cqh); height: calc(var(--ph) * 1%); }
   .hero-name, .hero-ghost { top: max(var(--edge) + 136px, (100 - var(--ph) * .85) * 1cqh - var(--name-w) * .3); }
   .hero-intro { right: var(--edge); left: var(--edge); top: var(--edge); max-width: none; justify-items: start; text-align: left; }
   .hero-card .narrator.narrator { top: auto; bottom: var(--edge); }
@@ -267,7 +267,6 @@ a.case-card:hover { box-shadow: 0 30px 60px -30px rgb(0 0 0 / .7); }
   .hero-handle { display: none; }
   /* Taller photo so the face sits high, leaving the strip along the bottom (the shirt) for the bubble */
   .hero-card { --ph: 64; }
-  .hero-card .hero-portrait { left: auto; right: -22cqw; }
   .hero-card .narrator.narrator { top: auto; right: 10px; bottom: 12px; left: 10px; justify-content: flex-end; max-width: none; }
   .narrator-character { width: 60px; }
   .hero-card .narrator-bubble { min-width: 0; max-width: 220px; margin-bottom: 8px; padding: 9px 12px 10px; font-size: 12.5px; line-height: 1.35; }

@@ -402,7 +402,7 @@ function HomeCover({ onNavigate, isReady }: { onNavigate: (area: PortfolioArea) 
     <section ref={parallaxRef} className="hero-card" aria-labelledby="hero-title">
       <h1 className="hero-name" id="hero-title"><span className="hero-name-front"><span className="hero-first">Joaquín Gonzalez</span> <span className="hero-last">Calderón</span></span></h1>
       <figure className="hero-portrait">
-        <img src="/areas/portrait-rec.webp" srcSet="/areas/portrait-rec-sm.webp 820w, /areas/portrait-rec.webp 1448w" sizes="(max-width: 760px) 120vw, 70vw" alt={t.hero.portraitAlt} width="1448" height="1086" fetchPriority="high" />
+        <img src="/areas/portrait-yo2.webp" alt={t.hero.portraitAlt} width="1239" height="1269" fetchPriority="high" />
       </figure>
       <div className="hero-ghost" aria-hidden="true"><span className="hero-first">Joaquín Gonzalez</span><span className="hero-last">Calderón</span></div>
       <div className="hero-intro">
