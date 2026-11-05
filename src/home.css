@@ -59,29 +59,27 @@
 .hero-lines a:hover b { color: var(--gold); }
 .hero-lines a:hover svg { transform: translate(3px, -3px); }
 
-/* Right side: the lead as the cover's headline, under a gold year sticker. Anchored from the bottom, above the room
-   the narrator's longest bubble takes, so the two never meet */
-.hero-cover { position: absolute; z-index: 3; bottom: calc(clamp(16px, 3cqw, 40px) + 156px); right: var(--edge); display: grid; justify-items: end; gap: 14px; width: min(25cqw, 320px); text-align: right; }
-.hero-sticker { display: grid; place-items: center; width: clamp(74px, 13cqh, 108px); aspect-ratio: 1; margin: 0; border-radius: 50%; background: #e8b02f; color: var(--print); font-family: 'Bebas Neue', var(--display); font-size: clamp(17px, 3cqh, 24px); line-height: .9; text-align: center; rotate: 12deg; box-shadow: 0 8px 20px rgb(0 0 0 / .18); }
-.hero-lead { margin: 0; color: var(--print); font-family: var(--display); font-size: clamp(20px, 2cqw, 32px); font-stretch: 88%; font-weight: 700; line-height: 1.05; }
-.hero-strip, .hero-lines, .hero-cover { opacity: 0; }
-.home.is-ready .hero-strip, .home.is-ready .hero-lines, .home.is-ready .hero-cover { animation: corner-in .8s .8s ease both; }
+/* The lead hangs under the masthead, flush with its right end, like a cover's tagline. Placed from the masthead's
+   own size (the same min() as .hero-last; CALDERÓN runs 3.09em wide and 1em tall with its padding) so it never meets it */
+.hero-lead { --mast: min(calc((100cqw - var(--edge) * 2) / 3.12), 50cqh); position: absolute; z-index: 3; top: calc(var(--edge) * .7 + 30px + var(--mast) * 1.06 + 12px); right: calc((100cqw - var(--mast) * 3.09) / 2); width: min(24cqw, 300px); margin: 0; color: var(--print); font-family: var(--display); font-size: clamp(18px, 1.7cqw, 26px); font-stretch: 88%; font-weight: 700; line-height: 1.08; text-align: right; }
+.hero-strip, .hero-lines, .hero-lead { opacity: 0; }
+.home.is-ready .hero-strip, .home.is-ready .hero-lines, .home.is-ready .hero-lead { animation: corner-in .8s .8s ease both; }
 
 /* Tall hero (phones, tablets held upright): the masthead across the top, the photo below it and the cover lines
-   in a row along the bottom; the headline and sticker step aside */
+   in a row along the bottom; the lead steps aside */
 @container (max-aspect-ratio: 6 / 5) {
   .hero-portrait { --ph: 66; bottom: 70px; }
   .hero-strip-place, .hero-strip a { display: none; }
   .hero-last { font-size: calc((100cqw - var(--edge) * 2) / 3.12); }
-  .hero-cover { top: auto; bottom: calc(70px + 40cqh); width: auto; }
   .hero-lead { display: none; }
-  .hero-sticker { width: 64px; font-size: 15px; }
   .hero-lines { right: var(--edge); bottom: var(--edge); grid-template-columns: repeat(3, 1fr); gap: 10px; width: auto; padding-top: 10px; border-top: 1.5px solid var(--print); }
   .hero-lines b { font-size: 24px; }
   .hero-lines b svg { display: none; }
   .hero-lines span { font-size: 10.5px; line-height: 1.3; }
   .hero-card .narrator.narrator { top: auto; bottom: calc(70px + 12px); align-items: flex-end; }
 }
+/* Short sheets leave no room between the masthead and the narrator's bubble, which says the same thing anyway */
+@container (max-height: 620px) { .hero-lead { display: none; } }
 @keyframes title-in { to { opacity: 1; transform: none; } }
 
 @keyframes corner-in { to { opacity: 1; } }
@@ -291,7 +289,7 @@ a.case-card:hover { box-shadow: 0 30px 60px -30px rgb(0 0 0 / .7); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero-strip, .hero-lines, .hero-cover, .hero-last, .hero-portrait img, .narrator-character { opacity: 1; transform: none; }
+  .hero-strip, .hero-lines, .hero-lead, .hero-last, .hero-portrait img, .narrator-character { opacity: 1; transform: none; }
   .narrator-body, .narrator-shadow { animation: none; }
 }
 

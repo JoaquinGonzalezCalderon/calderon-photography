@@ -409,10 +409,7 @@ function HomeCover({ onNavigate, isReady }: { onNavigate: (area: PortfolioArea) 
       <nav className="hero-lines" aria-label={t.hero.areas}>
         {areaOrder.map((area) => <a key={area} href={pathForArea(area)} onClick={go(area)}><b>{t.areas[area]}<Arrow /></b><span>{area === 'systems' ? t.cases.systemsFoot : area === 'photography' ? t.cases.albums(albums.length) : t.cases.djFoot(djTracks.length)}</span></a>)}
       </nav>
-      <div className="hero-cover">
-        <p className="hero-sticker">{t.hero.kicker}</p>
-        <p className="hero-lead">{t.hero.lead[0]}<br />{t.hero.lead[1]}</p>
-      </div>
+      <p className="hero-lead">{t.hero.lead[0]}<br />{t.hero.lead[1]}</p>
       <Narrator isReady={isReady} />
     </section>
 
