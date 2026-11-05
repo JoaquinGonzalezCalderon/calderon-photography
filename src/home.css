@@ -53,8 +53,9 @@
 .hero-lines a:hover b { color: var(--gold); }
 .hero-lines a:hover svg { transform: translate(3px, -3px); }
 
-/* Right side: the lead as the cover's headline, under a gold year sticker */
-.hero-cover { position: absolute; z-index: 3; top: 50cqh; right: var(--edge); display: grid; justify-items: end; gap: 14px; width: min(25cqw, 320px); text-align: right; }
+/* Right side: the lead as the cover's headline, under a gold year sticker. Anchored from the bottom, above the room
+   the narrator's longest bubble takes, so the two never meet */
+.hero-cover { position: absolute; z-index: 3; bottom: calc(clamp(16px, 3cqw, 40px) + 156px); right: var(--edge); display: grid; justify-items: end; gap: 14px; width: min(25cqw, 320px); text-align: right; }
 .hero-sticker { display: grid; place-items: center; width: clamp(74px, 13cqh, 108px); aspect-ratio: 1; margin: 0; border-radius: 50%; background: #e8b02f; color: var(--print); font-family: 'Bebas Neue', var(--display); font-size: clamp(17px, 3cqh, 24px); line-height: .9; text-align: center; rotate: 12deg; box-shadow: 0 8px 20px rgb(0 0 0 / .18); }
 .hero-lead { margin: 0; color: var(--print); font-family: var(--display); font-size: clamp(20px, 2cqw, 32px); font-stretch: 88%; font-weight: 700; line-height: 1.05; }
 .hero-strip, .hero-lines, .hero-cover { opacity: 0; }
