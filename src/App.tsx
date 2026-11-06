@@ -401,8 +401,8 @@ function HomeCover({ onNavigate, isReady }: { onNavigate: (area: PortfolioArea) 
   return <main className={`home${isReady ? ' is-ready' : ''}`}>
     <NewsTicker onNavigate={onNavigate} />
     <section ref={parallaxRef} className="hero-card" aria-labelledby="hero-title">
-      <p className="hero-strip"><span>Nº 01<span className="hero-strip-place"> · {t.footer.place}</span></span><span>Joaquín Gonzalez Calderón</span><a href={site.instagramUrl} target="_blank" rel="noreferrer">@joaquinncalderon</a></p>
-      <h1 className="hero-name" id="hero-title"><span className="hero-first">Joaquín Gonzalez </span><span className="hero-last" data-text="Calderón">Calderón</span></h1>
+      <p className="hero-strip"><span>Joaquín Gonzalez Calderón</span><a href={site.instagramUrl} target="_blank" rel="noreferrer">@joaquinncalderon</a></p>
+      <h1 className="hero-name" id="hero-title"><span className="hero-first">Joaquín Gonzalez </span><span className="hero-last">Calderón</span></h1>
       <figure className="hero-portrait">
         <img src="/areas/portrait-yo2.webp" alt={t.hero.portraitAlt} width="1239" height="1269" fetchPriority="high" />
       </figure>
