@@ -301,7 +301,7 @@ function Arrow() {
 /** Text and note for each one live in `news.items` of src/i18n.tsx, under the same `id`. */
 type NewsItem = { id: keyof Messages['news']['items']; title: string; image: string; area: Area; anchor: string }
 const news: NewsItem[] = ([
-  { id: 'latoska', title: 'Torneo Pádel La Toska', image: '/areas/news/latoska.webp', area: 'photography', anchor: 'albumes' },
+  { id: 'latoska', title: 'Torneo Pádel La Toska 6/11/2026', image: '/areas/news/latoska.webp', area: 'photography', anchor: 'albumes' },
   { id: 'sueltas', title: 'Fotos sueltas', image: '/areas/news/sueltas.webp', area: 'photography', anchor: 'sueltas' },
   { id: 'tpf', title: 'TPF Computación Avanzada', image: '/areas/news/tfi.webp', area: 'systems', anchor: 'tpf' },
   { id: 'padel', title: 'Torneo LocosXelPadelBv', image: '/areas/news/padel.webp', area: 'photography', anchor: 'albumes' },
