@@ -301,8 +301,10 @@ function Arrow() {
 /** Text and note for each one live in `news.items` of src/i18n.tsx, under the same `id`. */
 type NewsItem = { id: keyof Messages['news']['items']; title: string; image: string; area: Area; anchor: string }
 const news: NewsItem[] = ([
+  { id: 'latoska', title: 'Torneo Pádel La Toska', image: '/areas/news/latoska.webp', area: 'photography', anchor: 'albumes' },
+  { id: 'sueltas', title: 'Fotos sueltas', image: '/areas/news/sueltas.webp', area: 'photography', anchor: 'sueltas' },
   { id: 'tpf', title: 'TPF Computación Avanzada', image: '/areas/news/tfi.webp', area: 'systems', anchor: 'tpf' },
-  { id: 'padel', title: 'Pádel', image: '/areas/news/padel.webp', area: 'photography', anchor: 'albumes' },
+  { id: 'padel', title: 'Torneo LocosXelPadelBv', image: '/areas/news/padel.webp', area: 'photography', anchor: 'albumes' },
   { id: 'calde', title: 'Calde', image: '/areas/news/calde.webp', area: 'systems', anchor: 'calde' },
   { id: 'cflap', title: 'C FLAP', image: '/areas/news/cflap.webp', area: 'systems', anchor: 'cflap' },
   { id: 'desfile', title: 'Desfile Concepción', image: '/areas/news/desfile-concepcion.webp', area: 'photography', anchor: 'albumes' },
@@ -310,7 +312,6 @@ const news: NewsItem[] = ([
   { id: 'enjambre', title: 'ENJAMBRE', image: '/areas/news/enjambre.webp', area: 'systems', anchor: 'enjambre' },
   { id: 'may', title: 'MAY', image: '/areas/news/may.webp', area: 'systems', anchor: 'may' },
   { id: 'docentes', title: 'Docentes E', image: '/areas/news/docentes-e.webp', area: 'photography', anchor: 'albumes' },
-  { id: 'sueltas', title: 'Fotos sueltas', image: '/areas/news/sueltas.webp', area: 'photography', anchor: 'sueltas' },
   { id: 'voider', title: 'Voider Goat', image: '/areas/news/voider.webp', area: 'systems', anchor: 'voider' },
 ] satisfies NewsItem[]).slice(0, 5)
 
@@ -977,7 +978,7 @@ function DJPage() {
 }
 
 /** Rows of 2 · 3 · 2 cards keep every album the same height. */
-const albumLayout: ('pair' | 'trio')[] = ['pair', 'pair', 'trio', 'trio', 'trio', 'trio', 'trio', 'trio', 'pair', 'pair']
+const albumLayout: ('pair' | 'trio')[] = ['pair', 'pair', 'trio', 'trio', 'trio', 'trio', 'trio', 'trio', 'trio', 'trio', 'trio']
 
 const loosePhotos = loosePhotoIds.map((id) => allPhotos.find((photo) => photo.id === id)).filter((photo): photo is Photo => Boolean(photo))
 
