@@ -311,9 +311,15 @@ html:has(.project-dialog[open]) { overflow: hidden; }
 .project-dialog .feature-streak .feature-copy { top: 96px; }
 .client-stage { position: relative; isolation: isolate; }
 .client-stage::before { position: absolute; z-index: -1; inset: 10% 6% 0 6%; border-radius: 50%; background: radial-gradient(closest-side, rgb(242 239 232 / .12), transparent); content: ''; filter: blur(40px); }
-.client-window { display: block; overflow: hidden; border: 1px solid var(--line-strong); border-radius: 14px; background: #1a1a18; box-shadow: 0 40px 80px -30px rgb(0 0 0 / .85); transform: rotate(-1deg); transition: transform .7s var(--ease-out); }
+.client-window { display: block; overflow: hidden; border: 1px solid var(--line-strong); border-radius: 14px; background: #1a1a18; box-shadow: 0 40px 80px -30px rgb(0 0 0 / .85); transition: transform .7s var(--ease-out); }
 .client-window img { width: 100%; height: auto; aspect-ratio: 1440 / 700; object-fit: cover; object-position: top; }
-@media (hover: hover) { a.client-window:hover { transform: rotate(0deg) scale(1.015); } }
+@media (hover: hover) { a.client-window:hover { transform: translateY(-4px); } }
+/* Client sites stack: the cover across the full width, name on the left and description on the right underneath */
+.feature-client { display: grid; grid-template-columns: minmax(0, 1fr); gap: clamp(28px, 4vh, 44px); }
+.client-copy { display: grid; grid-template-columns: minmax(0, 1fr) minmax(260px, 440px); align-items: end; gap: 20px clamp(32px, 5vw, 72px); }
+.client-copy .feature-title-row { margin-bottom: 0; }
+.client-copy-side { display: grid; justify-items: start; gap: 22px; padding-bottom: 6px; }
+@media (max-width: 760px) { .client-copy { grid-template-columns: 1fr; } }
 
 
 /* Demos showcase: tabs on the left, browser + phone stage on the right, tinted by the selected demo */

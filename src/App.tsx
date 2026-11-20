@@ -559,7 +559,7 @@ const client = (id: ClientId): BoardEntry => {
 }
 
 const board: BoardEntry[] = [
-  project('streak', 'Streak', '/areas/tustreak-desktop.webp', 'live', '#f2efe8', FeaturedStreak),
+  project('streak', 'Streak', '/areas/tustreak-home.webp', 'live', '#f2efe8', FeaturedStreak, 'phone'),
   project('may', 'MAY', '/areas/may-home.webp', 'wip', '#f7b500', FeaturedMay),
   project('voider', 'Voider Goat', '/areas/voidergoat-album.webp', 'live', '#e3170a', FeaturedVoider),
   project('enjambre', 'Enjambre', '/areas/enjambre-coe.webp', 'team', '#f26b1d', FeaturedEnjambre),
@@ -567,7 +567,7 @@ const board: BoardEntry[] = [
   project('cflap', 'C FLAP', '/areas/cflap-board.webp', 'live', '#9b7bff', FeaturedCflap),
   project('calde', 'Calde', '/areas/calde-widget.webp', 'wip', '#e8784f', FeaturedCalde, 'contain'),
   project('tpf', 'TPF Computación Avanzada', '/areas/tfi-home.webp', 'team', '#2ed3a0', FeaturedTpf),
-  project('stugo', 'STUGO', '/areas/stugo1.webp', 'own', '#7fb2ff', FeaturedStugo, 'phone'),
+  project('stugo', 'STUGO', '/areas/stugo1.webp', 'team', '#7fb2ff', FeaturedStugo, 'phone'),
   client('iphonepronu'),
   client('raygal'),
   client('vinoyco'),
@@ -644,10 +644,6 @@ function ProjectBoard() {
     return () => window.clearTimeout(timer)
   }, [])
 
-  useEffect(() => () => {
-    if (window.location.hash && board.some((entry) => `#${entry.id}` === window.location.hash)) window.history.replaceState(window.history.state, '', window.location.pathname)
-  }, [])
-
   const entry = active === null ? null : board[active]
   const step = (direction: 1 | -1) => { const current = activeRef.current; if (current !== null) open((current + direction + board.length) % board.length) }
   const groups = [
@@ -699,15 +695,20 @@ function ClientDetail({ id }: { id: ClientId }) {
     <span className="demo-browser-bar"><i /><i /><i /><span>{site.href ? new URL(site.href).host : site.name}</span></span>
     <img src={site.image} alt={copy.alt} loading="lazy" width="1440" height="700" />
   </>
-  return <article className="feature feature-shots feature-client" aria-labelledby={`${id}-title`}>
+  // The site's cover fills the width; name and description sit underneath it
+  return <article className="feature feature-client" aria-labelledby={`${id}-title`}>
     <div className="client-stage">
       {site.href ? <a className="client-window" href={site.href} target="_blank" rel="noreferrer" tabIndex={-1} aria-hidden="true">{picture}</a> : <div className="client-window">{picture}</div>}
     </div>
-    <div className="shots-copy">
-      <p className="feature-kind">{t.systems.clientKind}</p>
-      <div className="feature-title-row"><h2 id={`${id}-title`}>{title}</h2><span className={`status${statusClass(site.status)}`}>{t.status[site.status]}</span></div>
-      <p className="feature-text feature-text-lead">{copy.description}</p>
-      {site.href && <a className="button shots-cta" data-magnetic="0.2" href={site.href} target="_blank" rel="noreferrer" aria-label={t.systems.viewSiteAria(title, site.status === 'wip')}>{site.status === 'wip' ? t.systems.viewProgress : t.systems.viewSite} <Arrow /></a>}
+    <div className="client-copy">
+      <div>
+        <p className="feature-kind">{t.systems.clientKind}</p>
+        <div className="feature-title-row"><h2 id={`${id}-title`}>{title}</h2><span className={`status${statusClass(site.status)}`}>{t.status[site.status]}</span></div>
+      </div>
+      <div className="client-copy-side">
+        <p className="feature-text feature-text-lead">{copy.description}</p>
+        {site.href && <a className="button" data-magnetic="0.2" href={site.href} target="_blank" rel="noreferrer" aria-label={t.systems.viewSiteAria(title, site.status === 'wip')}>{site.status === 'wip' ? t.systems.viewProgress : t.systems.viewSite} <Arrow /></a>}
+      </div>
     </div>
   </article>
 }
@@ -922,7 +923,7 @@ function FeaturedStugo() {
   const { t } = useI18n()
   const screens = t.systems.stugo.screens.map((screen, index) => ({ src: `/areas/stugo${index + 1}.webp`, ...screen }))
   return <article className="feature feature-stugo" aria-labelledby="stugo-title">
-    <div className="feature-title-row" data-reveal><h2 id="stugo-title">STUGO</h2><span className="status">{t.status.own}</span></div>
+    <div className="feature-title-row" data-reveal><h2 id="stugo-title">STUGO</h2><span className="status">{t.status.team}</span></div>
     <div className="feature-phones stugo-phones" aria-label={t.systems.stugo.shots} data-reveal>
       {screens.map((screen) => <Phone key={screen.title} {...screen} />)}
     </div>
