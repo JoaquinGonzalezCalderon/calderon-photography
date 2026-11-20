@@ -454,10 +454,13 @@ const systemsShowcase: { name?: string; demo?: DemoId; image: string; wip?: bool
   { name: 'Calde', image: '/areas/calde-widget.webp', wip: true },
   { name: 'TPF Computación Avanzada', image: '/areas/tfi-home.webp' },
   { name: 'STUGO', image: '/areas/stugo1.webp', phone: true },
-  { name: 'Mate Único', image: '/areas/jgc-mate.webp' },
+  { name: 'iPhone Pronu', image: '/areas/jgc-iphonepronu.webp', wip: true },
+  { name: 'Raygal', image: '/areas/jgc-raygal.webp', wip: true },
+  { name: 'Vino & Co', image: '/areas/jgc-vinoyco.webp', wip: true },
   { name: 'Inmobiliaria Andrea Duré', image: '/areas/jgc-inmobiliaria.webp' },
   { name: 'Barbería Los Santos', image: '/areas/jgc-barberia.webp', wip: true },
   { name: 'Analía Calderón', image: '/areas/jgc-amelia.webp', wip: true },
+  { name: 'Mate Único', image: '/areas/jgc-mate.webp' },
   { demo: 'cafeteria', image: '/areas/demo-cafeteria.webp' },
   { demo: 'bazar', image: '/areas/demo-bazar.webp' },
   { demo: 'tienda', image: '/areas/demo-tienda.webp' },
@@ -539,16 +542,20 @@ type BoardEntry = { id: string; group: 'projects' | 'clients'; name: string; ima
 const project = (id: ProjectId, name: string, image: string, status: StatusId, tone: string, Detail: () => ReactNode, fit?: BoardEntry['fit']): BoardEntry =>
   ({ id, group: 'projects', name, image, status, tone, fit, kind: (t) => t.systems[id].kind, Detail })
 
-const clientSites: Record<ClientId, { name: string; image: string; href?: string; wip?: boolean }> = {
-  mate: { name: 'Mate Único', image: '/areas/jgc-mate.webp', href: 'https://mate-unico-deployed.vercel.app/' },
-  inmobiliaria: { name: 'Inmobiliaria Andrea Duré', image: '/areas/jgc-inmobiliaria.webp', href: 'https://andreadure.com/' },
-  barberia: { name: 'Barbería Los Santos', image: '/areas/jgc-barberia.webp', href: 'https://lossantos-coral.vercel.app/', wip: true },
-  analia: { name: 'Analía Calderón', image: '/areas/jgc-amelia.webp', wip: true },
+/** Client sites, in board order. Without `href` the site is only shown, never linked. */
+const clientSites: Record<ClientId, { name: string; image: string; status: StatusId; href?: string }> = {
+  iphonepronu: { name: 'iPhone Pronu', image: '/areas/jgc-iphonepronu.webp', status: 'wip' },
+  raygal: { name: 'Raygal', image: '/areas/jgc-raygal.webp', status: 'wip' },
+  vinoyco: { name: 'Vino & Co', image: '/areas/jgc-vinoyco.webp', status: 'wip' },
+  inmobiliaria: { name: 'Inmobiliaria Andrea Duré', image: '/areas/jgc-inmobiliaria.webp', status: 'live', href: 'https://andreadure.com/' },
+  barberia: { name: 'Barbería Los Santos', image: '/areas/jgc-barberia.webp', status: 'wip', href: 'https://lossantos-coral.vercel.app/' },
+  analia: { name: 'Analía Calderón', image: '/areas/jgc-amelia.webp', status: 'wip' },
+  mate: { name: 'Mate Único', image: '/areas/jgc-mate.webp', status: 'uni', href: 'https://mate-unico-deployed.vercel.app/' },
 }
 
 const client = (id: ClientId): BoardEntry => {
   const site = clientSites[id]
-  return { id, group: 'clients', name: site.name, image: site.image, status: site.wip ? 'wip' : 'live', tone: '#f2efe8', kind: (t) => t.systems.clients[id].description, Detail: () => <ClientDetail id={id} /> }
+  return { id, group: 'clients', name: site.name, image: site.image, status: site.status, tone: '#f2efe8', kind: (t) => t.systems.clients[id].description, Detail: () => <ClientDetail id={id} /> }
 }
 
 const board: BoardEntry[] = [
@@ -561,10 +568,13 @@ const board: BoardEntry[] = [
   project('calde', 'Calde', '/areas/calde-widget.webp', 'wip', '#e8784f', FeaturedCalde, 'contain'),
   project('tpf', 'TPF Computación Avanzada', '/areas/tfi-home.webp', 'team', '#2ed3a0', FeaturedTpf),
   project('stugo', 'STUGO', '/areas/stugo1.webp', 'own', '#7fb2ff', FeaturedStugo, 'phone'),
-  client('mate'),
+  client('iphonepronu'),
+  client('raygal'),
+  client('vinoyco'),
   client('inmobiliaria'),
   client('barberia'),
   client('analia'),
+  client('mate'),
 ]
 
 const statusClass = (status: StatusId) => status === 'live' ? ' is-live' : status === 'wip' ? ' is-wip' : ''
@@ -686,7 +696,7 @@ function ClientDetail({ id }: { id: ClientId }) {
   const copy = t.systems.clients[id]
   const title = 'title' in copy ? copy.title : site.name
   const picture = <>
-    <span className="demo-browser-bar"><i /><i /><i /><span>{site.href ? new URL(site.href).host : t.status.wip}</span></span>
+    <span className="demo-browser-bar"><i /><i /><i /><span>{site.href ? new URL(site.href).host : site.name}</span></span>
     <img src={site.image} alt={copy.alt} loading="lazy" width="1440" height="700" />
   </>
   return <article className="feature feature-shots feature-client" aria-labelledby={`${id}-title`}>
@@ -695,9 +705,9 @@ function ClientDetail({ id }: { id: ClientId }) {
     </div>
     <div className="shots-copy">
       <p className="feature-kind">{t.systems.clientKind}</p>
-      <div className="feature-title-row"><h2 id={`${id}-title`}>{title}</h2><span className={`status${statusClass(site.wip ? 'wip' : 'live')}`}>{t.status[site.wip ? 'wip' : 'live']}</span></div>
+      <div className="feature-title-row"><h2 id={`${id}-title`}>{title}</h2><span className={`status${statusClass(site.status)}`}>{t.status[site.status]}</span></div>
       <p className="feature-text feature-text-lead">{copy.description}</p>
-      {site.href && <a className="button shots-cta" data-magnetic="0.2" href={site.href} target="_blank" rel="noreferrer" aria-label={t.systems.viewSiteAria(title, Boolean(site.wip))}>{site.wip ? t.systems.viewProgress : t.systems.viewSite} <Arrow /></a>}
+      {site.href && <a className="button shots-cta" data-magnetic="0.2" href={site.href} target="_blank" rel="noreferrer" aria-label={t.systems.viewSiteAria(title, site.status === 'wip')}>{site.status === 'wip' ? t.systems.viewProgress : t.systems.viewSite} <Arrow /></a>}
     </div>
   </article>
 }

@@ -46,7 +46,7 @@ const es = {
   },
   cases: {
     systemsRule: 'Apps y sitios web',
-    systemsFoot: '13 proyectos + 5 demos',
+    systemsFoot: '16 proyectos + 5 demos',
     systemsCta: 'Ver proyectos',
     photoRule: 'Amateur · eventos y marcas',
     albums: (n: number) => `${n} álbumes`,
@@ -56,7 +56,7 @@ const es = {
     qrWhatsapp: 'Código QR para escribir por WhatsApp',
     qrInstagram: 'Código QR del Instagram @joaquinncalderon',
   },
-  status: { live: 'En vivo', wip: 'En desarrollo', team: 'Proyecto en equipo', own: 'Proyecto propio' },
+  status: { live: 'En vivo', wip: 'En desarrollo', team: 'Proyecto en equipo', own: 'Proyecto propio', uni: 'Proyecto de facultad' },
   demoPrefix: 'Demo',
   systems: {
     lede: 'Desarrollo web, comercio digital y soluciones para negocios. Apps propias y sitios para clientes.',
@@ -74,6 +74,9 @@ const es = {
       mate: { description: 'E-commerce full-stack con restricciones en base de datos y lógica avanzada de validación de stock.', alt: 'Vista de la tienda online Mate Único' },
       inmobiliaria: { description: 'Sitio inmobiliario profesional y responsivo para el mercado local de Colón, Entre Ríos.', alt: 'Vista de la web inmobiliaria de Andrea Duré' },
       barberia: { description: 'Plataforma web para presentar servicios, catálogo de cortes y reserva de turnos online.', alt: 'Vista del proyecto web Barbería Los Santos' },
+      iphonepronu: { title: 'iPhone Pronu', description: 'Compra, venta y permuta de iPhone en Pronunciamiento, Concepción del Uruguay y San José: stock al día, un iPhone 3D para girar y comparador de equipos.', alt: 'Vista del sitio de iPhone Pronu: "Tu próximo iPhone, sin vueltas" junto a un iPhone en 3D' },
+      raygal: { title: 'Raygal', description: 'Yerba mate orgánica y agroecológica desde Colón: tienda para casa, lista de precios para mayoristas y la historia de la marca.', alt: 'Vista del sitio de Raygal, yerba mate orgánica, con el paquete de un kilo' },
+      vinoyco: { title: 'Vino & Co', description: 'Vinoteca de especialidad, cafetería y productos gourmet frente a la Costanera de Colón: vinos de autor, tienda y eventos.', alt: 'Vista del sitio de Vino & Co, tienda de especialidad, con el local de noche' },
       analia: { title: 'Analía Calderón · Artista visual', description: 'Portfolio para una ilustradora, ceramista y docente: su obra de dibujo, pintura y cerámica, y su personaje Amelia. Todavía lo estamos terminando.', alt: 'Vista del portfolio de Analía Calderón, artista visual' },
     },
     streak: {
@@ -264,7 +267,7 @@ const en: Messages = {
   },
   cases: {
     systemsRule: 'Apps and websites',
-    systemsFoot: '13 projects + 5 demos',
+    systemsFoot: '16 projects + 5 demos',
     systemsCta: 'See projects',
     photoRule: 'Amateur · events and brands',
     albums: (n) => `${n} albums`,
@@ -274,7 +277,7 @@ const en: Messages = {
     qrWhatsapp: 'QR code to message on WhatsApp',
     qrInstagram: 'QR code for the Instagram @joaquinncalderon',
   },
-  status: { live: 'Live', wip: 'In progress', team: 'Team project', own: 'Personal project' },
+  status: { live: 'Live', wip: 'In progress', team: 'Team project', own: 'Personal project', uni: 'University project' },
   demoPrefix: 'Demo',
   systems: {
     lede: 'Web development, digital commerce and solutions for businesses. My own apps and sites for clients.',
@@ -292,6 +295,9 @@ const en: Messages = {
       mate: { description: 'Full-stack e-commerce with database constraints and advanced stock validation logic.', alt: 'Screenshot of the Mate Único online store' },
       inmobiliaria: { description: 'A professional, responsive real estate site for the local market in Colón, Entre Ríos.', alt: 'Screenshot of the Andrea Duré real estate site' },
       barberia: { description: 'A web platform to show services, a catalogue of cuts and online appointment booking.', alt: 'Screenshot of the Barbería Los Santos web project' },
+      iphonepronu: { title: 'iPhone Pronu', description: 'Buying, selling and trading iPhones in Pronunciamiento, Concepción del Uruguay and San José: live stock, a 3D iPhone you can spin and a model comparison.', alt: 'Screenshot of the iPhone Pronu site: "Your next iPhone, no fuss" next to a 3D iPhone' },
+      raygal: { title: 'Raygal', description: 'Organic, agroecological yerba mate from Colón: a shop for home, a wholesale price list and the brand’s story.', alt: 'Screenshot of the Raygal site, organic yerba mate, with the one-kilo pack' },
+      vinoyco: { title: 'Vino & Co', description: 'A specialty wine shop, café and gourmet store on the Colón riverfront: signature wines, a shop and events.', alt: 'Screenshot of the Vino & Co site, a specialty store, with the shop at night' },
       analia: { title: 'Analía Calderón · Visual artist', description: 'A portfolio for an illustrator, ceramist and teacher: her drawing, painting and ceramics, and her character Amelia. We’re still finishing it.', alt: 'Screenshot of the portfolio of Analía Calderón, visual artist' },
     },
     streak: {
@@ -480,7 +486,7 @@ const pt: Messages = {
   },
   cases: {
     systemsRule: 'Apps e sites',
-    systemsFoot: '13 projetos + 5 demos',
+    systemsFoot: '16 projetos + 5 demos',
     systemsCta: 'Ver projetos',
     photoRule: 'Amador · eventos e marcas',
     albums: (n) => `${n} álbuns`,
@@ -490,7 +496,7 @@ const pt: Messages = {
     qrWhatsapp: 'Código QR para escrever pelo WhatsApp',
     qrInstagram: 'Código QR do Instagram @joaquinncalderon',
   },
-  status: { live: 'No ar', wip: 'Em desenvolvimento', team: 'Projeto em equipe', own: 'Projeto próprio' },
+  status: { live: 'No ar', wip: 'Em desenvolvimento', team: 'Projeto em equipe', own: 'Projeto próprio', uni: 'Projeto da faculdade' },
   demoPrefix: 'Demo',
   systems: {
     lede: 'Desenvolvimento web, comércio digital e soluções para negócios. Apps próprios e sites para clientes.',
@@ -508,6 +514,9 @@ const pt: Messages = {
       mate: { description: 'E-commerce full-stack com restrições no banco de dados e lógica avançada de validação de estoque.', alt: 'Vista da loja online Mate Único' },
       inmobiliaria: { description: 'Site imobiliário profissional e responsivo para o mercado local de Colón, Entre Ríos.', alt: 'Vista do site imobiliário de Andrea Duré' },
       barberia: { description: 'Plataforma web para apresentar serviços, catálogo de cortes e agendamento online.', alt: 'Vista do projeto web Barbería Los Santos' },
+      iphonepronu: { title: 'iPhone Pronu', description: 'Compra, venda e troca de iPhone em Pronunciamiento, Concepción del Uruguay e San José: estoque atualizado, um iPhone 3D para girar e comparador de modelos.', alt: 'Vista do site da iPhone Pronu: "Seu próximo iPhone, sem rodeios" ao lado de um iPhone em 3D' },
+      raygal: { title: 'Raygal', description: 'Erva-mate orgânica e agroecológica de Colón: loja para casa, tabela de preços para atacado e a história da marca.', alt: 'Vista do site da Raygal, erva-mate orgânica, com o pacote de um quilo' },
+      vinoyco: { title: 'Vino & Co', description: 'Enoteca de especialidade, cafeteria e produtos gourmet em frente à Costanera de Colón: vinhos autorais, loja e eventos.', alt: 'Vista do site da Vino & Co, loja de especialidade, com o local à noite' },
       analia: { title: 'Analía Calderón · Artista visual', description: 'Portfólio para uma ilustradora, ceramista e professora: sua obra de desenho, pintura e cerâmica, e sua personagem Amelia. Ainda estamos terminando.', alt: 'Vista do portfólio de Analía Calderón, artista visual' },
     },
     streak: {
@@ -696,7 +705,7 @@ const zh: Messages = {
   },
   cases: {
     systemsRule: '应用与网站',
-    systemsFoot: '13 个项目 + 5 个演示',
+    systemsFoot: '16 个项目 + 5 个演示',
     systemsCta: '查看项目',
     photoRule: '业余 · 活动与品牌',
     albums: (n) => `${n} 个相册`,
@@ -706,7 +715,7 @@ const zh: Messages = {
     qrWhatsapp: '通过 WhatsApp 联系的二维码',
     qrInstagram: 'Instagram @joaquinncalderon 的二维码',
   },
-  status: { live: '已上线', wip: '开发中', team: '团队项目', own: '个人项目' },
+  status: { live: '已上线', wip: '开发中', team: '团队项目', own: '个人项目', uni: '大学项目' },
   demoPrefix: '演示',
   systems: {
     lede: '网站开发、电子商务和商业解决方案。我自己的应用，以及为客户做的网站。',
@@ -724,6 +733,9 @@ const zh: Messages = {
       mate: { description: '全栈电商网站，带有数据库约束和高级库存校验逻辑。', alt: 'Mate Único 网店截图' },
       inmobiliaria: { description: '为恩特雷里奥斯省科隆市本地市场打造的专业响应式房产网站。', alt: 'Andrea Duré 房产网站截图' },
       barberia: { description: '用于展示服务、发型目录和在线预约的网站平台。', alt: 'Barbería Los Santos 网站项目截图' },
+      iphonepronu: { title: 'iPhone Pronu', description: '在 Pronunciamiento、乌拉圭河畔康塞普西翁和圣何塞买卖、置换 iPhone：实时库存、可旋转的 3D iPhone 和机型对比。', alt: 'iPhone Pronu 网站截图：“你的下一部 iPhone，简单直接”，旁边是一部 3D iPhone' },
+      raygal: { title: 'Raygal', description: '来自科隆的有机生态马黛茶：家庭网店、批发价目表和品牌故事。', alt: 'Raygal 有机马黛茶网站截图，展示一公斤装产品' },
+      vinoyco: { title: 'Vino & Co', description: '科隆河滨大道旁的精品酒窖、咖啡馆和美食店：酒庄自酿葡萄酒、网店和活动。', alt: 'Vino & Co 精品店网站截图，展示夜晚的店面' },
       analia: { title: 'Analía Calderón · 视觉艺术家', description: '为一位插画师、陶艺家兼教师制作的作品集：她的素描、绘画和陶艺作品，以及她创作的角色 Amelia。我们还在完善中。', alt: '视觉艺术家 Analía Calderón 的作品集截图' },
     },
     streak: {
