@@ -64,18 +64,6 @@ body.is-arriving .curtain img { opacity: 0; transform: translateY(-30px); transi
 .view-toggle button { padding: 7px 16px; border-radius: 999px; color: var(--ink-2); font-size: 14px; font-weight: 500; transition: background-color .25s ease, color .25s ease; }
 .view-toggle button[aria-pressed='true'] { background: var(--ink); color: var(--bg); }
 
-/* Vinyl that slides out from behind the cover and spins while a mashup plays */
-.dj-disc.is-previous, .dj-disc.is-next { z-index: 1; }
-.dj-disc.is-hidden { z-index: 0; }
-.dj-vinyl { position: absolute; z-index: 2; top: 4%; left: 50%; height: 92%; aspect-ratio: 1; transform: translateX(-50%); transition: transform 1s var(--ease-out); pointer-events: none; }
-.dj-vinyl.is-playing { transform: translateX(-10%); }
-.dj-vinyl-disc { position: relative; display: block; width: 100%; height: 100%; border-radius: 50%; background: radial-gradient(circle, transparent 0 31%, #0b0b0a 31.5% 33%, transparent 33%), repeating-radial-gradient(circle, #121211 0 1.5px, #1e1e1c 1.5px 3px); box-shadow: 0 30px 60px -20px rgb(0 0 0 / .9); animation: spin 2.4s linear infinite; animation-play-state: paused; }
-.dj-vinyl.is-playing .dj-vinyl-disc { animation-play-state: running; }
-.dj-vinyl-disc::before { position: absolute; inset: 0; border-radius: 50%; background: conic-gradient(from 30deg, transparent 0 10%, rgb(255 255 255 / .09) 14%, transparent 20% 60%, rgb(255 255 255 / .06) 65%, transparent 70%); content: ''; }
-.dj-vinyl-disc img { position: absolute; top: 32%; left: 32%; width: 36%; height: 36%; border-radius: 50%; object-fit: cover; }
-.dj-vinyl-disc::after { position: absolute; top: 50%; left: 50%; width: 3%; height: 3%; border-radius: 50%; background: var(--bg); content: ''; transform: translate(-50%, -50%); }
-@keyframes spin { to { transform: rotate(360deg); } }
-
 /* Scroll-linked depth where the browser supports it */
 @supports (animation-timeline: scroll()) {
   @media (prefers-reduced-motion: no-preference) {
@@ -93,7 +81,6 @@ body.is-arriving .curtain img { opacity: 0; transform: translateY(-30px); transi
 @media (max-width: 760px) {
   .streak-phones .phone, .stugo-phones .phone { animation: none; translate: none; }
   .orbit { --card-w: clamp(140px, 40vw, 180px); height: calc(var(--arc-top) + var(--card-h) / 2 + 270px); }
-  .dj-vinyl.is-playing { transform: translateX(-22%); }
 }
 
 @media (prefers-reduced-motion: reduce) {

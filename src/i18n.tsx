@@ -10,13 +10,13 @@ export const langs: { id: Lang; short: string; name: string; htmlLang: string }[
 
 const es = {
   meta: {
-    description: 'Portfolio de Joaquín Gonzalez Calderón: analista en sistemas, DJ y fotógrafo amateur.',
+    description: 'Portfolio de Joaquín Gonzalez Calderón: analista en sistemas y fotógrafo amateur.',
     home: 'Portfolio',
   },
   langLabel: 'Idioma',
-  areas: { systems: 'Sistemas', photography: 'Fotografía', dj: 'DJ' },
+  areas: { systems: 'Sistemas', photography: 'Fotografía' },
   nav: { home: 'Calderón, inicio', sections: 'Secciones', contact: 'Contacto' },
-  footer: { titleTop: '¿Hacemos algo', titleBottom: 'juntos?', lede: 'Sitios, apps, fotos o música para tu evento. Escribime y lo vemos.', place: 'Entre Ríos, Argentina' },
+  footer: { titleTop: '¿Hacemos algo', titleBottom: 'juntos?', lede: 'Sitios, apps o fotos para tu marca o evento. Escribime y lo vemos.', place: 'Entre Ríos, Argentina' },
   news: {
     label: 'Nuevo',
     aria: 'Novedades del portfolio',
@@ -40,7 +40,7 @@ const es = {
   },
   hero: {
     kicker: 'Portfolio 2026',
-    lead: ['Analista en sistemas.', 'DJ y fotógrafo amateur.'],
+    lead: ['Analista en sistemas.', 'Fotógrafo amateur.'],
     areas: 'Áreas',
     portraitAlt: 'Joaquín Gonzalez Calderón con gorra, mirando a cámara',
   },
@@ -51,9 +51,6 @@ const es = {
     photoRule: 'Amateur · eventos y marcas',
     albums: (n: number) => `${n} álbumes`,
     photoCta: 'Ver álbumes',
-    djRule: 'Amateur · mezclas propias',
-    djFoot: (n: number) => `${n} temas para escuchar`,
-    djCta: 'Escuchar',
     contactTitle: '¿Tenés un proyecto? Arrancamos cuando quieras.',
     contactLede: 'Escaneá un QR o escribime directo.',
     qrWhatsapp: 'Código QR para escribir por WhatsApp',
@@ -64,6 +61,12 @@ const es = {
   systems: {
     lede: 'Desarrollo web, comercio digital y soluciones para negocios. Apps propias y sitios para clientes.',
     clientsTitle: 'Sitios para clientes',
+    projectsTitle: 'Proyectos',
+    projectsHint: 'Tocá un cuadro para abrir el proyecto.',
+    clientKind: 'Sitio para cliente',
+    prevProject: 'Proyecto anterior',
+    nextProject: 'Proyecto siguiente',
+    dialog: (name: string) => `Proyecto ${name}`,
     viewSite: 'Ver sitio',
     viewProgress: 'Ver avance',
     viewSiteAria: (title: string, wip: boolean) => `${wip ? 'Ver el avance del sitio' : 'Ver sitio'} de ${title}`,
@@ -169,18 +172,6 @@ const es = {
       },
     },
   },
-  dj: {
-    lede: 'Soy DJ amateur: me gusta mezclar canciones, probar cruces y jugar con la energía de cada tema. Voy a ir publicando mis mashups acá.',
-    deck: 'Reproductor de mashups',
-    select: (title: string, selected: boolean) => `${selected ? 'Seleccionado' : 'Seleccionar'}: ${title}`,
-    prev: 'Mashup anterior',
-    next: 'Siguiente mashup',
-    play: 'Reproducir mashup',
-    pause: 'Pausar mashup',
-    position: 'Posición de reproducción',
-    error: 'No se pudo cargar el mashup. Intentá reproducirlo otra vez.',
-    list: 'Lista de mashups',
-  },
   photo: {
     lede: 'Fotografía amateur: coberturas de eventos y sesiones para marcas y comercios. Arrastrá la órbita o tocá una foto para abrir su álbum.',
     meta: (albums: number, photos: number) => `${albums} álbumes · ${photos} fotos`,
@@ -228,8 +219,8 @@ const es = {
   narrator: {
     aria: 'Presentación de Joaquín',
     button: 'Tocá al personaje de Joaquín para que diga algo más',
-    intro: ['Hola, ¿cómo estás?', 'Soy Joaquín Gonzalez Calderón, tengo 23 años. Soy analista en sistemas, y además DJ y fotógrafo amateur.'],
-    extras: ['¡Ey! Bajá y mirá las tres áreas del portfolio.', 'Si tenés un proyecto, escribime al final de la página.', 'En Fotografía podés hacer girar los álbumes.', 'En DJ dale play a un mashup.'],
+    intro: ['Hola, ¿cómo estás?', 'Soy Joaquín Gonzalez Calderón, tengo 23 años. Soy analista en sistemas y fotógrafo amateur.'],
+    extras: ['¡Ey! Bajá y mirá las dos áreas del portfolio.', 'Si tenés un proyecto, escribime al final de la página.', 'En Fotografía podés hacer girar los álbumes.', 'En Sistemas tocá un proyecto para abrirlo.'],
   },
 }
 
@@ -237,13 +228,13 @@ export type Messages = typeof es
 
 const en: Messages = {
   meta: {
-    description: 'Portfolio of Joaquín Gonzalez Calderón: systems analyst, DJ and amateur photographer.',
+    description: 'Portfolio of Joaquín Gonzalez Calderón: systems analyst and amateur photographer.',
     home: 'Portfolio',
   },
   langLabel: 'Language',
-  areas: { systems: 'Systems', photography: 'Photography', dj: 'DJ' },
+  areas: { systems: 'Systems', photography: 'Photography' },
   nav: { home: 'Calderón, home', sections: 'Sections', contact: 'Contact' },
-  footer: { titleTop: 'Shall we make', titleBottom: 'something?', lede: 'Websites, apps, photos or music for your event. Drop me a line and we’ll figure it out.', place: 'Entre Ríos, Argentina' },
+  footer: { titleTop: 'Shall we make', titleBottom: 'something?', lede: 'Websites, apps or photos for your brand or event. Drop me a line and we’ll figure it out.', place: 'Entre Ríos, Argentina' },
   news: {
     label: 'New',
     aria: 'Portfolio news',
@@ -267,7 +258,7 @@ const en: Messages = {
   },
   hero: {
     kicker: 'Portfolio 2026',
-    lead: ['Systems analyst.', 'DJ and amateur photographer.'],
+    lead: ['Systems analyst.', 'Amateur photographer.'],
     areas: 'Areas',
     portraitAlt: 'Joaquín Gonzalez Calderón in a cap, looking at the camera',
   },
@@ -278,9 +269,6 @@ const en: Messages = {
     photoRule: 'Amateur · events and brands',
     albums: (n) => `${n} albums`,
     photoCta: 'See albums',
-    djRule: 'Amateur · my own mixes',
-    djFoot: (n) => `${n} tracks to listen to`,
-    djCta: 'Listen',
     contactTitle: 'Got a project? Let’s start whenever you want.',
     contactLede: 'Scan a QR code or message me directly.',
     qrWhatsapp: 'QR code to message on WhatsApp',
@@ -291,6 +279,12 @@ const en: Messages = {
   systems: {
     lede: 'Web development, digital commerce and solutions for businesses. My own apps and sites for clients.',
     clientsTitle: 'Client websites',
+    projectsTitle: 'Projects',
+    projectsHint: 'Tap a tile to open the project.',
+    clientKind: 'Client website',
+    prevProject: 'Previous project',
+    nextProject: 'Next project',
+    dialog: (name) => `Project ${name}`,
     viewSite: 'Visit site',
     viewProgress: 'See progress',
     viewSiteAria: (title, wip) => `${wip ? 'See the progress on the site' : 'Visit the site'} of ${title}`,
@@ -396,18 +390,6 @@ const en: Messages = {
       },
     },
   },
-  dj: {
-    lede: 'I’m an amateur DJ: I like mixing songs, trying out blends and playing with the energy of each track. I’ll keep posting my mashups here.',
-    deck: 'Mashup player',
-    select: (title, selected) => `${selected ? 'Selected' : 'Select'}: ${title}`,
-    prev: 'Previous mashup',
-    next: 'Next mashup',
-    play: 'Play mashup',
-    pause: 'Pause mashup',
-    position: 'Playback position',
-    error: 'The mashup couldn’t load. Try playing it again.',
-    list: 'Mashup list',
-  },
   photo: {
     lede: 'Amateur photography: event coverage and shoots for brands and shops. Drag the orbit or tap a photo to open its album.',
     meta: (albums, photos) => `${albums} albums · ${photos} photos`,
@@ -455,20 +437,20 @@ const en: Messages = {
   narrator: {
     aria: 'Joaquín’s introduction',
     button: 'Tap Joaquín’s character to make him say something else',
-    intro: ['Hi, how are you?', 'I’m Joaquín Gonzalez Calderón, I’m 23. I’m a systems analyst, and also an amateur DJ and photographer.'],
-    extras: ['Hey! Scroll down and check out the three areas of the portfolio.', 'If you have a project, message me at the bottom of the page.', 'In Photography you can spin the albums.', 'In DJ, hit play on a mashup.'],
+    intro: ['Hi, how are you?', 'I’m Joaquín Gonzalez Calderón, I’m 23. I’m a systems analyst and an amateur photographer.'],
+    extras: ['Hey! Scroll down and check out the two areas of the portfolio.', 'If you have a project, message me at the bottom of the page.', 'In Photography you can spin the albums.', 'In Systems, tap a project to open it.'],
   },
 }
 
 const pt: Messages = {
   meta: {
-    description: 'Portfólio de Joaquín Gonzalez Calderón: analista de sistemas, DJ e fotógrafo amador.',
+    description: 'Portfólio de Joaquín Gonzalez Calderón: analista de sistemas e fotógrafo amador.',
     home: 'Portfólio',
   },
   langLabel: 'Idioma',
-  areas: { systems: 'Sistemas', photography: 'Fotografia', dj: 'DJ' },
+  areas: { systems: 'Sistemas', photography: 'Fotografia' },
   nav: { home: 'Calderón, início', sections: 'Seções', contact: 'Contato' },
-  footer: { titleTop: 'Vamos fazer algo', titleBottom: 'juntos?', lede: 'Sites, apps, fotos ou música para o seu evento. Me escreve e a gente vê.', place: 'Entre Ríos, Argentina' },
+  footer: { titleTop: 'Vamos fazer algo', titleBottom: 'juntos?', lede: 'Sites, apps ou fotos para a sua marca ou evento. Me escreve e a gente vê.', place: 'Entre Ríos, Argentina' },
   news: {
     label: 'Novo',
     aria: 'Novidades do portfólio',
@@ -492,7 +474,7 @@ const pt: Messages = {
   },
   hero: {
     kicker: 'Portfólio 2026',
-    lead: ['Analista de sistemas.', 'DJ e fotógrafo amador.'],
+    lead: ['Analista de sistemas.', 'Fotógrafo amador.'],
     areas: 'Áreas',
     portraitAlt: 'Joaquín Gonzalez Calderón de boné, olhando para a câmera',
   },
@@ -503,9 +485,6 @@ const pt: Messages = {
     photoRule: 'Amador · eventos e marcas',
     albums: (n) => `${n} álbuns`,
     photoCta: 'Ver álbuns',
-    djRule: 'Amador · mixagens próprias',
-    djFoot: (n) => `${n} faixas para ouvir`,
-    djCta: 'Ouvir',
     contactTitle: 'Tem um projeto? Começamos quando você quiser.',
     contactLede: 'Escaneie um QR ou me escreva direto.',
     qrWhatsapp: 'Código QR para escrever pelo WhatsApp',
@@ -516,6 +495,12 @@ const pt: Messages = {
   systems: {
     lede: 'Desenvolvimento web, comércio digital e soluções para negócios. Apps próprios e sites para clientes.',
     clientsTitle: 'Sites para clientes',
+    projectsTitle: 'Projetos',
+    projectsHint: 'Toque num quadro para abrir o projeto.',
+    clientKind: 'Site para cliente',
+    prevProject: 'Projeto anterior',
+    nextProject: 'Próximo projeto',
+    dialog: (name) => `Projeto ${name}`,
     viewSite: 'Ver site',
     viewProgress: 'Ver andamento',
     viewSiteAria: (title, wip) => `${wip ? 'Ver o andamento do site' : 'Ver o site'} de ${title}`,
@@ -621,18 +606,6 @@ const pt: Messages = {
       },
     },
   },
-  dj: {
-    lede: 'Sou DJ amador: gosto de mixar músicas, testar combinações e brincar com a energia de cada faixa. Vou publicando meus mashups aqui.',
-    deck: 'Player de mashups',
-    select: (title, selected) => `${selected ? 'Selecionado' : 'Selecionar'}: ${title}`,
-    prev: 'Mashup anterior',
-    next: 'Próximo mashup',
-    play: 'Tocar mashup',
-    pause: 'Pausar mashup',
-    position: 'Posição da reprodução',
-    error: 'Não foi possível carregar o mashup. Tente tocar de novo.',
-    list: 'Lista de mashups',
-  },
   photo: {
     lede: 'Fotografia amadora: cobertura de eventos e ensaios para marcas e comércios. Arraste a órbita ou toque numa foto para abrir o álbum.',
     meta: (albums, photos) => `${albums} álbuns · ${photos} fotos`,
@@ -680,20 +653,20 @@ const pt: Messages = {
   narrator: {
     aria: 'Apresentação de Joaquín',
     button: 'Toque no personagem do Joaquín para ele dizer mais alguma coisa',
-    intro: ['Oi, tudo bem?', 'Sou Joaquín Gonzalez Calderón, tenho 23 anos. Sou analista de sistemas, e também DJ e fotógrafo amador.'],
-    extras: ['Ei! Desce e olha as três áreas do portfólio.', 'Se você tem um projeto, me escreve no final da página.', 'Em Fotografia você pode girar os álbuns.', 'Em DJ, dá play num mashup.'],
+    intro: ['Oi, tudo bem?', 'Sou Joaquín Gonzalez Calderón, tenho 23 anos. Sou analista de sistemas e fotógrafo amador.'],
+    extras: ['Ei! Desce e olha as duas áreas do portfólio.', 'Se você tem um projeto, me escreve no final da página.', 'Em Fotografia você pode girar os álbuns.', 'Em Sistemas, toca num projeto para abri-lo.'],
   },
 }
 
 const zh: Messages = {
   meta: {
-    description: 'Joaquín Gonzalez Calderón 的作品集：系统分析师、DJ 和业余摄影师。',
+    description: 'Joaquín Gonzalez Calderón 的作品集：系统分析师和业余摄影师。',
     home: '作品集',
   },
   langLabel: '语言',
-  areas: { systems: '系统', photography: '摄影', dj: 'DJ' },
+  areas: { systems: '系统', photography: '摄影' },
   nav: { home: 'Calderón，首页', sections: '栏目', contact: '联系' },
-  footer: { titleTop: '一起做点', titleBottom: '什么吧？', lede: '网站、应用、摄影或活动音乐。给我留言，我们聊聊。', place: '阿根廷 · 恩特雷里奥斯' },
+  footer: { titleTop: '一起做点', titleBottom: '什么吧？', lede: '网站、应用，或为品牌和活动拍摄。给我留言，我们聊聊。', place: '阿根廷 · 恩特雷里奥斯' },
   news: {
     label: '最新',
     aria: '作品集动态',
@@ -717,7 +690,7 @@ const zh: Messages = {
   },
   hero: {
     kicker: '作品集 2026',
-    lead: ['系统分析师。', 'DJ 和业余摄影师。'],
+    lead: ['系统分析师。', '业余摄影师。'],
     areas: '领域',
     portraitAlt: '戴着棒球帽、直视镜头的 Joaquín Gonzalez Calderón',
   },
@@ -728,9 +701,6 @@ const zh: Messages = {
     photoRule: '业余 · 活动与品牌',
     albums: (n) => `${n} 个相册`,
     photoCta: '查看相册',
-    djRule: '业余 · 原创混音',
-    djFoot: (n) => `${n} 首可以试听`,
-    djCta: '试听',
     contactTitle: '有项目吗？随时可以开始。',
     contactLede: '扫描二维码，或直接给我发消息。',
     qrWhatsapp: '通过 WhatsApp 联系的二维码',
@@ -741,6 +711,12 @@ const zh: Messages = {
   systems: {
     lede: '网站开发、电子商务和商业解决方案。我自己的应用，以及为客户做的网站。',
     clientsTitle: '客户网站',
+    projectsTitle: '项目',
+    projectsHint: '点击卡片即可打开项目。',
+    clientKind: '客户网站',
+    prevProject: '上一个项目',
+    nextProject: '下一个项目',
+    dialog: (name) => `项目 ${name}`,
     viewSite: '访问网站',
     viewProgress: '查看进度',
     viewSiteAria: (title, wip) => `${wip ? '查看网站进度' : '访问网站'}：${title}`,
@@ -846,18 +822,6 @@ const zh: Messages = {
       },
     },
   },
-  dj: {
-    lede: '我是业余 DJ：喜欢混合歌曲、尝试各种搭配，玩转每首歌的能量。我会陆续在这里发布我的 mashup。',
-    deck: 'Mashup 播放器',
-    select: (title, selected) => `${selected ? '已选择' : '选择'}：${title}`,
-    prev: '上一首 mashup',
-    next: '下一首 mashup',
-    play: '播放 mashup',
-    pause: '暂停 mashup',
-    position: '播放进度',
-    error: '无法加载这首 mashup，请再试一次。',
-    list: 'Mashup 列表',
-  },
   photo: {
     lede: '业余摄影：活动拍摄，以及为品牌和商家拍摄的作品。拖动轨道或点击照片即可打开相册。',
     meta: (albums, photos) => `${albums} 个相册 · ${photos} 张照片`,
@@ -905,8 +869,8 @@ const zh: Messages = {
   narrator: {
     aria: 'Joaquín 的自我介绍',
     button: '点击 Joaquín 的卡通形象，让他再说点什么',
-    intro: ['你好，最近怎么样？', '我是 Joaquín Gonzalez Calderón，今年 23 岁。我是系统分析师，也是业余 DJ 和摄影师。'],
-    extras: ['嘿！往下滑，看看作品集的三个领域。', '如果你有项目，可以在页面底部联系我。', '在“摄影”里，你可以转动相册。', '在“DJ”里，播放一首 mashup 吧。'],
+    intro: ['你好，最近怎么样？', '我是 Joaquín Gonzalez Calderón，今年 23 岁。我是系统分析师，也是业余摄影师。'],
+    extras: ['嘿！往下滑，看看作品集的两个领域。', '如果你有项目，可以在页面底部联系我。', '在“摄影”里，你可以转动相册。', '在“系统”里，点开一个项目看看。'],
   },
 }
 

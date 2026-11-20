@@ -8,29 +8,19 @@ import { Orbit } from './components/Orbit'
 import { SplitLetters, useMagnetic, usePointerParallax, useTilt } from './motion'
 
 type Transition = 'opening' | 'open' | 'closing'
-type PortfolioArea = 'home' | 'systems' | 'dj' | 'photography'
+type PortfolioArea = 'home' | 'systems' | 'photography'
 type Area = Exclude<PortfolioArea, 'home'>
 
-const areaOrder: Area[] = ['systems', 'photography', 'dj']
+const areaOrder: Area[] = ['systems', 'photography']
 const links = {
   whatsapp: 'https://wa.me/5491133693052',
   github: 'https://github.com/JoaquinGonzalezCalderon?tab=repositories',
   linkedin: 'https://www.linkedin.com/in/joaqu%C3%ADn-gonzalez-calder%C3%B3n-8b0b4837b/',
 }
 
-const djTracks = [
-  { number: '01', title: 'Se Preparo - Ozuna X Salgo Pa la Calle - Daddy Yankee', src: '/areas/dj-track-01.mp3', cover: '/areas/dj-cover-01.webp' },
-  { number: '02', title: 'World Hold On X Stereo Love', src: '/areas/dj-track-02.mp3', cover: '/areas/dj-cover-02.webp' },
-  { number: '03', title: 'Its That Time X Im Not Alone', src: '/areas/dj-track-03.mp3', cover: '/areas/dj-cover-03.webp' },
-  { number: '04', title: 'More X La Pregunta', src: '/areas/dj-track-04.mp3', cover: '/areas/dj-cover-04.webp' },
-  { number: '05', title: 'Perro Negro X Koko', src: '/areas/dj-track-05.mp3', cover: '/areas/dj-cover-05.webp' },
-  { number: '06', title: 'Un Ratito X Kloufrens', src: '/areas/dj-track-06.mp3', cover: '/areas/dj-cover-06.webp' },
-]
-
 function areaFromPathname(pathname: string): PortfolioArea {
   const path = pathname.replace(/\/+$/, '') || '/'
   if (path === '/sistemas') return 'systems'
-  if (path === '/dj') return 'dj'
   if (path === '/fotografia' || path.startsWith('/album/')) return 'photography'
   return 'home'
 }
@@ -44,7 +34,7 @@ function albumFromPathname(pathname: string): Album | null {
 }
 
 function pathForArea(area: PortfolioArea) {
-  return { home: '/', systems: '/sistemas', dj: '/dj', photography: '/fotografia' }[area]
+  return { home: '/', systems: '/sistemas', photography: '/fotografia' }[area]
 }
 
 const prefersReducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -217,9 +207,7 @@ function App() {
         ? <HomeCover onNavigate={navigate} isReady={!showIntro} />
         : activeArea === 'systems'
           ? <SystemsPage />
-          : activeArea === 'photography'
-            ? <PhotographyPage albums={albumOrder} onOpenAlbum={openAlbum} onOpenPhoto={(photos, index) => setLightbox({ photos, index })} />
-            : <DJPage />}
+          : <PhotographyPage albums={albumOrder} onOpenAlbum={openAlbum} onOpenPhoto={(photos, index) => setLightbox({ photos, index })} />}
       <SiteFooter showContact={activeArea !== 'home'} />
       {activeAlbum && <AlbumOverlay album={activeAlbum} transition={transition} onClose={closeAlbum} onOpenPhoto={(photos, index) => setLightbox({ photos, index })} />}
       {lightbox && <PhotoLightbox photo={lightbox.photos[lightbox.index]} index={lightbox.index} total={lightbox.photos.length} onClose={() => setLightbox(null)} onMove={moveLightbox} />}
@@ -342,7 +330,12 @@ function NewsTicker({ onNavigate }: { onNavigate: (area: PortfolioArea) => void 
     let tries = 0
     const find = () => {
       const target = document.getElementById(item.anchor)
-      if (target && window.location.pathname === pathForArea(item.area)) target.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth', block: 'start' })
+      if (target && window.location.pathname === pathForArea(item.area)) {
+        // Systems projects are tiles: bring the tile into view, then open it
+        const isTile = target.hasAttribute('data-project')
+        target.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth', block: isTile ? 'center' : 'start' })
+        if (isTile) window.setTimeout(() => target.click(), prefersReducedMotion() ? 0 : 550)
+      }
       else if (tries++ < 30) window.setTimeout(find, 100)
     }
     window.setTimeout(find, 650)
@@ -408,7 +401,7 @@ function HomeCover({ onNavigate, isReady }: { onNavigate: (area: PortfolioArea) 
         <img src="/areas/portrait-yo2.webp" alt={t.hero.portraitAlt} width="1239" height="1269" fetchPriority="high" />
       </figure>
       <nav className="hero-lines" aria-label={t.hero.areas}>
-        {areaOrder.map((area) => <a key={area} href={pathForArea(area)} onClick={go(area)}><b>{t.areas[area]}<Arrow /></b><span>{area === 'systems' ? t.cases.systemsFoot : area === 'photography' ? t.cases.albums(albums.length) : t.cases.djFoot(djTracks.length)}</span></a>)}
+        {areaOrder.map((area) => <a key={area} href={pathForArea(area)} onClick={go(area)}><b>{t.areas[area]}<Arrow /></b><span>{area === 'systems' ? t.cases.systemsFoot : t.cases.albums(albums.length)}</span></a>)}
       </nav>
       <p className="hero-lead">{t.hero.lead[0]}<br />{t.hero.lead[1]}</p>
       <Narrator isReady={isReady} />
@@ -431,15 +424,6 @@ function HomeCover({ onNavigate, isReady }: { onNavigate: (area: PortfolioArea) 
           </span>)}
         </span>
         <span className="case-foot"><span>{t.cases.albums(albums.length)}</span><span className="case-cta">{t.cases.photoCta} <Arrow /></span></span>
-      </a>
-
-      <a className="case-card case-dj" data-tilt href={pathForArea('dj')} onClick={go('dj')} data-reveal>
-        <h2 className="case-title"><span className="case-deboss" aria-hidden="true">Mashups</span>DJ</h2>
-        <p className="case-rule"><span>{t.cases.djRule}</span></p>
-        <span className="case-thumbs case-thumbs-covers">
-          {djTracks.slice(0, 3).map((track) => <img key={track.number} src={track.cover} alt="" loading="lazy" />)}
-        </span>
-        <span className="case-foot"><span>{t.cases.djFoot(djTracks.length)}</span><span className="case-cta">{t.cases.djCta} <Arrow /></span></span>
       </a>
 
       <section className="case-card case-contact" id="contacto" aria-labelledby="contact-card-title" data-reveal>
@@ -541,26 +525,181 @@ function SystemsPage() {
         <a className="pill-link" href={links.linkedin} target="_blank" rel="noreferrer">LinkedIn <Arrow /></a>
       </div>
     </PageHead>
-    <FeaturedStreak />
-    <FeaturedMay />
-    <FeaturedVoider />
-    <FeaturedEnjambre />
-    <FeaturedCuad />
-    <FeaturedCflap />
-    <FeaturedCalde />
-    <FeaturedTpf />
-    <FeaturedStugo />
-    <section className="clients" id="clientes" aria-labelledby="clients-title">
-      <h2 className="section-title" id="clients-title" data-reveal><span className="reveal-line"><span>{t.systems.clientsTitle}</span></span></h2>
-      <div className="clients-grid">
-        <ClientSite title="Mate Único" description={t.systems.clients.mate.description} image="/areas/jgc-mate.webp" alt={t.systems.clients.mate.alt} href="https://mate-unico-deployed.vercel.app/" />
-        <ClientSite title="Inmobiliaria Andrea Duré" description={t.systems.clients.inmobiliaria.description} image="/areas/jgc-inmobiliaria.webp" alt={t.systems.clients.inmobiliaria.alt} href="https://andreadure.com/" />
-        <ClientSite title="Barbería Los Santos" description={t.systems.clients.barberia.description} image="/areas/jgc-barberia.webp" alt={t.systems.clients.barberia.alt} href="https://lossantos-coral.vercel.app/" inProgress />
-        <ClientSite title={t.systems.clients.analia.title} description={t.systems.clients.analia.description} image="/areas/jgc-amelia.webp" alt={t.systems.clients.analia.alt} inProgress />
-      </div>
-    </section>
+    <ProjectBoard />
     <DemoShowcase />
   </main>
+}
+
+type ProjectId = 'streak' | 'may' | 'voider' | 'enjambre' | 'cuad' | 'cflap' | 'calde' | 'tpf' | 'stugo'
+type ClientId = keyof Messages['systems']['clients']
+type StatusId = keyof Messages['status']
+/** One tile on the systems page. `Detail` is what opens when the tile is pressed. */
+type BoardEntry = { id: string; group: 'projects' | 'clients'; name: string; image: string; status: StatusId; tone: string; fit?: 'contain' | 'phone'; kind: (t: Messages) => string; Detail: () => ReactNode }
+
+const project = (id: ProjectId, name: string, image: string, status: StatusId, tone: string, Detail: () => ReactNode, fit?: BoardEntry['fit']): BoardEntry =>
+  ({ id, group: 'projects', name, image, status, tone, fit, kind: (t) => t.systems[id].kind, Detail })
+
+const clientSites: Record<ClientId, { name: string; image: string; href?: string; wip?: boolean }> = {
+  mate: { name: 'Mate Único', image: '/areas/jgc-mate.webp', href: 'https://mate-unico-deployed.vercel.app/' },
+  inmobiliaria: { name: 'Inmobiliaria Andrea Duré', image: '/areas/jgc-inmobiliaria.webp', href: 'https://andreadure.com/' },
+  barberia: { name: 'Barbería Los Santos', image: '/areas/jgc-barberia.webp', href: 'https://lossantos-coral.vercel.app/', wip: true },
+  analia: { name: 'Analía Calderón', image: '/areas/jgc-amelia.webp', wip: true },
+}
+
+const client = (id: ClientId): BoardEntry => {
+  const site = clientSites[id]
+  return { id, group: 'clients', name: site.name, image: site.image, status: site.wip ? 'wip' : 'live', tone: '#f2efe8', kind: (t) => t.systems.clients[id].description, Detail: () => <ClientDetail id={id} /> }
+}
+
+const board: BoardEntry[] = [
+  project('streak', 'Streak', '/areas/tustreak-desktop.webp', 'live', '#f2efe8', FeaturedStreak),
+  project('may', 'MAY', '/areas/may-home.webp', 'wip', '#f7b500', FeaturedMay),
+  project('voider', 'Voider Goat', '/areas/voidergoat-album.webp', 'live', '#e3170a', FeaturedVoider),
+  project('enjambre', 'Enjambre', '/areas/enjambre-coe.webp', 'team', '#f26b1d', FeaturedEnjambre),
+  project('cuad', 'CUAD', '/areas/cuad-home.webp', 'wip', '#cec8b0', FeaturedCuad),
+  project('cflap', 'C FLAP', '/areas/cflap-board.webp', 'live', '#9b7bff', FeaturedCflap),
+  project('calde', 'Calde', '/areas/calde-widget.webp', 'wip', '#e8784f', FeaturedCalde, 'contain'),
+  project('tpf', 'TPF Computación Avanzada', '/areas/tfi-home.webp', 'team', '#2ed3a0', FeaturedTpf),
+  project('stugo', 'STUGO', '/areas/stugo1.webp', 'own', '#7fb2ff', FeaturedStugo, 'phone'),
+  client('mate'),
+  client('inmobiliaria'),
+  client('barberia'),
+  client('analia'),
+]
+
+const statusClass = (status: StatusId) => status === 'live' ? ' is-live' : status === 'wip' ? ' is-wip' : ''
+
+/** Every project and client site as a tile; pressing one grows a dialog out of it with the full project. */
+function ProjectBoard() {
+  const { t } = useI18n()
+  const [active, setActive] = useState<number | null>(null)
+  const dialogRef = useRef<HTMLDialogElement>(null)
+  const tileRefs = useRef<(HTMLButtonElement | null)[]>([])
+  const closing = useRef(false)
+  // Mirrors `active` so quick repeated clicks on next/prev never read a stale index
+  const activeRef = useRef<number | null>(null)
+
+  /** Uniform scale + offset that puts the dialog over the tile, so it looks like the tile opening up. */
+  const tileTransform = (index: number) => {
+    const tile = tileRefs.current[index]
+    const dialog = dialogRef.current
+    if (!tile || !dialog) return null
+    const from = tile.getBoundingClientRect()
+    const to = dialog.getBoundingClientRect()
+    if (!from.width || !to.width || from.bottom < 0 || from.top > window.innerHeight) return null
+    const dx = from.left + from.width / 2 - (to.left + to.width / 2)
+    const dy = from.top + from.height / 2 - (to.top + to.height / 2)
+    return `translate(${dx}px, ${dy}px) scale(${Math.max(from.width / to.width, .2)})`
+  }
+
+  const open = (index: number) => {
+    const dialog = dialogRef.current
+    if (!dialog) return
+    closing.current = false
+    activeRef.current = index
+    setActive(index)
+    window.history.replaceState(window.history.state, '', `#${board[index].id}`)
+    if (dialog.open) { dialog.scrollTop = 0; return }
+    dialog.showModal()
+    dialog.scrollTop = 0
+    if (prefersReducedMotion()) return
+    const from = tileTransform(index)
+    dialog.animate(from
+      ? [{ transform: from, opacity: 0 }, { opacity: 1, offset: .3 }, { transform: 'none', opacity: 1 }]
+      : [{ transform: 'translateY(24px) scale(.97)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 560, easing: 'cubic-bezier(.16, 1, .3, 1)' })
+  }
+
+  const close = () => {
+    const dialog = dialogRef.current
+    if (!dialog?.open || closing.current) return
+    closing.current = true
+    window.history.replaceState(window.history.state, '', window.location.pathname)
+    const current = activeRef.current
+    const finish = () => { dialog.close(); activeRef.current = null; setActive(null); closing.current = false }
+    if (prefersReducedMotion() || current === null) { finish(); return }
+    const to = tileTransform(current)
+    dialog.animate([{ transform: 'none', opacity: 1 }, { opacity: 1, offset: .55 }, { transform: to ?? 'translateY(16px) scale(.97)', opacity: 0 }], { duration: 340, easing: 'cubic-bezier(.65, 0, .35, 1)', fill: 'forwards' }).finished.then(() => {
+      dialog.getAnimations().forEach((animation) => animation.cancel())
+      finish()
+    }, finish)
+  }
+
+  // Deep link: /sistemas#cuad opens CUAD
+  useEffect(() => {
+    const id = decodeURIComponent(window.location.hash.slice(1))
+    const index = board.findIndex((entry) => entry.id === id)
+    if (index < 0) return
+    tileRefs.current[index]?.scrollIntoView({ block: 'center' })
+    const timer = window.setTimeout(() => open(index), 300)
+    return () => window.clearTimeout(timer)
+  }, [])
+
+  useEffect(() => () => {
+    if (window.location.hash && board.some((entry) => `#${entry.id}` === window.location.hash)) window.history.replaceState(window.history.state, '', window.location.pathname)
+  }, [])
+
+  const entry = active === null ? null : board[active]
+  const step = (direction: 1 | -1) => { const current = activeRef.current; if (current !== null) open((current + direction + board.length) % board.length) }
+  const groups = [
+    { id: 'projects' as const, title: t.systems.projectsTitle },
+    { id: 'clients' as const, title: t.systems.clientsTitle },
+  ]
+
+  return <>
+    {groups.map((group) => <section className="board-group" id={group.id === 'clients' ? 'clientes' : 'proyectos'} aria-labelledby={`${group.id}-title`} key={group.id}>
+      <div className="board-group-head" data-reveal>
+        <h2 className="section-title" id={`${group.id}-title`}><span className="reveal-line"><span>{group.title}</span></span></h2>
+        {group.id === 'projects' && <p>{t.systems.projectsHint}</p>}
+      </div>
+      <div className="tiles">
+        {board.map((item, index) => item.group !== group.id ? null : <button type="button" key={item.id} id={item.id} data-project ref={(node) => { tileRefs.current[index] = node }} className={`tile${item.fit ? ` is-${item.fit}` : ''}`} style={{ '--tone': item.tone, '--i': index } as CSSProperties} onClick={() => open(index)} aria-haspopup="dialog" data-reveal>
+          <span className="tile-media"><img src={item.image} alt="" loading="lazy" /></span>
+          <span className="tile-body">
+            <span className="tile-top"><span className="tile-num">{pad(index + 1)}</span><span className={`status${statusClass(item.status)}`}>{t.status[item.status]}</span></span>
+            <span className="tile-name">{item.name}</span>
+            <span className="tile-kind">{item.kind(t)}</span>
+          </span>
+          <span className="tile-open" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M8 3v10M3 8h10" /></svg></span>
+        </button>)}
+      </div>
+    </section>)}
+
+    <dialog ref={dialogRef} className="project-dialog" aria-label={entry ? t.systems.dialog(entry.name) : undefined} style={entry ? { '--tone': entry.tone } as CSSProperties : undefined} onCancel={(event) => { event.preventDefault(); close() }} onClick={(event) => { if (event.target === event.currentTarget) close() }}>
+      {entry && <>
+        <div className="project-dialog-bar">
+          <button type="button" className="pill-link" onClick={close}><svg className="arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" /></svg> {t.album.close}</button>
+          <span className="project-dialog-count">{pad(active! + 1)} <span>/ {pad(board.length)}</span></span>
+          <span className="project-dialog-nav">
+            <button type="button" onClick={() => step(-1)} aria-label={t.systems.prevProject}><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3 5 8l5 5" /></svg></button>
+            <button type="button" onClick={() => step(1)} aria-label={t.systems.nextProject}><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m6 3 5 5-5 5" /></svg></button>
+          </span>
+        </div>
+        <div className="project-dialog-body" key={entry.id}><entry.Detail /></div>
+      </>}
+    </dialog>
+  </>
+}
+
+function ClientDetail({ id }: { id: ClientId }) {
+  const { t } = useI18n()
+  const site = clientSites[id]
+  const copy = t.systems.clients[id]
+  const title = 'title' in copy ? copy.title : site.name
+  const picture = <>
+    <span className="demo-browser-bar"><i /><i /><i /><span>{site.href ? new URL(site.href).host : t.status.wip}</span></span>
+    <img src={site.image} alt={copy.alt} loading="lazy" width="1440" height="700" />
+  </>
+  return <article className="feature feature-shots feature-client" aria-labelledby={`${id}-title`}>
+    <div className="client-stage">
+      {site.href ? <a className="client-window" href={site.href} target="_blank" rel="noreferrer" tabIndex={-1} aria-hidden="true">{picture}</a> : <div className="client-window">{picture}</div>}
+    </div>
+    <div className="shots-copy">
+      <p className="feature-kind">{t.systems.clientKind}</p>
+      <div className="feature-title-row"><h2 id={`${id}-title`}>{title}</h2><span className={`status${statusClass(site.wip ? 'wip' : 'live')}`}>{t.status[site.wip ? 'wip' : 'live']}</span></div>
+      <p className="feature-text feature-text-lead">{copy.description}</p>
+      {site.href && <a className="button shots-cta" data-magnetic="0.2" href={site.href} target="_blank" rel="noreferrer" aria-label={t.systems.viewSiteAria(title, Boolean(site.wip))}>{site.wip ? t.systems.viewProgress : t.systems.viewSite} <Arrow /></a>}
+    </div>
+  </article>
 }
 
 function Phone({ src, alt, title }: { src: string; alt: string; title: string }) {
@@ -595,7 +734,7 @@ function FeaturedStreak() {
 
 function FeaturedVoider() {
   const { t } = useI18n()
-  return <article className="feature feature-voider" id="voider" aria-labelledby="voider-title">
+  return <article className="feature feature-voider" aria-labelledby="voider-title">
     <div className="voider-stage" data-reveal>
       <a className="voider-window voider-window-back" href="https://voidergoat-player.vercel.app/" target="_blank" rel="noreferrer" tabIndex={-1} aria-hidden="true">
         <span className="demo-browser-bar"><i /><i /><i /><span>voidergoat-player.vercel.app</span></span>
@@ -622,7 +761,7 @@ function FeaturedVoider() {
 
 function FeaturedMay() {
   const { t } = useI18n()
-  return <article className="feature feature-shots feature-may" id="may" aria-labelledby="may-title">
+  return <article className="feature feature-shots feature-may" aria-labelledby="may-title">
     <div className="shots-stage" data-reveal>
       <a className="shots-window shots-window-back" href="https://may-editor.vercel.app/" target="_blank" rel="noreferrer" tabIndex={-1} aria-hidden="true">
         <span className="demo-browser-bar"><i /><i /><i /><span>may-editor.vercel.app</span></span>
@@ -648,7 +787,7 @@ function FeaturedMay() {
 
 function FeaturedEnjambre() {
   const { t } = useI18n()
-  return <article className="feature feature-shots feature-enjambre is-reversed" id="enjambre" aria-labelledby="enjambre-title">
+  return <article className="feature feature-shots feature-enjambre is-reversed" aria-labelledby="enjambre-title">
     <div className="shots-stage" data-reveal>
       <a className="shots-window shots-window-back" href="https://enjambreer.vercel.app/drones/" target="_blank" rel="noreferrer" tabIndex={-1} aria-hidden="true">
         <span className="demo-browser-bar"><i /><i /><i /><span>enjambreer.vercel.app/drones</span></span>
@@ -674,7 +813,7 @@ function FeaturedEnjambre() {
 
 function FeaturedCuad() {
   const { t } = useI18n()
-  return <article className="feature feature-shots feature-cuad" id="cuad" aria-labelledby="cuad-title">
+  return <article className="feature feature-shots feature-cuad" aria-labelledby="cuad-title">
     <div className="shots-stage" data-reveal>
       <a className="shots-window shots-window-back" href="https://cuad-eight.vercel.app/" target="_blank" rel="noreferrer" tabIndex={-1} aria-hidden="true">
         <span className="demo-browser-bar"><i /><i /><i /><span>cuad-eight.vercel.app</span></span>
@@ -700,7 +839,7 @@ function FeaturedCuad() {
 
 function FeaturedCflap() {
   const { t } = useI18n()
-  return <article className="feature feature-shots feature-cflap is-reversed" id="cflap" aria-labelledby="cflap-title">
+  return <article className="feature feature-shots feature-cflap is-reversed" aria-labelledby="cflap-title">
     <div className="shots-stage" data-reveal>
       <a className="shots-window shots-window-back" href="https://cflap.vercel.app/" target="_blank" rel="noreferrer" tabIndex={-1} aria-hidden="true">
         <span className="demo-browser-bar"><i /><i /><i /><span>cflap.vercel.app</span></span>
@@ -727,7 +866,7 @@ function FeaturedCflap() {
 /** A desktop widget, so it floats on its own instead of sitting in a browser window. */
 function FeaturedCalde() {
   const { t } = useI18n()
-  return <article className="feature feature-shots feature-calde" id="calde" aria-labelledby="calde-title">
+  return <article className="feature feature-shots feature-calde" aria-labelledby="calde-title">
     <div className="shots-stage calde-stage" data-reveal>
       <img className="calde-widget" src="/areas/calde-widget.webp" alt={t.systems.calde.alt} loading="lazy" width="753" height="497" />
     </div>
@@ -745,7 +884,7 @@ function FeaturedCalde() {
 
 function FeaturedTpf() {
   const { t } = useI18n()
-  return <article className="feature feature-shots feature-tpf is-reversed" id="tpf" aria-labelledby="tpf-title">
+  return <article className="feature feature-shots feature-tpf is-reversed" aria-labelledby="tpf-title">
     <div className="shots-stage" data-reveal>
       <a className="shots-window shots-window-back" href="https://tfi-interfaz.vercel.app/" target="_blank" rel="noreferrer" tabIndex={-1} aria-hidden="true">
         <span className="demo-browser-bar"><i /><i /><i /><span>tfi-interfaz.vercel.app</span></span>
@@ -791,20 +930,6 @@ function FeaturedStugo() {
           {['React Native', 'Expo', 'TypeScript', 'FastAPI', 'PostgreSQL', 'Groq', 'Whisper'].map((tech) => <li key={tech}>{tech}</li>)}
         </ul>
       </div>
-    </div>
-  </article>
-}
-
-function ClientSite({ title, description, image, alt, href, inProgress = false }: { title: string; description: string; image: string; alt: string; href?: string; inProgress?: boolean }) {
-  const { t } = useI18n()
-  const picture = <img src={image} alt={alt} loading="lazy" width="1440" height="700" />
-  return <article className="client" data-reveal="clip">
-    {href ? <a className="client-image" href={href} target="_blank" rel="noreferrer" tabIndex={-1} aria-hidden="true">{picture}</a> : <div className="client-image">{picture}</div>}
-    <div className="client-info">
-      {inProgress && <span className="status is-wip">{t.status.wip}</span>}
-      <h3>{title}</h3>
-      <p>{description}</p>
-      {href && <a className="text-link" href={href} target="_blank" rel="noreferrer" aria-label={t.systems.viewSiteAria(title, inProgress)}>{inProgress ? t.systems.viewProgress : t.systems.viewSite} <Arrow /></a>}
     </div>
   </article>
 }
@@ -865,116 +990,6 @@ function DemoShowcase() {
     </div>
     <span className="demo-preload" aria-hidden="true">{demos.map((item) => <img key={item.id} src={`/areas/demo-${item.id}.webp`} alt="" loading="lazy" />)}</span>
   </section>
-}
-
-function DJPage() {
-  const audioRef = useRef<HTMLAudioElement>(null)
-  const trackFadeFrame = useRef<number | null>(null)
-  const playAfterLoad = useRef(false)
-  const [activeIndex, setActiveIndex] = useState(0)
-  const [playing, setPlaying] = useState(false)
-  const [currentTime, setCurrentTime] = useState(0)
-  const [duration, setDuration] = useState(0)
-  const [audioError, setAudioError] = useState(false)
-  const activeTrack = djTracks[activeIndex]
-  const { t } = useI18n()
-  useReveal('dj')
-  useEffect(() => {
-    const audio = audioRef.current
-    if (!audio) return
-    audio.load()
-    if (playAfterLoad.current) {
-      playAfterLoad.current = false
-      audio.volume = 0
-      void audio.play().catch(() => setAudioError(true))
-    }
-  }, [activeTrack.src])
-  const formatTime = (seconds: number) => `${Math.floor(seconds / 60)}:${pad(Math.floor(seconds % 60))}`
-  const togglePlayback = () => {
-    const audio = audioRef.current
-    if (!audio) return
-    if (audio.paused) {
-      audio.volume = 0
-      void audio.play().catch(() => setAudioError(true))
-    }
-    else audio.pause()
-  }
-  const fadeTrackIn = () => {
-    if (trackFadeFrame.current !== null) window.cancelAnimationFrame(trackFadeFrame.current)
-    const startedAt = performance.now()
-    const fade = (now: number) => {
-      const progress = Math.min((now - startedAt) / 700, 1)
-      if (audioRef.current) audioRef.current.volume = 0.42 * progress
-      if (progress < 1) trackFadeFrame.current = window.requestAnimationFrame(fade)
-      else trackFadeFrame.current = null
-    }
-    trackFadeFrame.current = window.requestAnimationFrame(fade)
-  }
-  useEffect(() => () => {
-    if (trackFadeFrame.current !== null) window.cancelAnimationFrame(trackFadeFrame.current)
-  }, [])
-  const selectTrack = (index: number, autoplay = false) => {
-    if (index === activeIndex) {
-      if (autoplay) togglePlayback()
-      return
-    }
-    audioRef.current?.pause()
-    if (audioRef.current) audioRef.current.currentTime = 0
-    playAfterLoad.current = autoplay
-    setActiveIndex(index)
-    setPlaying(false)
-    setCurrentTime(0)
-    setDuration(0)
-    setAudioError(false)
-  }
-  const stepTrack = (direction: -1 | 1) => selectTrack((activeIndex + direction + djTracks.length) % djTracks.length, playing)
-  const progress = duration ? Math.min(currentTime / duration, 1) : 0
-
-  return <main className="page dj" id="mashups">
-    <audio ref={audioRef} src={activeTrack.src} preload="auto" onLoadedMetadata={(event) => setDuration(Number.isFinite(event.currentTarget.duration) ? event.currentTarget.duration : 0)} onTimeUpdate={(event) => setCurrentTime(event.currentTarget.currentTime)} onPlay={() => { setPlaying(true); setAudioError(false); fadeTrackIn() }} onPause={() => { setPlaying(false); if (trackFadeFrame.current !== null) { window.cancelAnimationFrame(trackFadeFrame.current); trackFadeFrame.current = null } }} onEnded={() => { setPlaying(false); setCurrentTime(0) }} onError={() => setAudioError(true)} />
-    <PageHead title="Mashups" lede={t.dj.lede} />
-    <section className="dj-deck" aria-label={t.dj.deck}>
-      <div className="dj-stage">
-        <div className="dj-discs" style={{ '--progress': progress } as CSSProperties}>
-          <span className={`dj-vinyl${playing ? ' is-playing' : ''}`} aria-hidden="true"><span className="dj-vinyl-disc"><img src={activeTrack.cover} alt="" /></span></span>
-          {djTracks.map((track, index) => {
-            const relativeIndex = (index - activeIndex + djTracks.length) % djTracks.length
-            const selected = index === activeIndex
-            const position = selected ? 'active' : relativeIndex === 1 ? 'next' : relativeIndex === djTracks.length - 1 ? 'previous' : 'hidden'
-            const isAdjacent = position !== 'hidden'
-            return <button type="button" key={track.number} className={`dj-disc is-${position}${selected && playing ? ' is-playing' : ''}`} onClick={() => selectTrack(index)} aria-label={t.dj.select(track.title, selected)} aria-pressed={selected} aria-hidden={!isAdjacent} tabIndex={isAdjacent ? 0 : -1}>
-              <img src={track.cover} alt="" width="1254" height="1254" />
-            </button>
-          })}
-        </div>
-        <div className="dj-player">
-          <p className="dj-now"><span>Mashup {activeTrack.number}</span><strong>{activeTrack.title}</strong></p>
-          <div className="dj-controls">
-            <button type="button" className="dj-step" onClick={() => stepTrack(-1)} aria-label={t.dj.prev}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h2v14H6zM19 5.8v12.4c0 .8-.9 1.2-1.5.7L9.6 12.7a.9.9 0 0 1 0-1.4l7.9-6.2c.6-.5 1.5-.1 1.5.7Z" /></svg></button>
-            <button type="button" className="dj-play" data-magnetic="0.35" onClick={togglePlayback} aria-label={playing ? t.dj.pause : t.dj.play}><svg viewBox="0 0 24 24" aria-hidden="true">{playing ? <path d="M7 5h4v14H7zM14 5h4v14h-4z" /> : <path d="M8 5.3c0-.8.9-1.3 1.6-.8l9.6 6.7c.6.4.6 1.3 0 1.7l-9.6 6.7c-.7.5-1.6 0-1.6-.8V5.3Z" />}</svg></button>
-            <button type="button" className="dj-step" onClick={() => stepTrack(1)} aria-label={t.dj.next}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 5h2v14h-2zM5 5.8v12.4c0 .8.9 1.2 1.5.7l7.9-6.2a.9.9 0 0 0 0-1.4L6.5 5.1C5.9 4.6 5 5 5 5.8Z" /></svg></button>
-          </div>
-          <div className="dj-timeline">
-            <span>{formatTime(currentTime)}</span>
-            <input type="range" min="0" max={duration || 1} step="0.1" value={Math.min(currentTime, duration || 1)} style={{ '--progress': `${progress * 100}%` } as CSSProperties} onChange={(event) => { if (audioRef.current) audioRef.current.currentTime = Number(event.target.value) }} aria-label={t.dj.position} />
-            <span>{formatTime(duration)}</span>
-          </div>
-          {audioError && <p className="dj-error" role="status">{t.dj.error}</p>}
-        </div>
-      </div>
-      <div className="dj-side">
-        <ol className="dj-tracklist" aria-label={t.dj.list}>
-          {djTracks.map((track, index) => <li key={track.number}>
-            <button type="button" className={index === activeIndex ? 'is-active' : ''} onClick={() => selectTrack(index, true)} aria-current={index === activeIndex ? 'true' : undefined}>
-              <span className="dj-track-num">{index === activeIndex && playing ? <span className="eq" aria-hidden="true"><i /><i /><i /></span> : track.number}</span>
-              <img src={track.cover} alt="" loading="lazy" />
-              <span className="dj-track-title">{track.title}</span>
-            </button>
-          </li>)}
-        </ol>
-      </div>
-    </section>
-  </main>
 }
 
 /** Rows of 2 · 3 · 2 cards keep every album the same height. */

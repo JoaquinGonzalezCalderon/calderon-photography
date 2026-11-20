@@ -13,8 +13,8 @@
 .orbit::before { background: radial-gradient(50% 50% at 50% 30%, rgb(242 239 232 / .08), transparent 70%); }
 .orbit-card.is-front { outline-color: rgb(242 239 232 / .85); }
 .status.is-live { border-color: var(--line-strong); color: var(--ink); }
-.feature-kind, .orbit-info-meta, .dj-now span { color: var(--ink); }
-.button:hover, .dj-play:hover { background: #ffffff; }
+.feature-kind, .orbit-info-meta { color: var(--ink); }
+.button:hover { background: #ffffff; }
 
 /* Hand-drawn display type */
 .section-title { font-family: var(--doodle); font-size: clamp(40px, 5.4vw, 76px); font-stretch: normal; font-weight: 400; letter-spacing: 0; line-height: 1.2; text-transform: none; }
