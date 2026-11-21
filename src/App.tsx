@@ -289,6 +289,7 @@ function Arrow() {
 /** Text and note for each one live in `news.items` of src/i18n.tsx, under the same `id`. */
 type NewsItem = { id: keyof Messages['news']['items']; title: string; image: string; area: Area; anchor: string }
 const news: NewsItem[] = ([
+  { id: 'raygal', title: 'Raygal', image: '/areas/news/raygal.webp', area: 'systems', anchor: 'raygal' },
   { id: 'latoska', title: 'Torneo Pádel La Toska 6/11/2026', image: '/areas/news/latoska.webp', area: 'photography', anchor: 'albumes' },
   { id: 'sueltas', title: 'Fotos sueltas', image: '/areas/news/sueltas.webp', area: 'photography', anchor: 'sueltas' },
   { id: 'tpf', title: 'TPF Computación Avanzada', image: '/areas/news/tfi.webp', area: 'systems', anchor: 'tpf' },
@@ -537,15 +538,15 @@ type ProjectId = 'streak' | 'may' | 'voider' | 'enjambre' | 'cuad' | 'cflap' | '
 type ClientId = keyof Messages['systems']['clients']
 type StatusId = keyof Messages['status']
 /** One tile on the systems page. `Detail` is what opens when the tile is pressed. */
-type BoardEntry = { id: string; group: 'projects' | 'clients'; name: string; image: string; status: StatusId; tone: string; fit?: 'contain' | 'phone'; kind: (t: Messages) => string; Detail: () => ReactNode }
+type BoardEntry = { id: string; group: 'projects' | 'clients'; name: string; image: string; status: StatusId; tone: string; fit?: 'contain' | 'phone'; isNew?: boolean; kind: (t: Messages) => string; Detail: () => ReactNode }
 
 const project = (id: ProjectId, name: string, image: string, status: StatusId, tone: string, Detail: () => ReactNode, fit?: BoardEntry['fit']): BoardEntry =>
   ({ id, group: 'projects', name, image, status, tone, fit, kind: (t) => t.systems[id].kind, Detail })
 
 /** Client sites, in board order. Without `href` the site is only shown, never linked. */
-const clientSites: Record<ClientId, { name: string; image: string; status: StatusId; href?: string }> = {
+const clientSites: Record<ClientId, { name: string; image: string; status: StatusId; href?: string; video?: { src: string; poster: string } }> = {
   iphonepronu: { name: 'iPhone Pronu', image: '/areas/jgc-iphonepronu.webp', status: 'wip' },
-  raygal: { name: 'Raygal', image: '/areas/jgc-raygal.webp', status: 'wip' },
+  raygal: { name: 'Raygal', image: '/areas/jgc-raygal.webp', status: 'wip', video: { src: '/areas/raygal-promo.mp4', poster: '/areas/raygal-promo-poster.webp' } },
   vinoyco: { name: 'Vino & Co', image: '/areas/jgc-vinoyco.webp', status: 'wip' },
   inmobiliaria: { name: 'Inmobiliaria Andrea Duré', image: '/areas/jgc-inmobiliaria.webp', status: 'live', href: 'https://andreadure.com/' },
   barberia: { name: 'Barbería Los Santos', image: '/areas/jgc-barberia.webp', status: 'wip', href: 'https://lossantos-coral.vercel.app/' },
@@ -555,7 +556,7 @@ const clientSites: Record<ClientId, { name: string; image: string; status: Statu
 
 const client = (id: ClientId): BoardEntry => {
   const site = clientSites[id]
-  return { id, group: 'clients', name: site.name, image: site.image, status: site.status, tone: '#f2efe8', kind: (t) => t.systems.clients[id].description, Detail: () => <ClientDetail id={id} /> }
+  return { id, group: 'clients', name: site.name, image: site.image, status: site.status, tone: '#f2efe8', isNew: Boolean(site.video), kind: (t) => t.systems.clients[id].description, Detail: () => <ClientDetail id={id} /> }
 }
 
 const board: BoardEntry[] = [
@@ -659,7 +660,7 @@ function ProjectBoard() {
       </div>
       <div className="tiles">
         {board.map((item, index) => item.group !== group.id ? null : <button type="button" key={item.id} id={item.id} data-project ref={(node) => { tileRefs.current[index] = node }} className={`tile${item.fit ? ` is-${item.fit}` : ''}`} style={{ '--tone': item.tone, '--i': index } as CSSProperties} onClick={() => open(index)} aria-haspopup="dialog" data-reveal>
-          <span className="tile-media"><img src={item.image} alt="" loading="lazy" /></span>
+          <span className="tile-media"><img src={item.image} alt="" loading="lazy" />{item.isNew && <span className="tile-new"><i aria-hidden="true" />{t.news.label}</span>}</span>
           <span className="tile-body">
             <span className="tile-top"><span className="tile-num">{pad(index + 1)}</span><span className={`status${statusClass(item.status)}`}>{t.status[item.status]}</span></span>
             <span className="tile-name">{item.name}</span>
@@ -695,11 +696,28 @@ function ClientDetail({ id }: { id: ClientId }) {
     <span className="demo-browser-bar"><i /><i /><i /><span>{site.href ? new URL(site.href).host : site.name}</span></span>
     <img src={site.image} alt={copy.alt} loading="lazy" width="1440" height="700" />
   </>
+  const stage = <div className="client-stage">
+    {site.href ? <a className="client-window" href={site.href} target="_blank" rel="noreferrer" tabIndex={-1} aria-hidden="true">{picture}</a> : <div className="client-window">{picture}</div>}
+  </div>
+  // A site with a promo video leads with it, flagged as new; the cover follows underneath
+  if (site.video && 'videoText' in copy) return <article className="feature feature-client" aria-labelledby={`${id}-title`}>
+    <div className="client-reel">
+      <div className="client-reel-video">
+        <video src={site.video.src} poster={site.video.poster} aria-label={copy.videoAlt} width="720" height="1280" muted loop playsInline controls autoPlay={!prefersReducedMotion()} preload="metadata" />
+      </div>
+      <div className="client-reel-copy">
+        <p className="client-reel-badge"><i aria-hidden="true" />{t.news.label} · {copy.videoLabel}</p>
+        <p className="feature-kind">{t.systems.clientKind}</p>
+        <div className="feature-title-row"><h2 id={`${id}-title`}>{title}</h2><span className={`status${statusClass(site.status)}`}>{t.status[site.status]}</span></div>
+        <p className="feature-text feature-text-lead">{copy.description}</p>
+        <p className="feature-text">{copy.videoText}</p>
+      </div>
+    </div>
+    {stage}
+  </article>
   // The site's cover fills the width; name and description sit underneath it
   return <article className="feature feature-client" aria-labelledby={`${id}-title`}>
-    <div className="client-stage">
-      {site.href ? <a className="client-window" href={site.href} target="_blank" rel="noreferrer" tabIndex={-1} aria-hidden="true">{picture}</a> : <div className="client-window">{picture}</div>}
-    </div>
+    {stage}
     <div className="client-copy">
       <div>
         <p className="feature-kind">{t.systems.clientKind}</p>

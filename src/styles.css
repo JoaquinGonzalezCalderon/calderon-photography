@@ -320,6 +320,22 @@ html:has(.project-dialog[open]) { overflow: hidden; }
 .client-copy .feature-title-row { margin-bottom: 0; }
 .client-copy-side { display: grid; justify-items: start; gap: 22px; padding-bottom: 6px; }
 @media (max-width: 760px) { .client-copy { grid-template-columns: 1fr; } }
+/* A client's promo video: the vertical reel on a phone-shaped frame, copy beside it */
+.client-reel { display: grid; grid-template-columns: minmax(220px, 360px) minmax(0, 1fr); align-items: center; gap: clamp(28px, 5vw, 80px); padding-bottom: clamp(16px, 3vh, 32px); }
+.client-reel-video { position: relative; isolation: isolate; }
+.client-reel-video::before { position: absolute; z-index: -1; inset: 6% -18% 0; border-radius: 50%; background: radial-gradient(closest-side, rgb(120 160 100 / .28), transparent); content: ''; filter: blur(40px); }
+.client-reel-video video { display: block; width: 100%; height: auto; max-height: min(72vh, 680px); aspect-ratio: 9 / 16; object-fit: cover; margin-inline: auto; border: 6px solid #121210; border-radius: 30px; background: #1b2419; box-shadow: 0 0 0 1px var(--line-strong), 0 40px 80px -30px rgb(0 0 0 / .9); }
+.client-reel-copy { display: grid; justify-items: start; }
+.client-reel-copy .feature-text-lead { margin-bottom: 4px; }
+.client-reel-badge, .tile-new { display: inline-flex; align-items: center; gap: 8px; border-radius: 999px; background: var(--ink); color: var(--bg); font-weight: 600; }
+.client-reel-badge { margin-bottom: 22px; padding: 7px 14px; font-size: 13px; }
+.client-reel-badge i, .tile-new i { width: 7px; height: 7px; border-radius: 50%; background: currentColor; animation: live 1.6s ease-in-out infinite; }
+.tile-new { position: absolute; z-index: 2; top: 12px; left: 12px; padding: 5px 11px; font-size: 12px; box-shadow: 0 8px 20px -8px rgb(0 0 0 / .7); }
+@media (max-width: 760px) {
+  .client-reel { grid-template-columns: 1fr; }
+  .client-reel-video { width: min(72%, 300px); margin-inline: auto; }
+  .tile-new { top: 8px; left: 8px; padding: 3px 8px; font-size: 11px; }
+}
 
 
 /* Demos showcase: tabs on the left, browser + phone stage on the right, tinted by the selected demo */
